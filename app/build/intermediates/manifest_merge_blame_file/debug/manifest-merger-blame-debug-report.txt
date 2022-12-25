@@ -1,0 +1,237 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.thf.appswitcher"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+7-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:7:5-9:41
+8        android:minSdkVersion="21"
+8-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:8:9-35
+9        android:targetSdkVersion="32" />
+9-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:9:9-38
+10
+11    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+11-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:11:5-77
+11-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:11:22-74
+12    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+12-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:12:5-77
+12-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:12:22-74
+13    <uses-permission android:name="android.permission.READ_LOGS" />
+13-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:13:5-68
+13-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:13:22-65
+14    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+14-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:14:5-78
+14-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:14:22-75
+15    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+15-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:15:5-78
+15-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:15:22-75
+16    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+16-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:16:5-81
+16-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:16:22-78
+17    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+17-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:17:5-80
+17-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:17:22-77
+18    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+18-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:18:5-79
+18-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:18:22-76
+19    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+19-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:19:5-81
+19-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:19:22-78
+20    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+20-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:20:2-73
+20-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:20:19-71
+21
+22    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+23    <uses-feature android:name="android.hardware.location.gps" />
+23-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:23:5-66
+23-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:23:19-63
+24    <uses-feature android:name="android.hardware.location.network" />
+24-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:24:5-70
+24-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:24:19-67
+25
+26    <application
+26-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:26:5-109:19
+27        android:name="com.thf.AppSwitcher.AppSwitcherApp"
+27-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:27:9-58
+28        android:allowBackup="true"
+28-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:28:9-35
+29        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+29-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:29:9-77
+30        android:debuggable="true"
+31        android:icon="@mipmap/ic_launcher"
+31-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:30:9-43
+32        android:label="@string/app_name"
+32-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:31:9-41
+33        android:roundIcon="@mipmap/ic_launcher_round"
+33-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:32:9-54
+34        android:supportsRtl="true"
+34-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:33:9-35
+35        android:theme="@style/Theme.MyApplication" >
+35-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:34:9-51
+36        <meta-data
+36-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:35:9-37:60
+37            android:name="com.google.firebase.messaging.default_notification_icon"
+37-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:36:13-83
+38            android:resource="@drawable/transparenticon" />
+38-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:37:13-57
+39
+40        <!--
+41<activity
+42android:name=".StartServiceActivity"
+43android:excludeFromRecents="true"
+44android:icon="@mipmap/ic_launcher"
+45android:noHistory="true"
+46android:taskAffinity=".StartServiceActivity"
+47android:theme="@style/Theme.Transparent" >
+48<intent-filter>
+49<action android:name="android.intent.action.MAIN" />
+50
+51<category android:name="android.intent.category.LAUNCHER" />
+52</intent-filter>
+53</activity>
+54        -->
+55
+56        <activity
+56-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:55:9-65:20
+57            android:name="com.thf.AppSwitcher.StartServiceActivity"
+57-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:56:13-68
+58            android:excludeFromRecents="true"
+58-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:57:13-46
+59            android:exported="true"
+59-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:61:13-36
+60            android:noHistory="true"
+60-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:58:13-37
+61            android:taskAffinity=".StartServiceActivity"
+61-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:59:13-57
+62            android:theme="@style/Theme.Transparent" >
+62-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:60:13-53
+63            <intent-filter>
+63-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:62:13-64:29
+64                <action android:name="android.intent.action.MAIN" />
+64-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:63:17-69
+64-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:63:25-66
+65            </intent-filter>
+66        </activity>
+67        <activity
+67-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:66:9-75:20
+68            android:name="com.thf.AppSwitcher.SettingsActivity"
+68-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:67:13-64
+69            android:exported="true"
+69-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:69:13-36
+70            android:theme="@style/Theme.MyApplication" >
+70-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:68:13-55
+71            <intent-filter>
+71-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:70:13-74:29
+72                <action android:name="android.intent.action.MAIN" />
+72-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:63:17-69
+72-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:63:25-66
+73
+74                <category android:name="android.intent.category.LAUNCHER" />
+74-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:73:17-77
+74-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:73:27-74
+75            </intent-filter>
+76        </activity>
+77        <activity
+77-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:76:9-85:20
+78            android:name="com.thf.AppSwitcher.SwitchActivity"
+78-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:77:13-62
+79            android:excludeFromRecents="true"
+79-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:78:13-46
+80            android:icon="@mipmap/ic_launcher"
+80-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:79:13-47
+81            android:launchMode="singleTop"
+81-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:80:13-43
+82            android:noHistory="true"
+82-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:81:13-37
+83            android:screenOrientation="sensor"
+83-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:82:13-47
+84            android:taskAffinity=".SwitchActivity"
+84-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:83:13-51
+85            android:theme="@style/Theme.Transparent" >
+85-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:84:13-53
+86        </activity>
+87        <activity android:name="com.thf.AppSwitcher.ListActivity" />
+87-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:86:9-69
+87-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:86:19-66
+88        <activity
+88-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:87:9-91:56
+89            android:name="com.thf.AppSwitcher.GetPermissionsActivity"
+89-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:88:13-70
+90            android:excludeFromRecents="true"
+90-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:89:13-46
+91            android:noHistory="true"
+91-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:90:13-37
+92            android:theme="@style/Theme.Transparent" />
+92-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:91:13-53
+93
+94        <service
+94-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:93:9-96:39
+95            android:name="com.thf.AppSwitcher.service.AppSwitcherService"
+95-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:94:13-74
+96            android:enabled="true"
+96-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:95:13-35
+97            android:exported="true" />
+97-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:96:13-36
+98
+99        <receiver
+99-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:98:9-108:20
+100            android:name="com.thf.AppSwitcher.service.BootUpReceiver"
+100-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:99:13-70
+101            android:enabled="true"
+101-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:100:13-35
+102            android:exported="true"
+102-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:101:13-36
+103            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+103-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:102:13-75
+104            <intent-filter>
+104-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:103:13-107:29
+105                <action android:name="autochips.intent.action.QB_POWERON" />
+105-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:104:17-77
+105-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:104:25-74
+106                <action android:name="autochips.intent.action.RESUME_APPS" />
+106-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:105:17-78
+106-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:105:25-75
+107                <action android:name="android.intent.action.BOOT_COMPLETED" />
+107-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:106:17-79
+107-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:106:25-76
+108            </intent-filter>
+109        </receiver>
+110
+111        <provider
+111-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:26:9-34:20
+112            android:name="androidx.startup.InitializationProvider"
+112-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:27:13-67
+113            android:authorities="com.thf.appswitcher.androidx-startup"
+113-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:28:13-68
+114            android:exported="false" >
+114-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:29:13-37
+115            <meta-data
+115-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:31:13-33:52
+116                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+116-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:32:17-75
+117                android:value="androidx.startup" />
+117-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:33:17-49
+118            <meta-data
+118-->[androidx.lifecycle:lifecycle-process:2.4.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/a272a8a48b99f3ed40e8f260d9fd8f85/transformed/lifecycle-process-2.4.0/AndroidManifest.xml:31:13-33:52
+119                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+119-->[androidx.lifecycle:lifecycle-process:2.4.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/a272a8a48b99f3ed40e8f260d9fd8f85/transformed/lifecycle-process-2.4.0/AndroidManifest.xml:32:17-78
+120                android:value="androidx.startup" />
+120-->[androidx.lifecycle:lifecycle-process:2.4.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/a272a8a48b99f3ed40e8f260d9fd8f85/transformed/lifecycle-process-2.4.0/AndroidManifest.xml:33:17-49
+121        </provider>
+122
+123        <uses-library
+123-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:25:9-27:40
+124            android:name="androidx.window.extensions"
+124-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:26:13-54
+125            android:required="false" />
+125-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:27:13-37
+126        <uses-library
+126-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:28:9-30:40
+127            android:name="androidx.window.sidecar"
+127-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:29:13-51
+128            android:required="false" />
+128-->[androidx.window:window:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/8b804347833a3b1291559c5b4bfc75b7/transformed/window-1.0.0/AndroidManifest.xml:30:13-37
+129    </application>
+130
+131</manifest>

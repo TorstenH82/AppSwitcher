@@ -1,0 +1,115 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="72dp" >
+
+    <CheckBox
+        android:id="@+id/relevant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/itemLogo"
+        app:layout_constraintTop_toTopOf="@+id/itemLogo" />
+
+    <ImageButton
+        android:id="@+id/reorderButton"
+        android:layout_width="25dp"
+        android:layout_height="40dp"
+		android:paddingTop="7dp"
+		android:paddingBottom="7dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/itemLogo"
+        app:layout_constraintTop_toTopOf="@+id/itemLogo"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/reorder_selector"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/itemLogo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/relevant"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/itemLogo"
+        app:layout_constraintTop_toTopOf="@+id/itemLogo"
+        android:text="App Name"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/itemPackageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/itemLogo"
+        app:layout_constraintTop_toTopOf="@+id/itemLogo"
+        app:layout_constraintVertical_bias="0.0"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/itemExpand"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/down_up" />
+
+    <!--
+<TextView
+android:id="@+id/activityName"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginEnd="16dp"
+android:layout_marginLeft="16dp"
+android:layout_marginRight="16dp"
+android:layout_marginStart="16dp"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toEndOf="@+id/itemPackageName"
+app:layout_constraintTop_toTopOf="@+id/itemName"
+android:text="Activity Name"
+android:textColor="#ff000000"
+android:textSize="12sp" />
+    -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
