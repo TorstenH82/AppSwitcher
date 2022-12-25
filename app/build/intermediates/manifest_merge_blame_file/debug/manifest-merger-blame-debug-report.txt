@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.thf.appswitcher"
+3    package="com.thf.AppSwitcher"
 4    android:versionCode="1"
 5    android:versionName="1.0" >
 6
@@ -8,7 +8,7 @@
 7-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:7:5-9:41
 8        android:minSdkVersion="21"
 8-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:8:9-35
-9        android:targetSdkVersion="32" />
+9        android:targetSdkVersion="30" />
 9-->/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:9:9-38
 10
 11    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -202,7 +202,7 @@
 111-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:26:9-34:20
 112            android:name="androidx.startup.InitializationProvider"
 112-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:27:13-67
-113            android:authorities="com.thf.appswitcher.androidx-startup"
+113            android:authorities="com.thf.AppSwitcher.androidx-startup"
 113-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:28:13-68
 114            android:exported="false" >
 114-->[androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:29:13-37

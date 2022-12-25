@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.thf.appswitcher",
+  "applicationId": "com.thf.AppSwitcher",
   "variantName": "debug",
   "elements": [
     {

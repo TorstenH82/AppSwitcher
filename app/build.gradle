@@ -7,9 +7,9 @@ android {
     buildToolsVersion "33.0.0"
 
     defaultConfig {
-        applicationId "com.thf.appswitcher"
+        applicationId "com.thf.AppSwitcher"
         minSdk 21
-        targetSdk 32
+        targetSdk 30
         versionCode 1
         versionName "1.0"
     }

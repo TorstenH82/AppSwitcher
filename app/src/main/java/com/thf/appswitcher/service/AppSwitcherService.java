@@ -329,12 +329,12 @@ public class AppSwitcherService extends Service {
 		
 		Intent stopSelf = new Intent(this, AppSwitcherService.class);
 		stopSelf.setAction(this.ACTION_STOP_SERVICE);
-		PendingIntent pStopSelf = PendingIntent.getService(this, 0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent pStopSelf = PendingIntent.getService(this, 0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 		
 		Intent openSettings = new Intent(this, AppSwitcherService.class);
 		openSettings.setAction(this.ACTION_OPEN_SETTINGS);
 		PendingIntent pOpenSettings = PendingIntent.getService(this, 0, openSettings,
-		PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 		
 		return new NotificationCompat.Builder(getApplicationContext(), id1).setSmallIcon(R.drawable.transparenticon)
 		.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),

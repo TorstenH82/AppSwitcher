@@ -1,218 +1,214 @@
 [
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_adaptive_back.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_adaptive_back.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_adaptive_back.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_activity_list.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/activity_list.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_set_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/set_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_up_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/up_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_moon_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/moon_up.png"
     },
     {
         "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_activity_triggersetup.xml.flat",
         "source": "com.thf.AppSwitcher.app-main-30:/layout/activity_triggersetup.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_transparenticon.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/transparenticon.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_activity_switch.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/activity_switch.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayauto.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/overlayauto.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_adaptive_fore.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_moon.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/moon.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_set_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/set_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_adaptive_back.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_activity_main.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/activity_main.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_moon_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/moon_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_sun_moon_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/sun_moon_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_dwn.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/reorder_dwn.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_activity_settings.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/activity_settings.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_adaptive_fore.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_adaptive_fore.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_up_old.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/reorder_up_old.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_adaptive_fore.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_adaptive_fore.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_adaptive_fore.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_dialogbackground.9.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/dialogbackground.9.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_item_view.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/item_view.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_adaptive_fore.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_adaptive_fore.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_item_switch.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/item_switch.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayon.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/overlayon.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_up_old.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/reorder_up_old.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_item_view.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/item_view.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_down_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/down_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_adaptive_fore.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_adaptive_fore.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_dwn.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/reorder_dwn.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/reorder_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_activity_triggersetup.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/activity_triggersetup.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_adaptive_back.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayoff.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/overlayoff.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_xdialogbackground.9.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/xdialogbackground.9.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_sun.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/sun.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_transparenticon.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/transparenticon.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayauto.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/overlayauto.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_sun_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/sun_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_stat_ic_launcher_adaptive_fore.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_stat_ic_launcher_adaptive_fore.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_adaptive_fore.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_adaptive_fore.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_activity_main.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/activity_main.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/reorder_up.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayoff.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/overlayoff.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_adaptive_back.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_adaptive_back.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_sun_moon_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/sun_moon_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_settings_selector.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/settings_selector.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_overlayon.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/overlayon.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_selector.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/reorder_selector.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/xml_preferences.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/xml/preferences.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_set_dwn.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/set_dwn.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_item_switch.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/item_switch.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_adaptive_fore.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_set_dwn.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/set_dwn.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_sun_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/sun_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_adaptive_back.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_ic_launcher_background.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/ic_launcher_background.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_dialogbackground.9.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/dialogbackground.9.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_moon.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/moon.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_activity_list.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/activity_list.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "com.thf.AppSwitcher.app-pngs-23:/drawable-anydpi-v24/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_up_up.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/up_up.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-pngs-23:/drawable-anydpi-v24/ic_launcher_foreground.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/layout_activity_switch.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/layout/activity_switch.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_sun.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/sun.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_stat_ic_launcher_adaptive_fore.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_stat_ic_launcher_adaptive_fore.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_reorder_selector.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/reorder_selector.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/xml_preferences.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/xml/preferences.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/layout_activity_settings.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/layout/activity_settings.xml"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_settings_selector.xml.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/settings_selector.xml"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-hdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-hdpi/ic_launcher_adaptive_fore.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher_adaptive_back.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxxhdpi/ic_launcher_adaptive_back.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_adaptive_back.png"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xxhdpi_ic_launcher_adaptive_back.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xxhdpi/ic_launcher_adaptive_back.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_down_up.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/down_up.png"
-    },
-    {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/mipmap-xhdpi_ic_launcher_adaptive_back.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/mipmap-xhdpi/ic_launcher_adaptive_back.png"
-    },
-    {
-        "merged": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-merged_res-28:/drawable_xdialogbackground.9.png.flat",
-        "source": "/data/data/com.itsaky.androidide/files/home/.gradle/daemon/7.4.2/com.thf.AppSwitcher.app-main-30:/drawable/xdialogbackground.9.png"
+        "merged": "com.thf.AppSwitcher.app-merged_res-28:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.thf.AppSwitcher.app-main-30:/mipmap-anydpi-v26/ic_launcher.xml"
     }
 ]
