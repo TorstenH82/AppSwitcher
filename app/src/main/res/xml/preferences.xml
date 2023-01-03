@@ -78,7 +78,7 @@
 		<androidx.preference.SwitchPreference
 			android:defaultValue="@string/pref_runMediaAppTwice"
 			android:key="runMediaAppTwice"
-			android:summary="Start media app twice to fix issue media app stuck on launch"
+			android:summary="This may fix issue if media app stuck on launch"
 			android:title="Start media app twice" />	
 		<androidx.preference.SeekBarPreference
 			android:defaultValue="@string/pref_runMediaAppDelay"

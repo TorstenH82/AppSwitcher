@@ -185,7 +185,8 @@ public class SettingsActivity extends AppCompatActivity {
 			try {
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				String version = pInfo.versionName;
-				findPreference("prefAbout").setSummary("version " + pInfo.versionName);
+                
+				findPreference("prefAbout").setSummary("version " + pInfo.versionName + "\n\nManufacturer: " + android.os.Build.MANUFACTURER + "\nProduct: " + android.os.Build.PRODUCT);
 			} catch (Exception ignore) {
 			}
 

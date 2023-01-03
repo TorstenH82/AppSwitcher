@@ -405,7 +405,7 @@ public class AppSwitcherService extends Service {
 						Intent intentStartMedia = new Intent(Intent.ACTION_MAIN);
 						intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
 						intentStartMedia
-						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 						intentStartMedia.setComponent(name);
 						startActivity(intentStartMedia);
 						
@@ -415,11 +415,13 @@ public class AppSwitcherService extends Service {
 							startMain.addCategory(Intent.CATEGORY_HOME);
 							startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(startMain);
+                            /*
 							try {
 								Thread.sleep(runMediaAppDelay);
 								} catch (InterruptedException e) {
 								return;
 							}
+                            */
 							startActivity(intentStartMedia);
 						}
 						break;

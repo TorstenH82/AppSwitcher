@@ -531,7 +531,7 @@ public class SwitchActivity extends Activity {
 		ComponentName name = new ComponentName(app.getPackageName(), app.getActivityName());
 		Intent intentSelectedApp = new Intent(Intent.ACTION_MAIN);
 		intentSelectedApp.addCategory(Intent.CATEGORY_LAUNCHER);
-		intentSelectedApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		intentSelectedApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		intentSelectedApp.setComponent(name);
 		try {
 			startActivity(intentSelectedApp);
