@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import com.thf.AppSwitcher.AppSwitcherApp;
 
 public class AppData {
 
@@ -116,10 +117,10 @@ public class AppData {
 
 	public Drawable getIcon(Context context) {
 		try {
-			PackageManager packageManager = context.getPackageManager();
-			Intent intent = new Intent();
-			intent.setComponent(new ComponentName(this.getPackageName(), this.getActivityName()));
-			return packageManager.resolveActivity(intent, 0).loadIcon(packageManager);
+            
+            AppSwitcherApp mApplication = (AppSwitcherApp) context.getApplicationContext();
+            return mApplication.getPackageManager().getActivityIcon(new ComponentName(this.getPackageName(), this.getActivityName()));
+			//return context.getPackageManager().getActivityIcon(new ComponentName(this.getPackageName(), this.getActivityName()));
 		} catch (Exception ex) {
 			return null;
 		}

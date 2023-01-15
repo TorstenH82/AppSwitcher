@@ -107,16 +107,31 @@
 	</androidx.preference.PreferenceCategory>
 	<androidx.preference.PreferenceCategory android:title="Others">
         <androidx.preference.SwitchPreference android:defaultValue="@string/pref_disableNaviStart" android:key="disableNaviStart" android:summary="Disable navi start activity of MainUI to avoid screen flickering" android:title="Disable navi start activity" />
-        <androidx.preference.SwitchPreference android:enabled="false" android:key="duraspeed" android:selectable="false" android:summary="" android:title="DuraSpeed" />
+        <androidx.preference.SwitchPreference 
+            android:enabled="false" 
+            android:key="duraspeed" 
+            android:selectable="false" 
+            android:summary="" 
+            android:title="DuraSpeed" />
         <androidx.preference.SwitchPreference 
 			android:enabled="false" 
 			android:key="fullscreen" 
 			android:selectable="false" 
 			android:summary="" 
 			android:title="Forced fullscreen system property" />
+        <androidx.preference.SwitchPreference
+            android:key="darkmode"
+			android:summary=""
+			android:title="Dark/night mode" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="About">
-        <androidx.preference.Preference android:key="prefAbout" android:persistent="false" android:selectable="false" android:summary="version vx" android:title="AppSwitcher"></androidx.preference.Preference>
+        <androidx.preference.Preference 
+            android:key="prefAbout" 
+            android:persistent="false" 
+            android:selectable="false" 
+            android:summary="version vx" 
+            android:title="AppSwitcher">
+        </androidx.preference.Preference>
  	
     </androidx.preference.PreferenceCategory>
 

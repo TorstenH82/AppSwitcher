@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+//import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -47,39 +48,66 @@ public class SettingsActivity extends AppCompatActivity {
 	private static Utils.UtilCallbacks utilCallbacksEnableAutomateSrv = new Utils.UtilCallbacks() {
 		@Override
 		public void onException(Throwable e) {
-			new SimpleDialog(activity, null, "Error enabling Automate Service",
+			new SimpleDialog("", activity, null, "Error enabling Automate Service",
 					"Error occured while enabling Automate Service: " + e.getMessage(), false).show();
 			((SwitchPreference) settingsFragment.findPreference("enableAutomateSrv")).setChecked(false);
 		}
 	};
 
-	private static SimpleDialog.SimpleDialogCallbacks simpleDialogCallbacksSelfAuth = new SimpleDialog.SimpleDialogCallbacks() {
-		@Override
-		public void onClick(boolean positive) {
-			if (positive) {
-				try {
-					Utils.selfAuthorize(context);
-				} catch (SuCommandException e) {
-					((SwitchPreference) settingsFragment.findPreference("enableAutomateSrv")).setChecked(false);
-					new SimpleDialog(activity, null, "Error self authorization",
-							"Error occured during self authorization:\n" + e.getMessage()
-									+ "\n\nYou can use adb to authorize AppSwitcher manually.",
-							false).show();
-				}
-				int checkVal = context
-						.checkCallingOrSelfPermission(context.getString(R.string.permissionSecureSettings));
-				if (checkVal == PackageManager.PERMISSION_GRANTED) {
-					Utils.enableService(context, context.getString(R.string.automatePackage),
-							context.getString(R.string.automateService), utilCallbacksEnableAutomateSrv);
-				} else {
-					((SwitchPreference) settingsFragment.findPreference("enableAutomateSrv")).setChecked(false);
-				}
-			} else {
-				new SimpleDialog(activity, null, "Missing permission",
-						"You can use adb to authorize AppSwitcher manually.", false).show();
-			}
-		}
-	};
+    private static SimpleDialog.SimpleDialogCallbacks simpleDialogCallbacksSelfAuth =
+            new SimpleDialog.SimpleDialogCallbacks() {
+                @Override
+                public void onClick(boolean positive, String reference) {
+                    if (positive) {
+                        try {
+                            Utils.selfAuthorize(context);
+                        } catch (SuCommandException e) {
+                            if (!"".equals(reference)) {
+                                ((SwitchPreference) settingsFragment.findPreference(reference))
+                                        .setChecked(false);
+                            }
+                            new SimpleDialog(
+                                            "",
+                                            activity,
+                                            null,
+                                            "Error self authorization",
+                                            "Error occured during self authorization:\n"
+                                                    + e.getMessage()
+                                                    + "\n\nYou can use adb to authorize AppSwitcher manually.",
+                                            false)
+                                    .show();
+                        }
+                        int checkVal =
+                                context.checkCallingOrSelfPermission(
+                                        context.getString(R.string.permissionSecureSettings));
+                        if (checkVal == PackageManager.PERMISSION_GRANTED) {
+                            Utils.enableService(
+                                    context,
+                                    context.getString(R.string.automatePackage),
+                                    context.getString(R.string.automateService),
+                                    utilCallbacksEnableAutomateSrv);
+                        } else {
+                            if (!"".equals(reference)) {
+                                ((SwitchPreference) settingsFragment.findPreference(reference))
+                                        .setChecked(false);
+                            }
+                        }
+                    } else {
+                        new SimpleDialog(
+                                        "",
+                                        activity,
+                                        null,
+                                        "Missing permission",
+                                        "You can use adb to authorize AppSwitcher manually.",
+                                        false)
+                                .show();
+                        if (!"".equals(reference)) {
+                            ((SwitchPreference) settingsFragment.findPreference(reference))
+                                    .setChecked(false);
+                        }
+                    }
+                }
+            };
 
 	public static class PrefFragment extends PreferenceFragmentCompat
 			implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -171,6 +199,10 @@ public class SettingsActivity extends AppCompatActivity {
 
 			SwitchPreference fullscreen = findPreference("fullscreen");
 			prepFullscreen(fullscreen);
+            
+            SwitchPreference darkmode = findPreference("darkmode");
+            darkmode.setChecked(Utils.getDarkMode(context) != 1);
+            
 
 			boolean automateOn = ((SwitchPreference) findPreference("enableAutomateSrv")).isChecked();
 			EditTextPreference automateFlow = findPreference("automateFlow");
@@ -181,12 +213,10 @@ public class SettingsActivity extends AppCompatActivity {
 				automateFlow.setSummary(currentValue);
 			} else {
 				automateFlow.setSummary("");
-			}
+            }
 			try {
 				PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-				String version = pInfo.versionName;
-                
-				findPreference("prefAbout").setSummary("version " + pInfo.versionName + "\n\nManufacturer: " + android.os.Build.MANUFACTURER + "\nProduct: " + android.os.Build.PRODUCT);
+                findPreference("prefAbout").setSummary("version " + pInfo.versionName + "\n\nManufacturer: " + android.os.Build.MANUFACTURER + "\nProduct: " + android.os.Build.PRODUCT + "\nDevice: " + android.os.Build.DEVICE + "\nBoard: " + android.os.Build.BOARD);
 			} catch (Exception ignore) {
 			}
 
@@ -286,7 +316,7 @@ public class SettingsActivity extends AppCompatActivity {
 				try {
 					Utils.enableDisableDuraspeed(context, duraspeed.isChecked());
 				} catch (SysPropException e) {
-					new SimpleDialog(activity, null, "Error changing duraspeed preferences", e.getMessage(), false)
+					new SimpleDialog("", activity, null, "Error changing duraspeed preferences", e.getMessage(), false)
 							.show();
 				}
 				prepDuraspeed(duraspeed);
@@ -297,10 +327,22 @@ public class SettingsActivity extends AppCompatActivity {
 					Utils.getSetFullscreenFlag(context, value);
 					prepFullscreen(fullscreen);
 				} catch (FileReadModException e) {
-					new SimpleDialog(activity, null, "Error changing fullscreen preferences", e.getMessage(), false)
+					new SimpleDialog("", activity, null, "Error changing fullscreen preferences", e.getMessage(), false)
 							.show();
 				}
-			} else if (key.equals("automateFlow")) {
+			} else if (key.equals("darkmode")) {
+                int checkVal =
+                        context.checkCallingOrSelfPermission(
+                                context.getString(R.string.permissionSecureSettings));
+				if (checkVal == PackageManager.PERMISSION_GRANTED) {
+				    SwitchPreference darkmode = findPreference(key);
+                    Utils.setDarkMode(context, darkmode.isChecked());
+                } else if (checkVal == PackageManager.PERMISSION_DENIED) {
+					new SimpleDialog(key, activity, simpleDialogCallbacksSelfAuth, "Missing permission",
+						"This option requires permission to modify Android Settings.\nAppSwitcher can try to authorize itself.\nTry self authorization?",
+						true).show();
+				}
+            } else if (key.equals("automateFlow")) {
 				String currentValue = ((EditTextPreference) findPreference(key)).getText().trim();
 				if (context.getString(R.string.pref_automateFlow).equals(currentValue) || "".equals(currentValue)) {
 					((EditTextPreference) findPreference(key)).setSummary("");
@@ -319,7 +361,7 @@ public class SettingsActivity extends AppCompatActivity {
 						automateFlow.setEnabled(true);
 						automateFlow.setSelectable(true);
 					} else if (checkVal == PackageManager.PERMISSION_DENIED) {
-						new SimpleDialog(activity, simpleDialogCallbacksSelfAuth, "Missing permission",
+						new SimpleDialog(key, activity, simpleDialogCallbacksSelfAuth, "Missing permission",
 								"This option requires permission to modify Android Settings.\nAppSwitcher can try to authorize itself.\nTry self authorization?",
 								true).show();
 					}

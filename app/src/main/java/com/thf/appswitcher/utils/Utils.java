@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 //import android.net.wifi.WifiManager;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
@@ -215,6 +216,18 @@ public class Utils {
 		});
 		thread.start();
 	}
+
+    public static int getDarkMode(Context context) {
+        return Settings.Secure.getInt(context.getContentResolver(), "ui_night_mode", 1);
+    }
+
+    public static void setDarkMode(Context context, Boolean dark){
+        if (dark) {
+            Settings.Secure.putInt(context.getContentResolver(), "ui_night_mode", 2);
+        } else {
+           Settings.Secure.putInt(context.getContentResolver(), "ui_night_mode", 1);
+        }
+    }
 
 	public static void startAutomateFlow(Context context, String uri, UtilCallbacks utilCallbacks) {
 		UtilCallbacks listener = utilCallbacks;

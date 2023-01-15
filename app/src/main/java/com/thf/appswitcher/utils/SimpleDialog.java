@@ -12,10 +12,12 @@ public class SimpleDialog {
 	private String title;
 	private String message;
 	private boolean showNegative;
+    private String reference;
 
-	public SimpleDialog(Context context, SimpleDialogCallbacks listener, String title, String message,
+	public SimpleDialog(String reference, Context context, SimpleDialogCallbacks listener, String title, String message,
 			boolean showNegative) {
 		this.context = context;
+        this.reference = reference;
 		this.title = title;
 		this.message = message;
 		this.showNegative = showNegative;
@@ -25,7 +27,7 @@ public class SimpleDialog {
 	private SimpleDialogCallbacks listener;
 
 	public interface SimpleDialogCallbacks {
-		public void onClick(boolean positive);
+		public void onClick(boolean positive, String reference);
 	}
 
 	public void show() {
@@ -38,7 +40,7 @@ public class SimpleDialog {
 						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								if (listener != null)
-									listener.onClick(true);
+									listener.onClick(true, reference);
 							}
 						}).setIcon(R.mipmap.ic_launcher);
 
@@ -46,7 +48,7 @@ public class SimpleDialog {
 			alertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					if (listener != null)
-						listener.onClick(false);
+						listener.onClick(false, reference);
 				}
 			});
 
