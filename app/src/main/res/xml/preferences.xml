@@ -121,7 +121,7 @@
 			android:title="Forced fullscreen system property" />
         <androidx.preference.SwitchPreference
             android:key="darkmode"
-			android:summary=""
+			android:summary="Same setting you can find in Android Developer Options. Requires reboot"
 			android:title="Dark/night mode" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="About">

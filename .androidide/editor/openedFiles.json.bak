@@ -1,0 +1,20 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/res/xml/preferences.xml",
+      "selection": {
+        "end": {
+          "column": 92,
+          "index": -1,
+          "line": 123
+        },
+        "start": {
+          "column": 92,
+          "index": -1,
+          "line": 123
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/res/xml/preferences.xml"
+}
