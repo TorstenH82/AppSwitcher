@@ -35,7 +35,6 @@ import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.LogReaderUtil;
 import com.thf.AppSwitcher.utils.SimpleDialog;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
-import com.thf.AppSwitcher.utils.StartServiceActivity;
 import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;

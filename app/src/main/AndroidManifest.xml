@@ -55,7 +55,7 @@ android:theme="@style/Theme.Transparent" >
         <activity
             android:name="com.thf.AppSwitcher.StartServiceActivity"
             android:excludeFromRecents="true"
-            android:noHistory="true"
+            android:noHistory="false" 
             android:taskAffinity=".StartServiceActivity"
             android:theme="@style/Theme.Transparent" 
             android:exported="true">

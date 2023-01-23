@@ -31,14 +31,19 @@
 	<string name="commandDisableDuraspeedApp">setprop persist.vendor.duraspeed.app.on 0</string>
 	 
 	<string name="commandRemount">remount</string>
+    <string name="commandRemountVendor">remount /vendor</string>
 	<string name="commandCopy" formatted="false">cp -f %s %s</string>
 	<string name="commandChmod644" formatted="false">chmod 644 %s</string>
 	<string name="commandChmod777" formatted="false">chmod 777 %s</string>
 	<string name="commandEnableDuraspeedSupport">persist.vendor.duraspeed.support 1</string>
 	<string name="commandDisableDuraspeedSupport">persist.vendor.duraspeed.support 0</string>
 	<string name="commandSecureSettings">pm grant com.thf.AppSwitcher android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="commandReadLogs">pm grant com.thf.AppSwitcher android.permission.READ_LOGS</string>
+    <string name="commandUsageStatistic">pm grant com.thf.AppSwitcher android.permission.PACKAGE_USAGE_STATS</string>
 	<string name="permissionSecureSettings">android.permission.WRITE_SECURE_SETTINGS</string>
 	<string name="permissionCoarseLocation">android.permission.ACCESS_COARSE_LOCATION</string>
+    <string name="permissionReadLogs">android.permission.READ_LOGS</string>
+    <string name="permissionUsageStatistic">android.permission.PACKAGE_USAGE_STATS</string>
 	<string name="automatePackage">com.llamalab.automate</string>
 	<string name="automateService">com.llamalab.automate.AutomateAccessibilityService</string>
 	<string name="automateFlowStartIntent">com.llamalab.automate.intent.action.START_FLOW</string>
