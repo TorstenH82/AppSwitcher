@@ -123,6 +123,12 @@
             android:key="darkmode"
 			android:summary="Same setting you can find in Android Developer Options\nRequires reboot"
 			android:title="Dark/night mode" />
+        <androidx.preference.SwitchPreference 
+			android:enabled="false" 
+			android:key="lte" 
+			android:selectable="false" 
+			android:summary="Restart ePDG service if no 4G connection established\nOnly on 825X_Pro devices" 
+			android:title="Restart ePDG service to recover LTE" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="About">
         <androidx.preference.Preference 
@@ -132,7 +138,5 @@
             android:summary="version vx" 
             android:title="AppSwitcher">
         </androidx.preference.Preference>
- 	
     </androidx.preference.PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>

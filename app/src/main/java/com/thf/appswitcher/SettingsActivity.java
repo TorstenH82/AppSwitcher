@@ -1,29 +1,13 @@
 package com.thf.AppSwitcher;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-// import android.content.pm.PackageManager;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-// import android.preference.SwitchPreference;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.View;
-import android.widget.Switch;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
@@ -36,7 +20,6 @@ import com.thf.AppSwitcher.utils.Utils.SuCommandException;
 import com.thf.AppSwitcher.utils.Utils.SysPropException;
 import com.thf.AppSwitcher.utils.Utils.FileReadModException;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -233,6 +216,13 @@ public class SettingsActivity extends AppCompatActivity {
             } else {
                 automateFlow.setSummary("");
             }
+
+            SwitchPreference lte = findPreference("lte");
+            if ("825X_Pro".equalsIgnoreCase(android.os.Build.DEVICE)) {
+                lte.setEnabled(true);
+                lte.setSelectable(true);
+            }
+
             try {
                 PackageInfo pInfo =
                         context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -298,7 +288,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 fullscreen.setEnabled(true);
                 fullscreen.setSelectable(true);
-                    fullscreen.setSummary(fullscreen.getSummary()+"\nRequires reboot");
+                fullscreen.setSummary(fullscreen.getSummary() + "\nRequires reboot");
             } catch (FileReadModException e) {
                 // Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 fullscreen.setChecked(false);

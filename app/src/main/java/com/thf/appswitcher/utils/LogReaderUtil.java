@@ -3,8 +3,6 @@ package com.thf.AppSwitcher.utils;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-//import android.service.controls.actions.BooleanAction;
-import android.text.TextUtils;
 import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,8 +41,6 @@ public class LogReaderUtil {
 	private Handler handler = new Handler(Looper.getMainLooper());
 
 	public void startProgress() {
-		// do something long
-
 		Runnable runnable = new Runnable() {
 
 			@Override

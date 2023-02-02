@@ -1,28 +1,14 @@
 package com.thf.AppSwitcher.utils;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.service.controls.actions.BooleanAction;
-//import android.support.constraint.solver.widgets.Helper;
-import android.text.TextUtils;
-import android.util.Log;
-import com.thf.AppSwitcher.utils.AppData;
-import java.io.BufferedReader;
-import java.io.IOException;
-//import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;

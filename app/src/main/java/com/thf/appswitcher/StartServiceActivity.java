@@ -8,8 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
-import android.widget.Toast;
 import com.thf.AppSwitcher.service.AppSwitcherService;
 import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
@@ -17,7 +15,6 @@ import com.thf.AppSwitcher.utils.SimpleDialog;
 import com.thf.AppSwitcher.utils.Utils;
 import java.util.List;
 import com.thf.AppSwitcher.utils.Utils.SuCommandException;
-// import java.util.Hashtable;
 
 public class StartServiceActivity extends Activity {
     private static final String TAG = "AppSwitcherService";

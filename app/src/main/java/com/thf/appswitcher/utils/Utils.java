@@ -1,23 +1,12 @@
 package com.thf.AppSwitcher.utils;
 
-import android.app.ActivityManager;
-import android.app.AppOpsManager;
-import android.app.Service;
-import android.app.usage.UsageEvents;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-// import android.net.wifi.WifiManager;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 import com.thf.AppSwitcher.R;
 import com.thf.AppSwitcher.utils.Utils.SuCommandException;
 import java.io.BufferedReader;
@@ -27,7 +16,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.Thread;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -443,12 +431,16 @@ public class Utils {
                 */
 
                 // file was modified - replace original
-                String remountCommand = context.getString(R.string.commandRemountVendor);
+                String remountCommand = context.getString(R.string.commandRemount1);
                 try {
                     execSuCommand(context, remountCommand);
                 } catch (SuCommandException e) {
                     Log.w(TAG, "Error ignored on executing remount command: " + e.getMessage());
                 }
+                
+                remountCommand = context.getString(R.string.commandRemount2);
+                execSuCommand(context, remountCommand);
+                
                 // copy file to vendors folder and change permission
                 
                 copyCommand =
@@ -474,7 +466,7 @@ public class Utils {
         }
     }
 
-    private static void execSuCommand(Context context, String command) throws SuCommandException {
+    public static void execSuCommand(Context context, String command) throws SuCommandException {
         Boolean error = false;
         String errorMsg = "";
         command = command == null ? "" : command;

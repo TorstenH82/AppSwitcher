@@ -2,21 +2,14 @@ package com.thf.AppSwitcher.utils;
 
 import android.app.Service;
 import android.app.usage.UsageEvents;
-import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.service.controls.actions.BooleanAction;
-import android.text.TextUtils;
 import android.util.Log;
-//import androidx.annotation.IntegerRes;
 import java.util.ArrayList;
-//import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UsageStatsUtil {
 	private static final String TAG = "AppSwitcherService";
