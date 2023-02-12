@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,172 +16,240 @@ import java.time.ZonedDateTime;
 import org.shredzone.commons.suncalc.SunTimes;
 
 public class SunriseSunset {
-  private static final String TAG = "AppSwitcherService";
-  private LocationManager locationManager;
-  private Location location;
-  private String provider;
-  private Criteria criteria;
-  private int currentMode = 0;
-  private Thread thread;
-  private boolean autoEnabled = false;
-  private static final String STATUS_SUNSET = "SUNSET";
-  private static final String STATUS_SUNRISE = "SUNRISE";
-  // private String status = "";
+    private static final String TAG = "AppSwitcherService";
+    private LocationManager locationManager;
+    private Location location;
+    private String provider;
+    private Criteria criteria;
+    private int currentMode = 0;
+    private Thread thread;
+    private boolean autoEnabled = false;
+    private static final String STATUS_SUNSET = "SUNSET";
+    private static final String STATUS_SUNRISE = "SUNRISE";
 
-  private SunriseSunsetCallbacks listener;
+    LocationListener locationListener =
+            new LocationListener() {
+                public void onLocationChanged(Location loc) {
+                    Log.d(TAG, "location provider onLocationChanged");
+                    location = loc;
+                    Log.i(
+                            TAG,
+                            "New current location from provider "
+                                    + location.getProvider()
+                                    + ": lat: "
+                                    + location.getLatitude()
+                                    + " / lon: "
+                                    + location.getLongitude());
+                    if (autoEnabled) enableAuto();
+                    locationManager.removeUpdates(this);
+                }
 
-  public SunriseSunset(Context context, SunriseSunsetCallbacks listener) {
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    // deprecated
+                }
 
-    this.listener = listener;
+                public void onProviderDisabled(String provider) {
+                    Log.d(TAG, "location provider onProviderDisabled " + provider);
+                }
 
-    int checkVal =
-        context.checkCallingOrSelfPermission(context.getString(R.string.permissionCoarseLocation));
-    if (checkVal != PackageManager.PERMISSION_GRANTED) {
-      listener.onMissingPermission();
-      return;
-    }
+                public void onProviderEnabled(String provider) {
+                    Log.d(TAG, "location provider onProviderEnabled " + provider);
+                }
+            };
 
-    locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-    // Define the criteria how to select the location provider
-    criteria = new Criteria();
-    criteria.setAccuracy(Criteria.ACCURACY_COARSE); // default
+    // private String status = "";
 
-    // user defines the criteria
-    criteria.setCostAllowed(false);
-    // get the best provider depending on the criteria
-    provider = locationManager.getBestProvider(criteria, false);
+    private SunriseSunsetCallbacks listener;
 
-    Log.i(TAG, "location provider: " + provider);
+    public SunriseSunset(Context context, SunriseSunsetCallbacks listener) {
 
-    // the last known location of this provider
-    location = locationManager.getLastKnownLocation(provider);
-    // mylistener = new MyLocationListener();
-
-    if (location == null) {
-      locationManager.requestSingleUpdate(
-          provider,
-          new LocationListener() {
-            @Override
-            public void onLocationChanged(Location loc) {
-              location = loc;
-              if (autoEnabled) enableAuto();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-              // deprecated
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-              
-            }
-          },
-          null);
-      // leads to the settings because there is no last known location
-      // Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-      // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      // context.startActivity(intent);
-    } else {
-      Log.i(
-          TAG,
-          "Current location: lat: "
-              + location.getLatitude()
-              + " / lon: "
-              + location.getLongitude());
-      // enableAuto();
-      // mylistener.onLocationChanged(location);
-
-      // location updates: at least 1 meter and 200millsecs change
-      // locationManager.requestLocationUpdates(provider, 200, 1, mylistener);
-      // String a = "" + location.getLatitude();
-      // Toast.makeText(getApplicationContext(), a, 222).show();
-    }
-  }
-
-  public Location getLocation() {
-    return location;
-  }
-
-  public interface SunriseSunsetCallbacks {
-    public void onSunrise();
-
-    public void onSunset();
-
-    public void onMissingPermission();
-  }
-
-  public void disableAuto() {
-    autoEnabled = false;
-    if (thread != null && thread.isAlive()) {
-      thread.interrupt();
-    }
-  }
-
-  public void enableAuto() {
-    autoEnabled = true;
-    if (thread != null && thread.isAlive()) {
-      thread.interrupt();
-    }
-    if (location == null) {
-      return;
-    }
-    thread = new Thread(runnable);
-    thread.start();
-  }
-
-  private Runnable runnable =
-      new Runnable() {
-        private String status = null;
-
-        @Override
-        public void run() {
-          while (true) {
-            Location loc = locationManager.getLastKnownLocation(provider);
-            if (loc != null) {
-              location = loc;
-            }
-
-            ZonedDateTime dateTime = ZonedDateTime.now(); // date, time and timezone of calculation
-            // double lat, lng = // geolocation
-            SunTimes times =
-                SunTimes.compute()
-                    .on(dateTime) // set a date
-                    .at(location.getLatitude(), location.getLongitude()) // set a location
-                    .execute(); // get the results
-            Log.i(TAG, "Sunrise: " + times.getRise() + " / " + "Sunset: " + times.getSet());
-
-            if (times.getSet().toEpochSecond() < times.getRise().toEpochSecond()) {
-              Log.i(TAG, "based on sun times show: bright screen");
-              if (listener != null && !STATUS_SUNRISE.equals(status)) status = STATUS_SUNRISE;
-              new Handler(Looper.getMainLooper())
-                  .post(
-                      new Runnable() {
-                        @Override
-                        public void run() {
-                          listener.onSunrise();
-                        }
-                      });
-            } else {
-              Log.i(TAG, "based on sun times show: dark screen");
-              if (listener != null && !STATUS_SUNSET.equals(status)) status = STATUS_SUNSET;
-              new Handler(Looper.getMainLooper())
-                  .post(
-                      new Runnable() {
-                        @Override
-                        public void run() {
-                          listener.onSunset();
-                        }
-                      });
-            }
-
-            try {
-              Thread.sleep(5 * 60 * 1000);
-            } catch (InterruptedException ex) {
-              Log.i(TAG, "interrupted SunriseSunset");
-              return;
-            }
-          }
+        this.listener = listener;
+        
+        /*
+        int checkVal =
+                context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        if (checkVal != PackageManager.PERMISSION_GRANTED) {
+            listener.onMissingPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+            return;
         }
-      };
+        */
+        
+        int checkVal =
+                context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (checkVal != PackageManager.PERMISSION_GRANTED) {
+            listener.onMissingPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+            return;
+        }
+
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        // Define the criteria how to select the location provider
+        criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE); // default
+
+        // user defines the criteria
+        criteria.setCostAllowed(false);
+        // get the best provider depending on the criteria
+        provider = locationManager.getBestProvider(criteria, false);
+
+        Log.i(TAG, "Location provider: " + provider);
+
+        // the last known location of this provider
+        location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            Log.i(
+                    TAG,
+                    "Last known location from "
+                            + provider
+                            + ": lat: "
+                            + location.getLatitude()
+                            + " / lon: "
+                            + location.getLongitude());
+        }
+
+        if (location == null && !LocationManager.GPS_PROVIDER.equals(provider)) {
+
+            checkVal =
+                    context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            if (checkVal != PackageManager.PERMISSION_GRANTED) {
+                listener.onMissingPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                return;
+            }
+
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (location != null) {
+                Log.i(
+                        TAG,
+                        "Last known location from "
+                                + LocationManager.GPS_PROVIDER
+                                + ": lat: "
+                                + location.getLatitude()
+                                + " / lon: "
+                                + location.getLongitude());
+            }
+        }
+
+        if (location == null) {
+            Log.d(
+                    TAG,
+                    "Location provider '"
+                            + provider
+                            + "' enabled: "
+                            + locationManager.isProviderEnabled(provider));
+            locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+
+            if (!LocationManager.GPS_PROVIDER.equals(provider) ) {
+                Log.d(
+                        TAG,
+                        "Location provider '"
+                                + LocationManager.GPS_PROVIDER
+                                + "' enabled: "
+                                + locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        }
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public interface SunriseSunsetCallbacks {
+        public void onSunrise();
+
+        public void onSunset();
+
+        public void onMissingPermission(String permission);
+    }
+
+    public void disableAuto() {
+        autoEnabled = false;
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
+        }
+    }
+
+    public void enableAuto() {
+        autoEnabled = true;
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
+        }
+
+        if (location == null) {
+            return;
+        }
+
+        thread = new Thread(runnable);
+        thread.start();
+    }
+
+    private Runnable runnable =
+            new Runnable() {
+                private String status = null;
+
+                @Override
+                public void run() {
+                    while (true) {
+                        Location loc =
+                                getLocation(); // locationManager.getLastKnownLocation(provider);
+                        /*
+                        if (loc != null) {
+                            location = loc;
+                        }
+                        */
+
+                        ZonedDateTime dateTime =
+                                ZonedDateTime.now(); // date, time and timezone of calculation
+                        // double lat, lng = // geolocation
+                        SunTimes times =
+                                SunTimes.compute()
+                                        .on(dateTime) // set a date
+                                        .at(
+                                                location.getLatitude(),
+                                                location.getLongitude()) // set a location
+                                        .execute(); // get the results
+                        Log.i(
+                                TAG,
+                                "Sunrise: "
+                                        + times.getRise()
+                                        + " / "
+                                        + "Sunset: "
+                                        + times.getSet());
+
+                        if (times.getSet().toEpochSecond() < times.getRise().toEpochSecond()) {
+                            Log.i(TAG, "based on sun times show: bright screen");
+                            if (listener != null && !STATUS_SUNRISE.equals(status))
+                                status = STATUS_SUNRISE;
+                            new Handler(Looper.getMainLooper())
+                                    .post(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    listener.onSunrise();
+                                                }
+                                            });
+                        } else {
+                            Log.i(TAG, "based on sun times show: dark screen");
+                            if (listener != null && !STATUS_SUNSET.equals(status))
+                                status = STATUS_SUNSET;
+                            new Handler(Looper.getMainLooper())
+                                    .post(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    listener.onSunset();
+                                                }
+                                            });
+                        }
+
+                        try {
+                            Thread.sleep(5 * 60 * 1000);
+                        } catch (InterruptedException ex) {
+                            Log.i(TAG, "interrupted SunriseSunset");
+                            return;
+                        }
+                    }
+                }
+            };
 }

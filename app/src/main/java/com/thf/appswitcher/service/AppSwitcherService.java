@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TabActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,8 @@ import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
 import com.thf.AppSwitcher.utils.RestartSrv;
 // import java.util.Hashtable;
+import com.thf.appswitcher.utils.RunActivity;
+import com.thf.appswitcher.utils.RunMediaApp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,20 +54,16 @@ public class AppSwitcherService extends Service {
     private static Boolean disableNaviMainActivity = false;
     private Thread threadMediaApp;
     private Thread threadRestartComSrv;
-    private int runMediaAppDelay = 0;
+    private boolean runMediaApp;
 
     private OverlayWindow overlayWindow;
     private int dimMode;
     public static final int DIM_MODE_ON = 1;
     public static final int DIM_MODE_OFF = 0;
     public static final int DIM_MODE_AUTO = 2;
-    /*
-    public Runnable runnable = new Runnable() {
-    	@Override
-    	public void run() {
-    	}
-    };
-    */
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+
     public Handler logHandler =
             new Handler(Looper.getMainLooper()) {
                 @Override
@@ -242,28 +241,23 @@ public class AppSwitcherService extends Service {
 
         logReaderUtil =
                 new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
-        logReaderUtil.startProgress();
+        // logReaderUtil.startProgress();
 
         usageStatsUtil = new UsageStatsUtil(this, usageStatsCallbacks);
-        usageStatsUtil.startProgress();
+        // usageStatsUtil.startProgress();
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("USERDATA", MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 
-        // Utils.enableDisableHideActivity(context, true, utilCallbacks);
-        boolean restartComSrv = SharedPreferencesHelper.getBoolean(getApplicationContext(), "lte");
-        if (restartComSrv) {
-            threadRestartComSrv = new Thread(runnableRestartComSrv);
-            threadRestartComSrv.start();
+        runMediaApp = SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
+        if (runMediaApp) {
+            handler.post(new RunMediaApp(context, usageStatsUtil.getCurrentActivity()));
         }
 
-        boolean runMediaApp =
-                SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
-        if (runMediaApp) {
-            runMediaAppDelay =
-                    SharedPreferencesHelper.getInteger(getApplicationContext(), "runMediaAppDelay");
-            threadMediaApp = new Thread(runnableLastMediaApp);
-            threadMediaApp.start();
+        try {
+            Utils.enableAutostart(context, true);
+        } catch (Utils.SetAutostartException ex) {
+            Log.w(TAG, "Error setting autostart property: " + ex.getMessage());
         }
 
         boolean enableAutomate =
@@ -287,6 +281,7 @@ public class AppSwitcherService extends Service {
                         SharedPreferencesHelper.getInteger(context, "dimScreen"));
         dimMode = SharedPreferencesHelper.getInteger(context, "dimMode");
         sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
+        /*
         switch (dimMode) {
             case DIM_MODE_ON:
                 overlayWindow.show();
@@ -295,26 +290,59 @@ public class AppSwitcherService extends Service {
                 sunriseSunset.enableAuto();
                 break;
         }
+        */
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = "";
+        if (intent != null) action = intent.getAction();
 
-        if (ACTION_STOP_SERVICE.equals(intent.getAction())) {
+        if (ACTION_STOP_SERVICE.equals(action)) {
             Log.d(TAG, "called to cancel service due to action " + intent.getAction());
 
             stopForeground(true);
             stopSelf();
             return START_NOT_STICKY;
-        } else if (ACTION_OPEN_SETTINGS.equals(intent.getAction())) {
+        } else if (ACTION_OPEN_SETTINGS.equals(action)) {
             Log.d(TAG, "called to open settings");
             Intent intentSettings = new Intent(context, SettingsActivity.class);
             intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             // intentSettings.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intentSettings);
+        } else if (ACTION_WAKE_UP.equals(action)) {
+            Log.d(TAG, "called wake up");
+            boolean runMediaApp =
+                    SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
+            if (runMediaApp)
+                handler.post(new RunMediaApp(context, usageStatsUtil.getCurrentActivity()));
+
+            boolean runLteRecover =
+                    SharedPreferencesHelper.getBoolean(getApplicationContext(), "lterecover");
+            if (runLteRecover)
+                handler.post(
+                        new RunActivity(
+                                context,
+                                getString(R.string.LTErecoverPackage),
+                                getString(R.string.LTErecoverActivity)));
+
+            if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
+
         } else {
             Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Starting AppSwitcher Service");
+
+            switch (dimMode) {
+                case DIM_MODE_ON:
+                    overlayWindow.show();
+                    break;
+                case DIM_MODE_AUTO:
+                    sunriseSunset.enableAuto();
+                    break;
+            }
+
+            logReaderUtil.startProgress();
+            usageStatsUtil.startProgress();
         }
 
         // If we get killed, after returning from here, restart
@@ -323,6 +351,7 @@ public class AppSwitcherService extends Service {
 
     private String ACTION_STOP_SERVICE = "ACTION_STOP";
     private String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
+    public static String ACTION_WAKE_UP = "ACTION_WAKE_UP";
     private static Integer NOTIFCATION_ID = 1337;
 
     @Override
@@ -348,8 +377,6 @@ public class AppSwitcherService extends Service {
         }
 
         if (overlayWindow != null) overlayWindow.hide();
-
-        // Utils.enableDisableHideActivity(context, false, utilCallbacks);
 
         Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
     }
@@ -402,7 +429,7 @@ public class AppSwitcherService extends Service {
         return isRunning;
     }
 
-    public static String id1 = "test_channel_01";
+    public static String id1 = "appswitcher_channel_01";
 
     private void createchannel() {
         NotificationManager nm =
@@ -422,83 +449,6 @@ public class AppSwitcherService extends Service {
         mChannel.setShowBadge(true);
         nm.createNotificationChannel(mChannel);
     }
-
-    private Runnable runnableLastMediaApp =
-            new Runnable() {
-                @Override
-                public void run() {
-
-                    try {
-                        Thread.sleep(runMediaAppDelay);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-
-                    String foregroundApp = usageStatsUtil.getCurrentActivity();
-                    List<AppData> selectedList =
-                            SharedPreferencesHelper.loadList(context, "selected");
-
-                    if (Utils.listContainsKey(selectedList, foregroundApp, null)
-                            || Utils.listContainsKey(
-                                    selectedList, foregroundApp.split("/")[0], null)) {
-                        Log.d(
-                                TAG,
-                                "navi or media app (" + foregroundApp + ") already in foreground");
-                        return;
-                    }
-
-                    List<AppData> recentsAppList =
-                            SharedPreferencesHelper.getRecentsList(getApplicationContext());
-
-                    if (!recentsAppList.isEmpty()) {
-                        Iterator<AppData> i = recentsAppList.iterator();
-                        while (i.hasNext()) {
-                            AppData s = i.next();
-                            if (Utils.listContainsKey(selectedList, s.getKey(), "media")) {
-                                Log.d(TAG, "autostart of " + s.getName());
-                                ComponentName name =
-                                        new ComponentName(s.getPackageName(), s.getActivityName());
-                                Intent intentStartMedia = new Intent(Intent.ACTION_MAIN);
-                                intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
-                                intentStartMedia.setFlags(
-                                        Intent.FLAG_ACTIVITY_NEW_TASK
-                                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                                                | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                intentStartMedia.setComponent(name);
-                                startActivity(intentStartMedia);
-
-                                if (SharedPreferencesHelper.getBoolean(
-                                        getApplicationContext(), "runMediaAppTwice")) {
-                                    // go to home screen, wait a second and start media app again
-                                    Intent startMain = new Intent(Intent.ACTION_MAIN);
-                                    startMain.addCategory(Intent.CATEGORY_HOME);
-                                    startMain.setFlags(
-                                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                                    | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                    startActivity(startMain);
-                                    /*
-                                    try {
-                                    	Thread.sleep(runMediaAppDelay);
-                                    	} catch (InterruptedException e) {
-                                    	return;
-                                    }
-                                                         */
-                                    startActivity(intentStartMedia);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            };
-
-    private Runnable runnableRestartComSrv =
-            new Runnable() {
-                @Override
-                public void run() {
-                    RestartSrv.restartService(context);
-                }
-            };
 
     private Utils.UtilCallbacks utilCallbacks =
             new Utils.UtilCallbacks() {
@@ -524,10 +474,10 @@ public class AppSwitcherService extends Service {
                 }
 
                 @Override
-                public void onMissingPermission() {
+                public void onMissingPermission(String permission) {
                     Intent intentGetPermission = new Intent(context, GetPermissionsActivity.class);
                     intentGetPermission.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intentGetPermission.putExtra("permission", "LOCATION");
+                    intentGetPermission.putExtra("permission", permission);
                     startActivity(intentGetPermission);
                 }
             };

@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import androidx.core.app.ActivityCompat;
 import com.thf.AppSwitcher.service.AppSwitcherService;
 import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
@@ -20,10 +22,11 @@ public class StartServiceActivity extends Activity {
     private static final String TAG = "AppSwitcherService";
     private static Context context;
     private static Activity activity;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         context = getApplicationContext();
         activity = StartServiceActivity.this;
 
@@ -44,9 +47,7 @@ public class StartServiceActivity extends Activity {
             return;
         }
 
-        int checkVal =
-                context.checkCallingOrSelfPermission(
-                        context.getString(R.string.permissionReadLogs));
+        int checkVal = context.checkCallingOrSelfPermission(Manifest.permission.READ_LOGS);
         if (checkVal == PackageManager.PERMISSION_DENIED) {
             new SimpleDialog(
                             "NO_READ_LOGS",
@@ -73,8 +74,7 @@ public class StartServiceActivity extends Activity {
             usageStatAccess = true;
         } else if (checkVal == AppOpsManager.MODE_DEFAULT) {
             usageStatAccess =
-                    (context.checkCallingOrSelfPermission(
-                                    android.Manifest.permission.PACKAGE_USAGE_STATS)
+                    (context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS)
                             == PackageManager.PERMISSION_GRANTED);
         }
         if (!usageStatAccess) {
@@ -129,6 +129,7 @@ public class StartServiceActivity extends Activity {
                                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                                         Uri.parse("package:" + context.getPackageName()));
                         activity.startActivityForResult(intent, 5469);
+
                     } else if (reference == "NO_USAGE_STATISTICS") {
                         Intent intent =
                                 new Intent(
@@ -154,7 +155,7 @@ public class StartServiceActivity extends Activity {
                             }
                             int checkVal =
                                     context.checkCallingOrSelfPermission(
-                                            context.getString(R.string.permissionReadLogs));
+                                            Manifest.permission.READ_LOGS);
 
                             if (checkVal == PackageManager.PERMISSION_GRANTED) {
                                 new SimpleDialog(
@@ -189,12 +190,12 @@ public class StartServiceActivity extends Activity {
             }
         } else if (requestCode == 5470) {
             int checkVal =
-                    context.checkCallingOrSelfPermission(
-                            context.getString(R.string.permissionUsageStatistic));
+                    context.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS);
             if (checkVal == PackageManager.PERMISSION_GRANTED) {
                 granted = true;
             }
         }
+
         if (granted) {
             new SimpleDialog(
                             "",

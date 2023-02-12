@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -99,6 +100,9 @@ public class SwitchActivity extends Activity {
                                 SharedPreferencesHelper.loadList(
                                         getApplicationContext(), "selected");
 
+                        boolean launcherIsInForeground = false;
+                        boolean addLauncher = SharedPreferencesHelper.getBoolean(context, "addLauncher");
+                
                         if (SharedPreferencesHelper.getBoolean(context, "smartList")) {
                             String foregroundApp = "";
                             try {
@@ -117,9 +121,10 @@ public class SwitchActivity extends Activity {
                             List<AppData> recentsAppList =
                                     SharedPreferencesHelper.getRecentsList(getApplicationContext());
 
-                            Boolean mediaAppInForeground = false;
+                            boolean mediaAppInForeground = false;
                             AppData naviInForeground = new AppData();
-                            Boolean naviIsInForeground = false;
+                            boolean naviIsInForeground = false;
+
                             if (Utils.listContainsKey(selectedList, foregroundApp, "media")) {
                                 mediaAppInForeground = true;
                             } else if (Utils.listContainsKey(
@@ -130,72 +135,69 @@ public class SwitchActivity extends Activity {
                                     selectedList, foregroundApp.split("/")[0], "navi")) {
                                 foregroundApp = foregroundApp.split("/")[0];
                                 naviIsInForeground = true;
+                            } else if (foregroundApp.split("/")[0].equals(
+                                    mApplication.getLauncher().getPackageName())) {
+                                launcherIsInForeground = true;
                             }
 
                             Log.i(TAG, "handle " + foregroundApp);
 
                             Iterator<AppData> i = recentsAppList.iterator();
-                            Integer sort = -1;
-                            Boolean prioPosSet = false;
+                            int sort = -1;
+                            boolean prioPosSet = false;
 
                             while (i.hasNext()) {
                                 AppData s =
                                         i.next(); // must be called before you can call i.remove()
-                                // Log.i(TAG, "recent" + s.getKey());
-                                if (!TextUtils.equals(s.getKey(), foregroundApp)
-                                        && Utils.listContainsKey(selectedList, s.getKey(), null)) {
-                                    // Log.i(TAG, "found" + s.getKey());
-                                    Boolean posSet = false;
 
-                                    if (Utils.listContainsKey(selectedList, s.getKey(), "navi")) {
-                                        // navi is not in front, media app in front -> offer latest
-                                        // navi
-                                        if (!naviIsInForeground
-                                                && mediaAppInForeground
-                                                && !prioPosSet) {
-                                            s.setSort(-1);
-                                            prioPosSet = true;
-                                            posSet = true;
-                                            // Log.d(TAG, "added " + s.getPackageName() + " to pos
-                                            // -1");
-                                            // navi and media app are not in front -> offer last
-                                            // used navi as second option
-                                        } else if (!naviIsInForeground
-                                                && !mediaAppInForeground
-                                                && !prioPosSet) {
-                                            s.setSort(1);
-                                            prioPosSet = true;
-                                            posSet = true;
-                                            // Log.d(TAG, "added " + s.getPackageName() + " to pos
-                                            // 1");
-                                            // dont put a navi on first position if another navi is
-                                            // running
-                                        } else {
-                                            if (sort == -1) {
-                                                s.setSort(2); // not on 1st position
-                                                // Log.d(TAG, "added " + s.getPackageName() + " to
-                                                // pos 2");
-                                                posSet = true;
-                                            } else {
-                                                // handle it like a media app
-                                            }
-                                        }
+                                // skip current app and apps not selected by user anymore
+                                if (TextUtils.equals(s.getKey(), foregroundApp)
+                                        || !Utils.listContainsKey(selectedList, s.getKey(), null))
+                                    continue;
+
+                                Boolean posSet = false;
+
+                                // special handling for recent navis
+                                if (Utils.listContainsKey(selectedList, s.getKey(), "navi")) {
+
+                                    // navi is not in front, media app in front
+                                    // -> offer recent navi on 1st pos
+                                    if (!naviIsInForeground
+                                            && mediaAppInForeground
+                                            && !prioPosSet) {
+                                        s.setSort(-1);
+                                        prioPosSet = true;
+                                        posSet = true;
+
+                                        // navi is not in front, media app not in front
+                                        // --> offer recent navi on 2nd pos
+                                    } else if (!naviIsInForeground
+                                            && !mediaAppInForeground
+                                            && !prioPosSet) {
+                                        s.setSort(1);
+                                        prioPosSet = true;
+                                        posSet = true;
+
+                                        // navi ia in front and previous app is also a navi
+                                        // --> offer recent navi on 2nd pos
+                                    } else if (sort == -1 && naviIsInForeground) {
+                                        s.setSort(1); // not on 1st position
+
+                                        posSet = true;
                                     }
-
-                                    if (!posSet) {
-                                        sort++;
-                                        // positions 1 and 2 are reserved
-                                        if (sort == 1 || sort == 2) {
-                                            sort = 3;
-                                        }
-                                        s.setSort(sort);
-                                        // Log.d(TAG, "added " + s.getPackageName() + " to pos " +
-                                        // sort);
-                                    }
-
-                                    newAppList.add(0, s);
-                                    selectedList.remove(s);
                                 }
+
+                                
+                                if (!posSet) {
+                                    sort++;
+                                    // positions 1 is reserved
+                                    if (sort == 1) sort = 2;
+
+                                    s.setSort(sort);
+                                }
+
+                                newAppList.add(0, s);
+                                selectedList.remove(s);
                             }
 
                             for (AppData app : selectedList) {
@@ -225,6 +227,10 @@ public class SwitchActivity extends Activity {
                                     }
                                 });
 
+                        if (addLauncher) {
+                            newAppList.add(1, mApplication.getLauncher());
+                        }
+
                         handler.post(
                                 new Runnable() {
                                     @Override
@@ -246,7 +252,7 @@ public class SwitchActivity extends Activity {
                             @Override
                             public void onItemClick(View item, AppData app) {
                                 myBomb.disarm();
-
+                                /*
                                 ComponentName name =
                                         new ComponentName(
                                                 app.getPackageName(), app.getActivityName());
@@ -262,6 +268,8 @@ public class SwitchActivity extends Activity {
                                 } catch (Exception ex) {
                                     Log.e(TAG, "Error starting activity: " + ex.getMessage());
                                 }
+                                */
+                                execActivity(app);
                                 dialog.cancel();
                                 finish();
                             }
@@ -343,8 +351,7 @@ public class SwitchActivity extends Activity {
                             case AUTO:
                                 int checkVal =
                                         context.checkCallingOrSelfPermission(
-                                                context.getString(
-                                                        R.string.permissionCoarseLocation));
+                                                Manifest.permission.ACCESS_COARSE_LOCATION);
                                 if (checkVal == PackageManager.PERMISSION_GRANTED) {
                                     SharedPreferencesHelper.setInteger(
                                             context, "dimMode", AppSwitcherService.DIM_MODE_AUTO);
@@ -571,6 +578,13 @@ public class SwitchActivity extends Activity {
     }
 
     public void execActivity(AppData app) {
+        if ("launcher".equals(app.getCategory())) {
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+            return;
+        }
 
         ComponentName name = new ComponentName(app.getPackageName(), app.getActivityName());
         Intent intentSelectedApp = new Intent(Intent.ACTION_MAIN);

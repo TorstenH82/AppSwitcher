@@ -20,12 +20,12 @@ public class RestartSrv {
     public static void restartService(Context context) {
         if (!"4G".equals(getNetworkType(context))) {
             try {
-                Utils.execSuCommand(context, "setprop vendor.mtk.md1.status init");
-                Log.d(TAG, "set status: vendor.mtk.md1.status=init");
+                Utils.execSuCommand(context, "setprop vendor.mtk.md1.status stop");
+                Log.d(TAG, "set status: vendor.mtk.md1.status=stop");
                 Thread.sleep(3000);
-                Utils.execSuCommand(context, "setprop vendor.mtk.md1.status bootup");
-                Log.d(TAG, "set status: vendor.mtk.md1.status=bootup");
-                Thread.sleep(1000);
+                //Utils.execSuCommand(context, "setprop vendor.mtk.md1.status \"bootup\"");
+                //Log.d(TAG, "set status: vendor.mtk.md1.status=bootup");
+                //Thread.sleep(1000);
                 Utils.execSuCommand(context, "setprop vendor.mtk.md1.status ready");
                 Log.d(TAG, "set status: vendor.mtk.md1.status=ready");
                 // Utils.execSuCommand(context, "stop vendor.epdg_wod");

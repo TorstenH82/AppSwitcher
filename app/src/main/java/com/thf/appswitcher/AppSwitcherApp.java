@@ -2,13 +2,16 @@ package com.thf.AppSwitcher;
 
 import android.app.Application;
 import android.content.pm.PackageManager;
+import com.thf.AppSwitcher.utils.ActivityUtil;
+import com.thf.AppSwitcher.utils.AppData;
 
 public class AppSwitcherApp extends Application {
 	private static AppSwitcherApp singleton;
 	private static boolean isOverlayVisible = false;
 	private static boolean isSwitchActivityRunning = false;
     private static PackageManager packageManager;
-
+    private static AppData launcher;
+    
 	public AppSwitcherApp getInstance() {
 		return singleton;
 	}
@@ -18,8 +21,14 @@ public class AppSwitcherApp extends Application {
 		super.onCreate();
 		singleton = this;
         packageManager = this.getPackageManager();
+        ActivityUtil activityUtil = new ActivityUtil(singleton, null, null);
+        launcher = activityUtil.getLauncher();
 	}
 
+    public AppData getLauncher() {
+        return launcher;
+    }
+    
 	public void setOverlayVisibility(boolean running) {
 		isOverlayVisible = running;
 	}

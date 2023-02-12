@@ -2,11 +2,14 @@ package com.thf.AppSwitcher.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import com.thf.AppSwitcher.BuildConfig;
 import com.thf.AppSwitcher.R;
 import com.thf.AppSwitcher.utils.Utils.SuCommandException;
 import java.io.BufferedReader;
@@ -26,13 +29,13 @@ public class Utils {
         public void onException(Throwable e);
     }
 
-    public class SuCommandException extends Exception {
+    public static class SuCommandException extends Exception {
         public SuCommandException(String message) {
             super(message);
         }
     }
 
-    public class SysPropException extends Exception {
+    public static class SysPropException extends Exception {
         public SysPropException(String message) {
             super(message);
         }
@@ -40,6 +43,12 @@ public class Utils {
 
     public class FileReadModException extends Exception {
         public FileReadModException(String message) {
+            super(message);
+        }
+    }
+
+    public static class SetAutostartException extends Exception {
+        public SetAutostartException(String message) {
             super(message);
         }
     }
@@ -52,7 +61,7 @@ public class Utils {
         }
     }
 
-    private static String getSystemProperty(String key) throws SysPropException {
+    public static String getSystemProperty(String key) throws SysPropException {
         String value = null;
 
         try {
@@ -62,8 +71,7 @@ public class Utils {
                                     .getMethod("get", String.class)
                                     .invoke(null, key);
         } catch (Exception e) {
-            throw new Utils()
-            .new SysPropException(
+            throw new SysPropException(
                     "Error getting system property \"" + key + "\": " + e.getMessage());
         }
         return value;
@@ -89,8 +97,7 @@ public class Utils {
                             + commandDuraspeedApp
                             + "\" Exception:"
                             + e.getMessage());
-            throw new Utils()
-            .new SysPropException(
+            throw new SysPropException(
                     "Error executing command: \""
                             + commandDuraspeedApp
                             + "\" Exception:"
@@ -106,8 +113,7 @@ public class Utils {
                             + commandDuraspeedSupport
                             + "\" Exception:"
                             + e.getMessage());
-            throw new Utils()
-            .new SysPropException(
+            throw new SysPropException(
                     "Error executing command: \""
                             + commandDuraspeedSupport
                             + "\" Exception:"
@@ -118,6 +124,7 @@ public class Utils {
     public static Boolean isDuraspeedEnabled(Context context) throws SysPropException {
         try {
             String prop = getSystemProperty(context.getString(R.string.duraspeedCheckProperty));
+            if (prop == null) prop = "";
             switch (prop) {
                 case "0":
                     return false;
@@ -127,7 +134,7 @@ public class Utils {
                     return null;
             }
         } catch (SysPropException e) {
-            throw new Utils().new SysPropException(e.getMessage());
+            throw new SysPropException(e.getMessage());
         }
     }
 
@@ -437,12 +444,12 @@ public class Utils {
                 } catch (SuCommandException e) {
                     Log.w(TAG, "Error ignored on executing remount command: " + e.getMessage());
                 }
-                
+
                 remountCommand = context.getString(R.string.commandRemount2);
                 execSuCommand(context, remountCommand);
-                
+
                 // copy file to vendors folder and change permission
-                
+
                 copyCommand =
                         String.format(
                                 context.getString(R.string.commandCopy),
@@ -484,10 +491,10 @@ public class Utils {
             su.waitFor();
 
         } catch (IOException e) {
-            throw new Utils().new SuCommandException("IOException:" + e.getMessage());
+            throw new SuCommandException("IOException:" + e.getMessage());
 
         } catch (InterruptedException e) {
-            throw new Utils().new SuCommandException("InterruptedException: " + e.getMessage());
+            throw new SuCommandException("InterruptedException: " + e.getMessage());
         }
     }
 
@@ -511,5 +518,44 @@ public class Utils {
                                         && ((o.getList().equals(listName)) || listName == null))
                 .findFirst()
                 .isPresent();
+    }
+
+    public static void enableAutostart(Context context, boolean enable)
+            throws SetAutostartException {
+        try {
+            boolean added = false;
+            String addProp =
+                    "P "
+                            + BuildConfig.APPLICATION_ID
+                            + "#A "
+                            + BuildConfig.APPLICATION_ID
+                            + ".WakeUpActivity";
+
+            String prop = getSystemProperty("sys.qb.startapp_onresume");
+            if (prop == null) prop = "";
+
+            if (!enable && !prop.contains(BuildConfig.APPLICATION_ID)) return;
+
+            if (enable && addProp.equals(prop)) return;
+
+            String newProp = "";
+            if (enable) newProp = addProp;
+
+            execSuCommand(
+                    context,
+                    String.format("setprop %s \"%s\"", "sys.qb.startapp_onresume", newProp));
+        } catch (SysPropException e) {
+            throw new SetAutostartException("SysPropException: " + e.getMessage());
+        } catch (SuCommandException e) {
+            throw new SetAutostartException("SuCommandException: " + e.getMessage());
+        }
+    }
+    
+    public static boolean isPackageInstalled(Context context, String packageName) {
+        try {
+            return context.getPackageManager().getApplicationInfo(packageName, 0).enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

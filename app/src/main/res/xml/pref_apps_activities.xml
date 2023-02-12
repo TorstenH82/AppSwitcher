@@ -1,0 +1,56 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.preference.PreferenceCategory android:title="Apps and activities">
+        <androidx.preference.Preference
+            android:key="intentNavis"
+            android:title="Set navigation apps">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.ListActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="appDataList"
+                    android:value="navi" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:key="intentActivities"
+            android:title="Set media apps/activities">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.ListActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="appDataList"
+                    android:value="activities" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_addLauncher"
+            android:key="addLauncher"
+            android:summary="Offer launcher as 2nd item"
+            android:title="Add launcher" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_smartList"
+            android:key="smartList"
+            android:summary="If enabled apps and activities are sorted by last usage. Switch between media and navigation app is possible by one key press"
+            android:title="Smart list" />
+        <androidx.preference.Preference
+            android:key="intentSort"
+            android:enabled="false"
+            android:selectable="false"
+            android:summary="If 'Smart list' is disabled you can order apps and activities manually"
+            android:title="Set order of apps">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.ListActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="appDataList"
+                    android:value="sort" />
+            </intent>
+        </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

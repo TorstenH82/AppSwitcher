@@ -3,6 +3,7 @@
     <string name="app_name">AppSwitcher</string>
     <string name="channel_name">Default</string>
     <string name="channel_description">AppSwitcher channel</string>
+    <string name="pref_addLauncher">false</string>
     <string name="pref_smartList">true</string>
     <string name="pref_logTag">MainUI</string>
     <string name="pref_logOnPress">nDealPkey = = 829</string>
@@ -20,7 +21,8 @@
     <string name="pref_automateFlow">content://com.llamalab.automate.provider/flows/n/statements/m</string>
     <string name="pref_dimScreen">50</string>
     <string name="pref_dimMode">0</string>
-    <string name="pref_lte">false</string>
+    <string name="pref_lterecover">false</string>
+    
 
     <string name="yes">OK</string>
     <string name="no">Cancel</string>
@@ -48,11 +50,12 @@
     <string name="commandSecureSettings">pm grant com.thf.AppSwitcher android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="commandReadLogs">pm grant com.thf.AppSwitcher android.permission.READ_LOGS</string>
     <string name="commandUsageStatistic">pm grant com.thf.AppSwitcher android.permission.PACKAGE_USAGE_STATS</string>
-    <string name="permissionSecureSettings">android.permission.WRITE_SECURE_SETTINGS</string>
-    <string name="permissionCoarseLocation">android.permission.ACCESS_COARSE_LOCATION</string>
-    <string name="permissionReadLogs">android.permission.READ_LOGS</string>
-    <string name="permissionUsageStatistic">android.permission.PACKAGE_USAGE_STATS</string>
+    
     <string name="automatePackage">com.llamalab.automate</string>
     <string name="automateService">com.llamalab.automate.AutomateAccessibilityService</string>
     <string name="automateFlowStartIntent">com.llamalab.automate.intent.action.START_FLOW</string>
+    
+    <string name="LTErecover">LTErecover</string>
+    <string name="LTErecoverPackage">com.thf.lterecover</string>
+    <string name="LTErecoverActivity">com.thf.lterecover.RecoverActivity</string>
 </resources>

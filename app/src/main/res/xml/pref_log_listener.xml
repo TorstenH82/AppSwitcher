@@ -1,0 +1,41 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.preference.PreferenceCategory android:title="Log listener">
+        <EditTextPreference
+            android:defaultValue="@string/pref_logTag"
+            android:dialogMessage="AppSwitcher will listen to Android log considering entries with the tag set below"
+            android:dialogTitle="Tag of log entries"
+            android:inputType="text"
+            android:key="logTag"
+            android:singleLine="true"
+            android:title="Log tag" />
+        <EditTextPreference
+            android:defaultValue="@string/pref_logOnPress"
+            android:dialogMessage="AppSwitcher will listen to Android log entries containing the text below"
+            android:dialogTitle="Log entry on button press"
+            android:inputType="text"
+            android:key="logOnPress"
+            android:singleLine="true"
+            android:title="On button press log entry" />
+        <EditTextPreference
+            android:defaultValue="@string/pref_logShortPress"
+            android:dialogMessage="AppSwitcher will listen to Android log entries containing the text below"
+            android:dialogTitle="Log entry after short button press"
+            android:inputType="text"
+            android:key="logShortPress"
+            android:singleLine="true"
+            android:title="Short button press log entry" />
+        <EditTextPreference
+            android:defaultValue="@string/pref_logLongPress"
+            android:dialogMessage="AppSwitcher will listen to Android log entries containing the text below"
+            android:dialogTitle="Log entry after long button press"
+            android:inputType="text"
+            android:key="logLongPress"
+            android:singleLine="true"
+            android:title="Long button press log entry" />
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

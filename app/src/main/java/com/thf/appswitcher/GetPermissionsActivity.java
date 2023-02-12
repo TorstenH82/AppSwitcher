@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +15,6 @@ public class GetPermissionsActivity extends Activity {
 	private Context context;
 	private AppSwitcherApp mApplication;
 	private String permission;
-	private String permissionFull;
 	 
 
 	@Override
@@ -26,14 +26,10 @@ public class GetPermissionsActivity extends Activity {
 		Intent intent = getIntent();
 		permission = intent.getStringExtra("permission");
 
-		switch (permission) {
-		case "LOCATION":
-			permissionFull = context.getString(R.string.permissionCoarseLocation);
-			break;
-		}
+		 
 
-		if (!checkPermission(permissionFull)) {
-			requestPermission(permissionFull);
+		if (!checkPermission(permission)) {
+			requestPermission(permission);
 		}
 	}
 
