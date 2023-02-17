@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.thf.AppSwitcher",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 2621,
+      "versionName": "2.6.21alpha",
+      "outputFile": "app-release-unsigned.apk"
+    }
+  ],
+  "elementType": "File"
+}

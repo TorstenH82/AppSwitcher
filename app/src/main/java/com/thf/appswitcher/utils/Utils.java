@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class Utils {
             commandDuraspeedSupport = context.getString(R.string.commandDisableDuraspeedSupport);
         }
         try {
-            execSuCommand(context, commandDuraspeedApp);
+            sudoForResult(context, commandDuraspeedApp);
         } catch (SuCommandException e) {
             Log.e(
                     TAG,
@@ -105,7 +106,7 @@ public class Utils {
         }
 
         try {
-            execSuCommand(context, commandDuraspeedSupport);
+            sudoForResult(context, commandDuraspeedSupport);
         } catch (SuCommandException e) {
             Log.e(
                     TAG,
@@ -152,7 +153,7 @@ public class Utils {
                         new Runnable() {
                             public void run() {
                                 try {
-                                    execSuCommand(context, command);
+                                    sudoForResult(context, command);
                                 } catch (SuCommandException e) {
                                     throw new RuntimeException(
                                             "Error executing command: \""
@@ -199,7 +200,7 @@ public class Utils {
                         new Runnable() {
                             public void run() {
                                 try {
-                                    execSuCommand(context, command);
+                                    sudoForResult(context, command);
                                 } catch (SuCommandException e) {
                                     throw new RuntimeException(
                                             "Error executing command: \""
@@ -345,13 +346,13 @@ public class Utils {
     public static void selfAuthorizeSecureSettings(Context context) throws SuCommandException {
 
         String command = context.getString(R.string.commandSecureSettings);
-        execSuCommand(context, command);
+        sudoForResult(context, command);
     }
 
     public static void selfAuthorizeReadLogs(Context context) throws SuCommandException {
 
         String command = context.getString(R.string.commandReadLogs);
-        execSuCommand(context, command);
+        sudoForResult(context, command);
     }
 
     public static String getSetFullscreenFlag(Context context, String newValue)
@@ -374,12 +375,12 @@ public class Utils {
                             context.getString(R.string.commandCopy),
                             "/vendor/build.prop",
                             context.getFilesDir() + "/build.prop");
-            execSuCommand(context, copyCommand);
+            sudoForResult(context, copyCommand);
             String chmodCommand =
                     String.format(
                             context.getString(R.string.commandChmod777),
                             context.getFilesDir() + "/build.prop");
-            execSuCommand(context, chmodCommand);
+            sudoForResult(context, chmodCommand);
 
             File file = new File(context.getFilesDir() + "/build.prop");
             File temp = File.createTempFile("build", ".tmp");
@@ -438,15 +439,17 @@ public class Utils {
                 */
 
                 // file was modified - replace original
+                /*
                 String remountCommand = context.getString(R.string.commandRemount1);
                 try {
                     execSuCommand(context, remountCommand);
                 } catch (SuCommandException e) {
                     Log.w(TAG, "Error ignored on executing remount command: " + e.getMessage());
                 }
+                */
 
-                remountCommand = context.getString(R.string.commandRemount2);
-                execSuCommand(context, remountCommand);
+                String remountCommand = context.getString(R.string.commandRemount);
+                sudoForResult(context, remountCommand);
 
                 // copy file to vendors folder and change permission
 
@@ -455,11 +458,11 @@ public class Utils {
                                 context.getString(R.string.commandCopy),
                                 context.getFilesDir() + "/build.prop",
                                 "/vendor/build.prop");
-                execSuCommand(context, copyCommand);
+                sudoForResult(context, copyCommand);
                 chmodCommand =
                         String.format(
                                 context.getString(R.string.commandChmod644), "/vendor/build.prop");
-                execSuCommand(context, chmodCommand);
+                sudoForResult(context, chmodCommand);
 
                 returnValue = newValue;
             }
@@ -473,29 +476,53 @@ public class Utils {
         }
     }
 
-    public static void execSuCommand(Context context, String command) throws SuCommandException {
-        Boolean error = false;
-        String errorMsg = "";
-        command = command == null ? "" : command;
-        // String[] command = new String[] { "su", "@#zxcvbnmasdfghjklqwertyuiop1234567890,." };
-        String suser = context.getString(R.string.su);
+    public static String sudoForResult(Context context, String command) throws SuCommandException {
+
+        if (command == null || "".equals(command)) {
+            throw new SuCommandException("Command is empty");
+        }
+
+        String[] commandArr = {context.getString(R.string.su), command};
+        String output = "";
         try {
-            java.lang.Process su = Runtime.getRuntime().exec(suser);
-            DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
-            if (!"".equals(command)) {
-                outputStream.writeBytes(command + "\n");
-                outputStream.flush();
+            Process exec = Runtime.getRuntime().exec(context.getString(R.string.su));
+            DataOutputStream dataOutputStream = new DataOutputStream(exec.getOutputStream());
+             
+            dataOutputStream.writeBytes(command + "\n");
+            dataOutputStream.writeBytes("exit\n");
+            dataOutputStream.flush();
+
+            String line;
+            BufferedReader in = new BufferedReader(new InputStreamReader(exec.getInputStream()));
+            Thread.sleep(10);
+
+            while ((line = in.readLine()) != null) {
+                if ("".equals(command)) {
+                    output = line;
+                } else {
+                    output += "\n" + line;
+                }
             }
-            outputStream.writeBytes("exit\n");
-            outputStream.flush();
-            su.waitFor();
-
-        } catch (IOException e) {
-            throw new SuCommandException("IOException:" + e.getMessage());
-
+            
+            BufferedReader er = new BufferedReader(new InputStreamReader(exec.getErrorStream()));
+            Thread.sleep(10);
+            while ((line = er.readLine()) != null) {
+                if ("".equals(command)) {
+                    output = line;
+                } else {
+                    output += "\n" + line;
+                }
+            }
+            
+            /* Clean-up */
+            exec.waitFor();
+        } catch (IOException ex) {
+            throw new SuCommandException("IOException: " + ex.getMessage());
         } catch (InterruptedException e) {
             throw new SuCommandException("InterruptedException: " + e.getMessage());
         }
+
+        return output;
     }
 
     public static AppData getAppDataFromListByKey(final List<AppData> list, final String key) {
@@ -541,7 +568,7 @@ public class Utils {
             String newProp = "";
             if (enable) newProp = addProp;
 
-            execSuCommand(
+            sudoForResult(
                     context,
                     String.format("setprop %s \"%s\"", "sys.qb.startapp_onresume", newProp));
         } catch (SysPropException e) {

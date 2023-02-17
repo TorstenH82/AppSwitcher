@@ -5,8 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TabActivity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,18 +23,13 @@ import com.thf.AppSwitcher.OverlayWindow;
 import com.thf.AppSwitcher.R;
 import com.thf.AppSwitcher.SettingsActivity;
 import com.thf.AppSwitcher.SwitchActivity;
-import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.LogReaderUtil;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
-import com.thf.AppSwitcher.utils.RestartSrv;
-// import java.util.Hashtable;
 import com.thf.appswitcher.utils.RunActivity;
 import com.thf.appswitcher.utils.RunMediaApp;
-import java.util.Iterator;
-import java.util.List;
 
 public class AppSwitcherService extends Service {
     private static final String TAG = "AppSwitcherService";
@@ -310,6 +303,7 @@ public class AppSwitcherService extends Service {
             intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             // intentSettings.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intentSettings);
+            return START_STICKY;
         } else if (ACTION_WAKE_UP.equals(action)) {
             Log.d(TAG, "called wake up");
             boolean runMediaApp =
@@ -326,13 +320,16 @@ public class AppSwitcherService extends Service {
                                 getString(R.string.LTErecoverPackage),
                                 getString(R.string.LTErecoverActivity)));
 
-            if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
+            //if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
 
-        } else {
+        } else { //standard start of service
             Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Starting AppSwitcher Service");
 
-            switch (dimMode) {
+            
+        }
+        
+        switch (dimMode) {
                 case DIM_MODE_ON:
                     overlayWindow.show();
                     break;
@@ -340,19 +337,17 @@ public class AppSwitcherService extends Service {
                     sunriseSunset.enableAuto();
                     break;
             }
-
-            logReaderUtil.startProgress();
-            usageStatsUtil.startProgress();
-        }
-
+        
+        logReaderUtil.startProgress();
+        usageStatsUtil.startProgress();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
-    private String ACTION_STOP_SERVICE = "ACTION_STOP";
-    private String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
-    public static String ACTION_WAKE_UP = "ACTION_WAKE_UP";
-    private static Integer NOTIFCATION_ID = 1337;
+    private static final String ACTION_STOP_SERVICE = "ACTION_STOP";
+    private static final String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
+    public static final String ACTION_WAKE_UP = "ACTION_WAKE_UP";
+    private static final Integer NOTIFCATION_ID = 1337;
 
     @Override
     public IBinder onBind(Intent intent) {

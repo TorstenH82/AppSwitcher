@@ -233,8 +233,15 @@ public class SettingsActivity extends AppCompatActivity {
                 SwitchPreference darkmode = findPreference("darkmode");
                 darkmode.setChecked(Utils.getDarkMode(context) != 1);
 
+                
                 SwitchPreference fullscreen = findPreference("fullscreen");
+                if (!"825X_Pro".equals(android.os.Build.DEVICE)) {
+                    fullscreen.setEnabled(false);
+                    fullscreen.setSelectable(false);
+                    fullscreen.setSummary("This is not a 825X_Pro device");
+                } else {
                 prepFullscreen(fullscreen);
+                    }
 
             } else if ("start".equals(screen)) {
                 setPreferencesFromResource(R.xml.pref_start, rootKey);

@@ -12,143 +12,144 @@ import java.util.Iterator;
 import java.util.List;
 
 public class UsageStatsUtil {
-	private static final String TAG = "AppSwitcherService";
-	//private ReadLogs asActivity;
-	//private Handler handler;
-	private Boolean stop = false;
-	private Context context;
-	private UsageStatsCallbacks listener;
+    private static final String TAG = "AppSwitcherService";
+    private Context context;
+    private UsageStatsCallbacks listener;
 
-	//Hashtable<String, AppData> relevantNavis;
-	List<AppData> selectedList = new ArrayList<>();
-	//private Handler execHandler = new Handler(Looper.getMainLooper());
+    List<AppData> selectedList = new ArrayList<>();
 
-	public UsageStatsUtil(Context context, UsageStatsCallbacks listener) {
-		this.context = context;
-		this.listener = listener;
-		//this.handler = handler;
-	}
+    public UsageStatsUtil(Context context, UsageStatsCallbacks listener) {
+        this.context = context;
+        this.listener = listener;
+    }
 
-	public interface UsageStatsCallbacks {
-		public void onForegroundApp(String foregroundPackage);
-	}
+    public interface UsageStatsCallbacks {
+        public void onForegroundApp(String foregroundPackage);
+    }
 
-	private Thread thread;
+    private Thread thread;
 
-	public void stopProgress() {
-		this.stop = true;
-		Log.i(TAG, "Stopped UsageStats reader");
-	}
+    public void stopProgress() {
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
+            Log.i(TAG, "Stopped UsageStats reader");
+            thread = null;
+        }
+    }
 
-	public String getCurrentActivity() {
-		String foregroundActivity = "";
-		UsageStatsManager mUsageStatsManager = (UsageStatsManager) context
-				.getSystemService(Service.USAGE_STATS_SERVICE);
-		long time = System.currentTimeMillis();
+    public String getCurrentActivity() {
+        String foregroundActivity = "";
+        UsageStatsManager mUsageStatsManager =
+                (UsageStatsManager) context.getSystemService(Service.USAGE_STATS_SERVICE);
+        long time = System.currentTimeMillis();
 
-		UsageEvents usageEvents = mUsageStatsManager.queryEvents(time - 1000 * 3600, time + 1000);
-		UsageEvents.Event event = new UsageEvents.Event();
-		while (usageEvents.hasNextEvent()) {
-			usageEvents.getNextEvent(event);
-			if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
-					&& !"com.thf.AppSwitcher".equals(event.getPackageName())
-					&& !"com.thf.AppSwitcherStarter".equals(event.getPackageName())
-					&& !"com.thf.FlowStarter".equals(event.getPackageName())
-					&& !("com.ts.MainUI".equals(event.getPackageName())
-							&& "com.ts.main.navi.NaviMainActivity".equals(event.getClassName()))) {
-				foregroundActivity = event.getPackageName() + "/" + event.getClassName();
-				//event.getTimeStamp();
-			}
-		}
-		return foregroundActivity;
-	}
+        UsageEvents usageEvents = mUsageStatsManager.queryEvents(time - 1000 * 3600, time + 1000);
+        UsageEvents.Event event = new UsageEvents.Event();
+        while (usageEvents.hasNextEvent()) {
+            usageEvents.getNextEvent(event);
+            if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
+                    && !"com.thf.AppSwitcher".equals(event.getPackageName())
+                    && !"com.thf.AppSwitcherStarter".equals(event.getPackageName())
+                    && !"com.thf.FlowStarter".equals(event.getPackageName())
+                    && !("com.ts.MainUI".equals(event.getPackageName())
+                            && "com.ts.main.navi.NaviMainActivity".equals(event.getClassName()))) {
+                foregroundActivity = event.getPackageName() + "/" + event.getClassName();
+                // event.getTimeStamp();
+            }
+        }
+        return foregroundActivity;
+    }
 
-	public void startProgress() {
-		// do something long
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
+    public void startProgress() {
+        // do something long
+        Runnable runnable =
+                new Runnable() {
+                    @Override
+                    public void run() {
 
-				selectedList = SharedPreferencesHelper.loadList(context, "selected");
+                        selectedList = SharedPreferencesHelper.loadList(context, "selected");
 
-				while (!stop) {
+                        while (true) {
 
-					List<UsageEvents.Event> readUsageStatList = readUsageStats(context);
+                            List<UsageEvents.Event> readUsageStatList = readUsageStats(context);
 
-					//Log.i(TAG, Integer.toString(readUsageStatList.size()));
+                            Iterator<UsageEvents.Event> i = readUsageStatList.iterator();
+                            UsageEvents.Event s = null;
+                            while (i.hasNext()) {
+                                s = i.next(); // must be called before you can call i.remove()
+                                Boolean collected = false;
 
-					Iterator<UsageEvents.Event> i = readUsageStatList.iterator();
-					UsageEvents.Event s = null;
-					while (i.hasNext()) {
-						s = i.next(); // must be called before you can call i.remove()
-						Boolean collected = false;
+                                String key = s.getPackageName() + "/" + s.getClassName();
+                                AppData app = Utils.getAppDataFromListByKey(selectedList, key);
 
-						String key = s.getPackageName() + "/" + s.getClassName();
-						AppData app = Utils.getAppDataFromListByKey(selectedList, key);
+                                if (app != null) {
+                                    SharedPreferencesHelper.putIntoRecentsList(context, app);
+                                    collected = true;
+                                } else {
+                                    key = s.getPackageName();
+                                    app = Utils.getAppDataFromListByKey(selectedList, key);
+                                    if (app != null) {
+                                        SharedPreferencesHelper.putIntoRecentsList(context, app);
+                                        collected = true;
+                                    }
+                                }
 
-						if (app != null) {
-							SharedPreferencesHelper.putIntoRecentsList(context, app);
-							collected = true;
-						} else {
-							key = s.getPackageName();
-							app = Utils.getAppDataFromListByKey(selectedList, key);
-							if (app != null) {
-								SharedPreferencesHelper.putIntoRecentsList(context, app);
-								collected = true;
-							}
-						}
+                                if (collected) {
+                                    Log.i(TAG, "Collected: " + key);
+                                }
+                            }
 
-						if (!collected) {
-							//Log.d(TAG, "Not collected: " + key);
-						} else {
-							Log.i(TAG, "Collected: " + key);
-						}
-					}
+                            if (listener != null && s != null) {
+                                String packageName = s.getPackageName();
+                                new Handler(Looper.getMainLooper())
+                                        .post(
+                                                new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        listener.onForegroundApp(packageName);
+                                                    }
+                                                });
+                            }
+                    
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException ex) {
+                                return;
+                            }
+                        }
+                    }
+                };
+        if (thread == null || !thread.isAlive()) {
+            thread = new Thread(runnable); // , Process.THREAD_PRIORITY_BACKGROUND);
+            thread.start();
+        }
+    }
 
-					if (listener != null && s != null) {
-						String packageName = s.getPackageName();
-						new Handler(Looper.getMainLooper()).post(new Runnable() {
-							@Override
-							public void run() {
-								listener.onForegroundApp(packageName);
-							}
-						});
-					}
-					 
-					Utils.wait(500);
-				}
-			}
-		};
-		thread = new Thread(runnable); //, Process.THREAD_PRIORITY_BACKGROUND);
-		thread.start();
-	}
+    private static long readFromTimestamp = 0;
 
-	private static long readFromTimestamp = 0;
+    private ArrayList<UsageEvents.Event> readUsageStats(Context context) {
 
-	private ArrayList<UsageEvents.Event> readUsageStats(Context context) {
+        ArrayList<UsageEvents.Event> mEventList = new ArrayList<>();
+        UsageStatsManager mUsageStatsManager =
+                (UsageStatsManager) context.getSystemService(Service.USAGE_STATS_SERVICE);
 
-		ArrayList<UsageEvents.Event> mEventList = new ArrayList<>();
-		UsageStatsManager mUsageStatsManager = (UsageStatsManager) context
-				.getSystemService(Service.USAGE_STATS_SERVICE);
+        long time = System.currentTimeMillis();
+        // mEventList.clear();
+        if (readFromTimestamp == 0) {
+            Log.i(TAG, "read usage stat of last h");
+            readFromTimestamp = time - 1000 * 3600;
+        }
 
-		long time = System.currentTimeMillis();
-		//mEventList.clear();
-		if (readFromTimestamp == 0) {
-			Log.i(TAG, "read usage stat of last h");
-			readFromTimestamp = time - 1000 * 3600;
-		}
+        UsageEvents usageEvents = mUsageStatsManager.queryEvents(readFromTimestamp, time);
 
-		UsageEvents usageEvents = mUsageStatsManager.queryEvents(readFromTimestamp, time);
-
-		while (usageEvents.hasNextEvent()) {
-			UsageEvents.Event event = new UsageEvents.Event();
-			usageEvents.getNextEvent(event);
-			if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-				mEventList.add(event);
-				readFromTimestamp = event.getTimeStamp() + 1;
-			}
-		}
-		return mEventList;
-	}
-
+        while (usageEvents.hasNextEvent()) {
+            UsageEvents.Event event = new UsageEvents.Event();
+            usageEvents.getNextEvent(event);
+            if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
+                mEventList.add(event);
+                readFromTimestamp = event.getTimeStamp() + 1;
+            }
+        }
+        return mEventList;
+    }
 }
