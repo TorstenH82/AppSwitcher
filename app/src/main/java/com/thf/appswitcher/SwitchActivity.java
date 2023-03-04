@@ -101,8 +101,9 @@ public class SwitchActivity extends Activity {
                                         getApplicationContext(), "selected");
 
                         boolean launcherIsInForeground = false;
-                        boolean addLauncher = SharedPreferencesHelper.getBoolean(context, "addLauncher");
-                
+                        boolean addLauncher =
+                                SharedPreferencesHelper.getBoolean(context, "addLauncher");
+
                         if (SharedPreferencesHelper.getBoolean(context, "smartList")) {
                             String foregroundApp = "";
                             try {
@@ -187,7 +188,6 @@ public class SwitchActivity extends Activity {
                                     }
                                 }
 
-                                
                                 if (!posSet) {
                                     sort++;
                                     // positions 1 is reserved
@@ -252,23 +252,6 @@ public class SwitchActivity extends Activity {
                             @Override
                             public void onItemClick(View item, AppData app) {
                                 myBomb.disarm();
-                                /*
-                                ComponentName name =
-                                        new ComponentName(
-                                                app.getPackageName(), app.getActivityName());
-                                Intent i = new Intent(Intent.ACTION_MAIN);
-                                i.addCategory(Intent.CATEGORY_LAUNCHER);
-                                i.setFlags(
-                                        Intent.FLAG_ACTIVITY_NEW_TASK
-                                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                                i.setComponent(name);
-
-                                try {
-                                    startActivity(i);
-                                } catch (Exception ex) {
-                                    Log.e(TAG, "Error starting activity: " + ex.getMessage());
-                                }
-                                */
                                 execActivity(app);
                                 dialog.cancel();
                                 finish();
@@ -533,7 +516,6 @@ public class SwitchActivity extends Activity {
                         @Override
                         public void run() {
                             for (i = 0; i < 4; i++) {
-                                // for (i = 100; i >= 0; i--) {
                                 handler.post(
                                         new Runnable() {
                                             @Override
@@ -542,7 +524,7 @@ public class SwitchActivity extends Activity {
                                                 // progressBar.setProgress(i);
                                             }
                                         });
-
+                                
                                 try {
                                     Thread.sleep(wait / 3); // 100
                                 } catch (InterruptedException ex) {

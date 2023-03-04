@@ -57,17 +57,6 @@ public class AppData {
 	}
 
 	public String getActivityDescription() {
-		/*
-		if (activityDescription != null) {
-			if (!activityDescription.equals(name)) {
-				return name + " (" + activityDescription + ")";
-				} else {
-				return activityDescription;
-			}
-			} else {
-			return name;
-		}
-		*/
 		return activityDescription;
 	}
 
@@ -117,7 +106,6 @@ public class AppData {
 
 	public Drawable getIcon(Context context) {
 		try {
-            
             AppSwitcherApp mApplication = (AppSwitcherApp) context.getApplicationContext();
             return mApplication.getPackageManager().getActivityIcon(new ComponentName(this.getPackageName(), this.getActivityName()));
 			//return context.getPackageManager().getActivityIcon(new ComponentName(this.getPackageName(), this.getActivityName()));
@@ -137,7 +125,6 @@ public class AppData {
 	/*
 	public void setIcon(Drawable icon) {
 		this.icon = icon;
-		
 	}
 	
 	public Object getObject() {

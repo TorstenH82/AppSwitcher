@@ -12,7 +12,6 @@ import java.util.List;
 
 public class RunMediaApp implements Runnable {
     private static final String TAG = "AppSwitcherService";
-
     private String foregroundApp;
     private Context context;
 

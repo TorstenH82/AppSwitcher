@@ -34,7 +34,7 @@ import com.thf.appswitcher.utils.RunMediaApp;
 public class AppSwitcherService extends Service {
     private static final String TAG = "AppSwitcherService";
     private AppSwitcherApp mApplication;
-    private Looper mServiceLooper;
+    // private Looper mServiceLooper;
     private Context context;
     private LogReaderUtil logReaderUtil;
     private UsageStatsUtil usageStatsUtil;
@@ -45,8 +45,7 @@ public class AppSwitcherService extends Service {
     private String logLongPress;
 
     private static Boolean disableNaviMainActivity = false;
-    private Thread threadMediaApp;
-    private Thread threadRestartComSrv;
+    // private Thread threadRestartComSrv;
     private boolean runMediaApp;
 
     private OverlayWindow overlayWindow;
@@ -63,10 +62,6 @@ public class AppSwitcherService extends Service {
                 public void handleMessage(android.os.Message msg) {
                     int action = msg.what;
                     Log.i(TAG, "Received LogReaderUtil action: " + action);
-
-                    if (threadMediaApp != null && threadMediaApp.isAlive())
-                        threadMediaApp.interrupt();
-
                     switch (action) {
                         case LogReaderUtil.ACTION_ON_PRESS:
                             // got action on press - short or long press will follow
@@ -320,24 +315,22 @@ public class AppSwitcherService extends Service {
                                 getString(R.string.LTErecoverPackage),
                                 getString(R.string.LTErecoverActivity)));
 
-            //if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
+            // if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
 
-        } else { //standard start of service
+        } else { // standard start of service
             Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Starting AppSwitcher Service");
-
-            
         }
-        
+
         switch (dimMode) {
-                case DIM_MODE_ON:
-                    overlayWindow.show();
-                    break;
-                case DIM_MODE_AUTO:
-                    sunriseSunset.enableAuto();
-                    break;
-            }
-        
+            case DIM_MODE_ON:
+                overlayWindow.show();
+                break;
+            case DIM_MODE_AUTO:
+                sunriseSunset.enableAuto();
+                break;
+        }
+
         logReaderUtil.startProgress();
         usageStatsUtil.startProgress();
         // If we get killed, after returning from here, restart
@@ -481,12 +474,13 @@ public class AppSwitcherService extends Service {
     private UsageStatsUtil.UsageStatsCallbacks usageStatsCallbacks =
             new UsageStatsUtil.UsageStatsCallbacks() {
                 @Override
-                public void onForegroundApp(String foregroundPackage) {
-                    if ("com.android.vending".equals(foregroundPackage)
+                public void onForegroundApp(String foreground) {
+                    if (foreground != null
+                            && foreground.startsWith("com.android.vending")
                             && mApplication.getOverlayVisibility()) {
                         overlayWindow.hide();
                         tempHidden = true;
-                    } else if (tempHidden && !"com.android.vending".equals(foregroundPackage)) {
+                    } else if (tempHidden && !foreground.startsWith("com.android.vending")) {
                         overlayWindow.show();
                         tempHidden = false;
                     }

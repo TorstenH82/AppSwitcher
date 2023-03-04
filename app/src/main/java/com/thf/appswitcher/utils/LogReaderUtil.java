@@ -7,6 +7,10 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Year;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
 
 public class LogReaderUtil {
     private static final String TAG = "AppSwitcherService";
@@ -21,6 +25,8 @@ public class LogReaderUtil {
     private String logLongPress;
 
     private Handler execHandler = new Handler(Looper.getMainLooper());
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public LogReaderUtil(
             Handler handler,
@@ -56,33 +62,55 @@ public class LogReaderUtil {
                     public void run() {
                         try {
                             String[] command = new String[] {"logcat", "-v", "time", "-s", logTag};
-                            Process process = Runtime.getRuntime().exec("logcat -c");
-                            process = Runtime.getRuntime().exec(command);
+                            Process process = Runtime.getRuntime().exec(command);
+                            // process = Runtime.getRuntime().exec(command);
                             BufferedReader bufferedReader =
                                     new BufferedReader(
                                             new InputStreamReader(process.getInputStream()));
 
                             String line = "";
+                            boolean use = false;
+                            Date timestampStart = Calendar.getInstance().getTime();
 
                             while ((line = bufferedReader.readLine()) != null) {
                                 if (Thread.interrupted()) {
                                     return;
                                 }
 
-                                if (line.contains(logTag)) {
-                                    int action = 0;
-                                    if (line.contains(logOnPress)) {
-                                        action = ACTION_ON_PRESS;
-                                    } else if (line.contains(logShortPress)) {
-                                        action = ACTION_SHORT_PRESS;
-                                    } else if (line.contains(logLongPress)) {
-                                        action = ACTION_LONG_PRESS;
-                                    }
+                                if (!line.contains(logTag)) continue;
 
-                                    if (action != 0) {
-                                        Message completeMessage = handler.obtainMessage(action);
-                                        completeMessage.sendToTarget();
+                                if (!use) {
+                                    String sTimestamp =
+                                            Calendar.getInstance().get(Calendar.YEAR)
+                                                    + "-"
+                                                    + line.split(" ")[0]
+                                                    + " "
+                                                    + line.split(" ")[1];
+                                    try {
+                                        Date timestamp = simpleDateFormat.parse(sTimestamp);
+
+                                        if (timestamp.after(timestampStart)) {
+                                            use = true;
+                                        } else {
+                                            continue;
+                                        }
+                                    } catch (java.text.ParseException ex) {
+                                        Log.e(TAG, ex.getMessage());
                                     }
+                                }
+
+                                int action = 0;
+                                if (line.contains(logOnPress)) {
+                                    action = ACTION_ON_PRESS;
+                                } else if (line.contains(logShortPress)) {
+                                    action = ACTION_SHORT_PRESS;
+                                } else if (line.contains(logLongPress)) {
+                                    action = ACTION_LONG_PRESS;
+                                }
+
+                                if (action != 0) {
+                                    Message completeMessage = handler.obtainMessage(action);
+                                    completeMessage.sendToTarget();
                                 }
                             }
 

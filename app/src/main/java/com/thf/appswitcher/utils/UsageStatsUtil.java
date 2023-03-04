@@ -15,6 +15,8 @@ public class UsageStatsUtil {
     private static final String TAG = "AppSwitcherService";
     private Context context;
     private UsageStatsCallbacks listener;
+    private static String foregroundActivity;
+    private Thread thread;
 
     List<AppData> selectedList = new ArrayList<>();
 
@@ -27,8 +29,6 @@ public class UsageStatsUtil {
         public void onForegroundApp(String foregroundPackage);
     }
 
-    private Thread thread;
-
     public void stopProgress() {
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -37,7 +37,23 @@ public class UsageStatsUtil {
         }
     }
 
+    private boolean ignoreActivity(String packageName, String activity) {
+        if (packageName == null
+                || context.getPackageName().equals(packageName)
+                || "com.thf.AppSwitcherStarter".equals(packageName)
+                || "com.thf.FlowStarter".equals(packageName)
+                || ("com.ts.MainUI".equals(packageName)
+                        && "com.ts.main.navi.NaviMainActivity".equals(activity))) {
+            return true;
+        }
+        return false;
+    }
+
     public String getCurrentActivity() {
+        if (UsageStatsUtil.foregroundActivity != null) {
+            return UsageStatsUtil.foregroundActivity;
+        }
+
         String foregroundActivity = "";
         UsageStatsManager mUsageStatsManager =
                 (UsageStatsManager) context.getSystemService(Service.USAGE_STATS_SERVICE);
@@ -48,13 +64,8 @@ public class UsageStatsUtil {
         while (usageEvents.hasNextEvent()) {
             usageEvents.getNextEvent(event);
             if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
-                    && !"com.thf.AppSwitcher".equals(event.getPackageName())
-                    && !"com.thf.AppSwitcherStarter".equals(event.getPackageName())
-                    && !"com.thf.FlowStarter".equals(event.getPackageName())
-                    && !("com.ts.MainUI".equals(event.getPackageName())
-                            && "com.ts.main.navi.NaviMainActivity".equals(event.getClassName()))) {
+                    && !ignoreActivity(event.getPackageName(), event.getClassName())) {
                 foregroundActivity = event.getPackageName() + "/" + event.getClassName();
-                // event.getTimeStamp();
             }
         }
         return foregroundActivity;
@@ -99,18 +110,25 @@ public class UsageStatsUtil {
                                 }
                             }
 
-                            if (listener != null && s != null) {
+                            if (s != null) {
                                 String packageName = s.getPackageName();
-                                new Handler(Looper.getMainLooper())
-                                        .post(
-                                                new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        listener.onForegroundApp(packageName);
-                                                    }
-                                                });
+                                String activity = s.getClassName();
+
+                                if (!ignoreActivity(packageName, activity)) {
+                                    foregroundActivity = packageName + "/" + activity;
+                                    if (listener != null) {
+                                        new Handler(Looper.getMainLooper())
+                                                .post(
+                                                        new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                listener.onForegroundApp(
+                                                                        foregroundActivity);
+                                                            }
+                                                        });
+                                    }
+                                }
                             }
-                    
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException ex) {

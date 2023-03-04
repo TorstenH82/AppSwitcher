@@ -12,9 +12,15 @@ public class WakeUpActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         Intent intentMediaApp = new Intent(getBaseContext(), AppSwitcherService.class);
         intentMediaApp.setAction(AppSwitcherService.ACTION_WAKE_UP);
         startForegroundService(intentMediaApp);
+        finish();
     }
 }

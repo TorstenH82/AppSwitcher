@@ -1,20 +1,20 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AppProjects/AppSwitcher/app/build.gradle",
+      "file": "/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml",
       "selection": {
         "end": {
-          "column": 27,
+          "column": 40,
           "index": -1,
-          "line": 13
+          "line": 32
         },
         "start": {
-          "column": 21,
+          "column": 40,
           "index": -1,
-          "line": 13
+          "line": 32
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AppProjects/AppSwitcher/app/build.gradle"
+  "selectedFile": "/storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml"
 }
