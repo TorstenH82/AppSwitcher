@@ -487,7 +487,7 @@ public class Utils {
         try {
             Process exec = Runtime.getRuntime().exec(context.getString(R.string.su));
             DataOutputStream dataOutputStream = new DataOutputStream(exec.getOutputStream());
-             
+
             dataOutputStream.writeBytes(command + "\n");
             dataOutputStream.writeBytes("exit\n");
             dataOutputStream.flush();
@@ -503,7 +503,7 @@ public class Utils {
                     output += "\n" + line;
                 }
             }
-            
+
             BufferedReader er = new BufferedReader(new InputStreamReader(exec.getErrorStream()));
             Thread.sleep(10);
             while ((line = er.readLine()) != null) {
@@ -513,7 +513,7 @@ public class Utils {
                     output += "\n" + line;
                 }
             }
-            
+
             /* Clean-up */
             exec.waitFor();
         } catch (IOException ex) {
@@ -553,15 +553,17 @@ public class Utils {
             boolean added = false;
             String addProp =
                     "P "
-                            + BuildConfig.APPLICATION_ID
+                            + context.getPackageName()
                             + "#A "
-                            + BuildConfig.APPLICATION_ID
-                            + ".WakeUpActivity";
+                            + context.getPackageName()
+                            + ".WakeUpActivity"
+                            + "#T 2"
+                            + "#I 5";
 
             String prop = getSystemProperty("sys.qb.startapp_onresume");
             if (prop == null) prop = "";
 
-            if (!enable && !prop.contains(BuildConfig.APPLICATION_ID)) return;
+            if (!enable && !prop.contains(context.getPackageName())) return;
 
             if (enable && addProp.equals(prop)) return;
 
@@ -577,7 +579,7 @@ public class Utils {
             throw new SetAutostartException("SuCommandException: " + e.getMessage());
         }
     }
-    
+
     public static boolean isPackageInstalled(Context context, String packageName) {
         try {
             return context.getPackageManager().getApplicationInfo(packageName, 0).enabled;

@@ -123,6 +123,7 @@ public class LogReaderUtil {
         if (thread == null || !thread.isAlive()) {
             thread = new Thread(runnable); // , Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
+            Log.i(TAG, "Started Log reader");
         }
     }
 }

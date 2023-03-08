@@ -33,7 +33,9 @@
     <string name="duraspeedCheckProperty">persist.vendor.duraspeed.app.on</string>
     <string name="commandEnableDuraspeedApp">setprop persist.vendor.duraspeed.app.on 1</string>
     <string name="commandDisableDuraspeedApp">setprop persist.vendor.duraspeed.app.on 0</string>
-
+    <string name="commandEnableDuraspeedSupport">setprop persist.vendor.duraspeed.support 1</string>
+    <string name="commandDisableDuraspeedSupport">setprop persist.vendor.duraspeed.support 0</string>
+    
     <string name="commandRemount">mount -o rw,remount /vendor</string>
     <string name="commandRemount1">mount -o rw,remount /vendor</string>
     <string name="commandRemount2">remount /vendor</string>
@@ -46,8 +48,6 @@
     <string
         name="commandChmod777"
         formatted="false">chmod 777 %s</string>
-    <string name="commandEnableDuraspeedSupport">persist.vendor.duraspeed.support 1</string>
-    <string name="commandDisableDuraspeedSupport">persist.vendor.duraspeed.support 0</string>
     <string name="commandSecureSettings">pm grant com.thf.AppSwitcher android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="commandReadLogs">pm grant com.thf.AppSwitcher android.permission.READ_LOGS</string>
     <string name="commandUsageStatistic">pm grant com.thf.AppSwitcher android.permission.PACKAGE_USAGE_STATS</string>

@@ -1,8 +1,7 @@
 <manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.thf.AppSwitcher"
->
+    package="com.thf.AppSwitcher">
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -101,11 +100,14 @@
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
+                <!--
                 <action android:name="autochips.intent.action.QB_POWERON" />
-                <action android:name="autochips.intent.action.RESUME_APPS" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.ts.main.uiaccon" />
+                <action android:name="autochips.intent.action.QB_POWEROFF" />
+                <action android:name="com.ts.main.uiaccoff" />
+                -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- <action android:name="com.mediatek.intent.action.ACTION_BOOT_IPO" /> <action android:name="com.mediatek.intent.action.ACTION_SHUTDOWN_IPO" /> <action android:name="autochips.intent.action.RESUME_APPS" /> <action android:name="android.intent.action.BOOT_COMPLETED" /> <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <action android:name="android.intent.action.QUICKBOOT_POWEROFF" /> <action android:name="com.ts.main.uiaccon" /> Whats here? -->
             </intent-filter>
         </receiver>
     </application>

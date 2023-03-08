@@ -15,7 +15,6 @@ import android.os.Looper;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.thf.AppSwitcher.AppSwitcherApp;
 import com.thf.AppSwitcher.GetPermissionsActivity;
@@ -55,6 +54,8 @@ public class AppSwitcherService extends Service {
     public static final int DIM_MODE_AUTO = 2;
 
     private Handler handler = new Handler(Looper.getMainLooper());
+
+    //private static BroadcastReceiver mQuickBootRecv = null;
 
     public Handler logHandler =
             new Handler(Looper.getMainLooper()) {
@@ -237,13 +238,21 @@ public class AppSwitcherService extends Service {
         SharedPreferences sharedPreferences = this.getSharedPreferences("USERDATA", MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 
+        boolean runLteRecover =
+                SharedPreferencesHelper.getBoolean(getApplicationContext(), "lterecover");
+        if (runLteRecover)
+            handler.post(
+                    new RunActivity(
+                            context,
+                            getString(R.string.LTErecoverPackage),
+                            getString(R.string.LTErecoverActivity)));
+
         runMediaApp = SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
-        if (runMediaApp) {
+        if (runMediaApp)
             handler.post(new RunMediaApp(context, usageStatsUtil.getCurrentActivity()));
-        }
 
         try {
-            Utils.enableAutostart(context, true);
+            Utils.enableAutostart(context, false);
         } catch (Utils.SetAutostartException ex) {
             Log.w(TAG, "Error setting autostart property: " + ex.getMessage());
         }
@@ -269,16 +278,6 @@ public class AppSwitcherService extends Service {
                         SharedPreferencesHelper.getInteger(context, "dimScreen"));
         dimMode = SharedPreferencesHelper.getInteger(context, "dimMode");
         sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
-        /*
-        switch (dimMode) {
-            case DIM_MODE_ON:
-                overlayWindow.show();
-                break;
-            case DIM_MODE_AUTO:
-                sunriseSunset.enableAuto();
-                break;
-        }
-        */
     }
 
     @Override
@@ -316,12 +315,29 @@ public class AppSwitcherService extends Service {
                                 getString(R.string.LTErecoverActivity)));
 
             // if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
-
+        } else if (ACTION_SLEEP.equals(action)) {
+            stopThreads();
+            updateNotification("sleeping...");
+            return START_STICKY;
         } else { // standard start of service
             Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Starting AppSwitcher Service");
         }
-
+/*
+        if (mQuickBootRecv == null) {
+            Log.i(TAG, "register QB_POWEROFF and QB_POWERON");
+            mQuickBootRecv = new BootUpReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("autochips.intent.action.QB_POWERON");
+            filter.addAction("com.ts.main.uiaccon");
+            filter.addAction("autochips.intent.action.QB_POWEROFF");
+            filter.addAction("com.ts.main.uiaccoff");
+            filter.setPriority(1000);
+            mApplication.registerReceiver(mQuickBootRecv, filter);
+            Log.i(TAG, "Registered broadcast receiver");
+        }
+*/
+        updateNotification("running...");
         switch (dimMode) {
             case DIM_MODE_ON:
                 overlayWindow.show();
@@ -340,6 +356,7 @@ public class AppSwitcherService extends Service {
     private static final String ACTION_STOP_SERVICE = "ACTION_STOP";
     private static final String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
     public static final String ACTION_WAKE_UP = "ACTION_WAKE_UP";
+    public static final String ACTION_SLEEP = "ACTION_SLEEP";
     private static final Integer NOTIFCATION_ID = 1337;
 
     @Override
@@ -351,29 +368,38 @@ public class AppSwitcherService extends Service {
     @Override
     public void onDestroy() {
         isRunning = false;
+    
+        /*
+        if (mQuickBootRecv != null) {
+            unregisterReceiver(mQuickBootRecv);
+            mQuickBootRecv = null;
+        }
+        */
+
+        stopThreads();
+
+        Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
+    }
+
+    private void stopThreads() {
 
         if (logReaderUtil != null) {
             logReaderUtil.stopProgress();
         }
-
         if (usageStatsUtil != null) {
             usageStatsUtil.stopProgress();
         }
-
         if (sunriseSunset != null) {
             sunriseSunset.disableAuto();
         }
-
         if (overlayWindow != null) overlayWindow.hide();
-
-        Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
     }
 
     // build a persistent notification and return it.
     public Notification getNotification(String message) {
 
         Intent stopSelf = new Intent(this, AppSwitcherService.class);
-        stopSelf.setAction(this.ACTION_STOP_SERVICE);
+        stopSelf.setAction(ACTION_STOP_SERVICE);
         PendingIntent pStopSelf =
                 PendingIntent.getService(
                         this,
@@ -382,7 +408,7 @@ public class AppSwitcherService extends Service {
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Intent openSettings = new Intent(this, AppSwitcherService.class);
-        openSettings.setAction(this.ACTION_OPEN_SETTINGS);
+        openSettings.setAction(ACTION_OPEN_SETTINGS);
         PendingIntent pOpenSettings =
                 PendingIntent.getService(
                         this,

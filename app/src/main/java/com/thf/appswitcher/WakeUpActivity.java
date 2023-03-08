@@ -18,9 +18,9 @@ public class WakeUpActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        Intent intentMediaApp = new Intent(getBaseContext(), AppSwitcherService.class);
-        intentMediaApp.setAction(AppSwitcherService.ACTION_WAKE_UP);
-        startForegroundService(intentMediaApp);
+        Intent intentSrv = new Intent(getBaseContext(), AppSwitcherService.class);
+        intentSrv.setAction(AppSwitcherService.ACTION_WAKE_UP);
+        startForegroundService(intentSrv);
         finish();
     }
 }

@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher.utils;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
@@ -34,6 +35,7 @@ public class UsageStatsUtil {
             thread.interrupt();
             Log.i(TAG, "Stopped UsageStats reader");
             thread = null;
+            foregroundActivity = null;
         }
     }
 
@@ -71,6 +73,8 @@ public class UsageStatsUtil {
         return foregroundActivity;
     }
 
+    String lastCollectedKey = "";
+
     public void startProgress() {
         // do something long
         Runnable runnable =
@@ -86,6 +90,7 @@ public class UsageStatsUtil {
 
                             Iterator<UsageEvents.Event> i = readUsageStatList.iterator();
                             UsageEvents.Event s = null;
+
                             while (i.hasNext()) {
                                 s = i.next(); // must be called before you can call i.remove()
                                 Boolean collected = false;
@@ -93,20 +98,15 @@ public class UsageStatsUtil {
                                 String key = s.getPackageName() + "/" + s.getClassName();
                                 AppData app = Utils.getAppDataFromListByKey(selectedList, key);
 
-                                if (app != null) {
-                                    SharedPreferencesHelper.putIntoRecentsList(context, app);
-                                    collected = true;
-                                } else {
+                                if (app == null) {
                                     key = s.getPackageName();
                                     app = Utils.getAppDataFromListByKey(selectedList, key);
-                                    if (app != null) {
-                                        SharedPreferencesHelper.putIntoRecentsList(context, app);
-                                        collected = true;
-                                    }
                                 }
 
-                                if (collected) {
+                                if (app != null && !key.equals(lastCollectedKey)) {
+                                    SharedPreferencesHelper.putIntoRecentsList(context, app);
                                     Log.i(TAG, "Collected: " + key);
+                                    lastCollectedKey = key;
                                 }
                             }
 
@@ -115,17 +115,21 @@ public class UsageStatsUtil {
                                 String activity = s.getClassName();
 
                                 if (!ignoreActivity(packageName, activity)) {
-                                    foregroundActivity = packageName + "/" + activity;
-                                    if (listener != null) {
-                                        new Handler(Looper.getMainLooper())
-                                                .post(
-                                                        new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                listener.onForegroundApp(
-                                                                        foregroundActivity);
-                                                            }
-                                                        });
+                                    if (foregroundActivity == null
+                                            || !foregroundActivity.equals(
+                                                    packageName + "/" + activity)) {
+                                        foregroundActivity = packageName + "/" + activity;
+                                        if (listener != null) {
+                                            new Handler(Looper.getMainLooper())
+                                                    .post(
+                                                            new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    listener.onForegroundApp(
+                                                                            foregroundActivity);
+                                                                }
+                                                            });
+                                        }
                                     }
                                 }
                             }
@@ -140,6 +144,7 @@ public class UsageStatsUtil {
         if (thread == null || !thread.isAlive()) {
             thread = new Thread(runnable); // , Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
+            Log.i(TAG, "Started UsageStats reader");
         }
     }
 

@@ -18,7 +18,7 @@ import org.shredzone.commons.suncalc.SunTimes;
 public class SunriseSunset {
     private static final String TAG = "AppSwitcherService";
     private LocationManager locationManager;
-    private Location location;
+    private static Location location;
     private String provider;
     private Criteria criteria;
     private int currentMode = 0;
@@ -64,16 +64,7 @@ public class SunriseSunset {
     public SunriseSunset(Context context, SunriseSunsetCallbacks listener) {
 
         this.listener = listener;
-        
-        /*
-        int checkVal =
-                context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        if (checkVal != PackageManager.PERMISSION_GRANTED) {
-            listener.onMissingPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-            return;
-        }
-        */
-        
+
         int checkVal =
                 context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
         if (checkVal != PackageManager.PERMISSION_GRANTED) {
@@ -94,7 +85,8 @@ public class SunriseSunset {
         Log.i(TAG, "Location provider: " + provider);
 
         // the last known location of this provider
-        location = locationManager.getLastKnownLocation(provider);
+        Location loc = locationManager.getLastKnownLocation(provider);
+        if (loc != null) location = loc;
         if (location != null) {
             Log.i(
                     TAG,
@@ -138,7 +130,7 @@ public class SunriseSunset {
                             + locationManager.isProviderEnabled(provider));
             locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
 
-            if (!LocationManager.GPS_PROVIDER.equals(provider) ) {
+            if (!LocationManager.GPS_PROVIDER.equals(provider)) {
                 Log.d(
                         TAG,
                         "Location provider '"
@@ -172,16 +164,14 @@ public class SunriseSunset {
 
     public void enableAuto() {
         autoEnabled = true;
+
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
         }
 
-        if (location == null) {
-            return;
-        }
-
         thread = new Thread(runnable);
         thread.start();
+        Log.i(TAG, "(Re-)started SunriseSunset");
     }
 
     private Runnable runnable =
@@ -193,11 +183,17 @@ public class SunriseSunset {
                     while (true) {
                         Location loc =
                                 getLocation(); // locationManager.getLastKnownLocation(provider);
-                        /*
-                        if (loc != null) {
-                            location = loc;
+
+                        if (loc == null) {
+                            Log.i(TAG, "no location - retry in 5 seconds...");
+                            try {
+                                Thread.sleep(5 * 1000);
+                            } catch (InterruptedException ex) {
+                                Log.i(TAG, "interrupted SunriseSunset");
+                                return;
+                            }
+                            continue;
                         }
-                        */
 
                         ZonedDateTime dateTime =
                                 ZonedDateTime.now(); // date, time and timezone of calculation
@@ -206,8 +202,8 @@ public class SunriseSunset {
                                 SunTimes.compute()
                                         .on(dateTime) // set a date
                                         .at(
-                                                location.getLatitude(),
-                                                location.getLongitude()) // set a location
+                                                loc.getLatitude(),
+                                                loc.getLongitude()) // set a location
                                         .execute(); // get the results
                         Log.i(
                                 TAG,
