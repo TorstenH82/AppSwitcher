@@ -4,6 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -115,7 +118,11 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 		holder.name.setText(app.getDescription());
 
 		Drawable icon = app.getIcon(context);
+        
 		if (icon != null) {
+            ColorMatrix cm = new ColorMatrix();
+    cm.setSaturation(0);
+            icon.setColorFilter(new ColorMatrixColorFilter(cm));
 			holder.logo.setImageDrawable(icon);
 		}
 
