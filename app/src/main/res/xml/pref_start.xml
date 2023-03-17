@@ -1,0 +1,32 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.preference.PreferenceCategory android:title="Autostart">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_runMediaApp"
+            android:key="runMediaApp"
+            android:summary="Run media app on service start"
+            android:title="Run media app" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_runMediaAppTwice"
+            android:key="runMediaAppTwice"
+            android:summary="This may fix issue if media app stuck on launch"
+            android:title="Start media app twice" />
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_runMediaAppDelay"
+            android:key="runMediaAppDelay"
+            android:max="20000"
+            android:min="0"
+            android:summary="xs"
+            android:title="Delay (seconds) before start of media app" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_lterecover"
+            android:key="lterecover"
+            android:summary="Start LTErecover after sleep"
+            android:title="Start LTErecover"
+            android:enabled="false"
+            android:selectable="false" />
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

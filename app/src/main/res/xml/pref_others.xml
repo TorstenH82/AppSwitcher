@@ -1,0 +1,25 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.preference.PreferenceCategory android:title="Others">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_disableNaviStart"
+            android:key="disableNaviStart"
+            android:summary="Disable navi start activity of MainUI to avoid screen flickering"
+            android:title="Disable navi start activity" />
+        <androidx.preference.SwitchPreference
+            android:enabled="false"
+            android:key="duraspeed"
+            android:selectable="false"
+            android:summary=""
+            android:title="DuraSpeed" />
+        <androidx.preference.Preference
+            android:key="qbproperty"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary=""
+            android:title="Quickbootmgr property value"/>
+        
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

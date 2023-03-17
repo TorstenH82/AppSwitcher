@@ -1,0 +1,31 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.preference.PreferenceCategory android:title="Screen">
+       <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_dimScreen"
+            android:key="dimScreen"
+            android:max="90"
+            android:min="20"
+            android:summary="xs"
+            android:title="Screen brightness at dimming" />
+        <androidx.preference.SwitchPreference
+            android:enabled="false"
+            android:key="fullscreen"
+            android:selectable="false"
+            android:summary=""
+            android:title="Forced fullscreen system property" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_forceLandscape"
+            android:key="forceLandscape"
+            android:summary="Forces apps (e.g. Spotify, Tidal) to get displayed in landscape mode\nOnly required if fullscreen property is disabled"
+            android:title="Landscape overlay" />
+        <androidx.preference.SwitchPreference
+            android:key="darkmode"
+            android:summary="Same setting you can find in Android Developer Options\nRequires reboot"
+            android:title="Dark/night mode" />
+        
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

@@ -1,0 +1,32 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.preference.PreferenceCategory android:title="Dialog">
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_dialogDelay"
+            android:key="dialogDelay"
+            android:max="5000"
+            android:min="500"
+            android:summary="xs"
+            android:title="Dialog delay (seconds)" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_showClock"
+            android:key="showClock"
+            android:summary="Show clock on top bar"
+            android:title="Clock" />
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_itemsBrightness"
+            android:key="itemsBrightness"
+            android:max="90"
+            android:min="10"
+            android:summary="x%"
+            android:title="Brightness of not selected items" />
+          <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_grayscaleIcons"
+            android:key="grayscaleIcons"
+            android:summary="Grayscale not selected items"
+            android:title="Grayscale app icons" />
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

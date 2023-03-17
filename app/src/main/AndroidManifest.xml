@@ -1,0 +1,115 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.thf.AppSwitcher">
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="32" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature android:name="android.hardware.location.network" />
+
+    <application
+        android:name="com.thf.AppSwitcher.AppSwitcherApp"
+        android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/transparenticon" />
+
+        <!-- <activity android:name=".StartServiceActivity" android:excludeFromRecents="true" android:icon="@mipmap/ic_launcher" android:noHistory="true" android:taskAffinity=".StartServiceActivity" android:theme="@style/Theme.Transparent" > <intent-filter> <action android:name="android.intent.action.MAIN" /> <category android:name="android.intent.category.LAUNCHER" /> </intent-filter> </activity> -->
+
+        <activity
+            android:name="com.thf.AppSwitcher.StartServiceActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="false"
+            android:taskAffinity=".StartServiceActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.thf.AppSwitcher.SettingsActivity"
+            android:theme="@style/Theme.MyApplication"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.thf.AppSwitcher.SwitchActivity"
+            android:excludeFromRecents="true"
+            android:icon="@mipmap/ic_launcher"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:screenOrientation="sensor"
+            android:taskAffinity=".SwitchActivity"
+            android:theme="@style/Theme.Transparent">
+        </activity>
+        <activity android:name="com.thf.AppSwitcher.ListActivity" />
+        <activity
+            android:name="com.thf.AppSwitcher.GetPermissionsActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.Transparent" />
+
+        <activity
+            android:name=".WakeUpActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=".WakeUpActivity"
+            android:theme="@style/Theme.Transparent"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+
+        <service
+            android:name="com.thf.AppSwitcher.service.AppSwitcherService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name="com.thf.AppSwitcher.service.BootUpReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <!--
+                <action android:name="autochips.intent.action.QB_POWERON" />
+                <action android:name="com.ts.main.uiaccon" />
+                <action android:name="autochips.intent.action.QB_POWEROFF" />
+                <action android:name="com.ts.main.uiaccoff" />
+                -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- <action android:name="com.mediatek.intent.action.ACTION_BOOT_IPO" /> <action android:name="com.mediatek.intent.action.ACTION_SHUTDOWN_IPO" /> <action android:name="autochips.intent.action.RESUME_APPS" /> <action android:name="android.intent.action.BOOT_COMPLETED" /> <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <action android:name="android.intent.action.QUICKBOOT_POWEROFF" /> <action android:name="com.ts.main.uiaccon" /> Whats here? -->
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

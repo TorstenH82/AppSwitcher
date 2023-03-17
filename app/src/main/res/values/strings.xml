@@ -1,0 +1,64 @@
+<resources>
+
+    <string name="app_name">AppSwitcher</string>
+    <string name="channel_name">Default</string>
+    <string name="channel_description">AppSwitcher channel</string>
+    <string name="pref_addLauncher">false</string>
+    <string name="pref_smartList">true</string>
+    <string name="pref_logTag">MainUI</string>
+    <string name="pref_logOnPress">nDealPkey = = 829</string>
+    <string name="pref_logShortPress">nDealPkey = = 830</string>
+    <string name="pref_logLongPress">nDealPkey = = 831</string>
+    <string name="pref_dialogDelay">2000</string>
+    <string name="pref_runMediaApp">true</string>
+    <string name="pref_runMediaAppTwice">false</string>
+    <string name="pref_runMediaAppDelay">0</string>
+    <string name="pref_showClock">true</string>
+    <string name="pref_disableNaviStart">false</string>
+    <string name="pref_itemsBrightness">60</string>
+    <string name="pref_scanWifi">false</string>
+    <string name="pref_enableAutomateSrv">false</string>
+    <string name="pref_automateFlow">content://com.llamalab.automate.provider/flows/n/statements/m</string>
+    <string name="pref_dimScreen">50</string>
+    <string name="pref_dimMode">0</string>
+    <string name="pref_lterecover">false</string>
+    <string name="pref_grayscaleIcons">true</string>
+    <string name="pref_forceLandscape">false</string>
+
+
+    <string name="yes">OK</string>
+    <string name="no">Cancel</string>
+
+    <string name="su">su @#zxcvbnmasdfghjklqwertyuiop1234567890,.</string>
+    <string name="naviActivity">com.ts.MainUI/com.ts.main.navi.NaviMainActivity</string>
+    <string name="hideActivity">com.ts.MainUI/com.ts.HideActivity</string>
+    <string name="duraspeedCheckProperty">persist.vendor.duraspeed.app.on</string>
+    <string name="commandEnableDuraspeedApp">setprop persist.vendor.duraspeed.app.on 1</string>
+    <string name="commandDisableDuraspeedApp">setprop persist.vendor.duraspeed.app.on 0</string>
+    <string name="commandEnableDuraspeedSupport">setprop persist.vendor.duraspeed.support 1</string>
+    <string name="commandDisableDuraspeedSupport">setprop persist.vendor.duraspeed.support 0</string>
+
+     
+    <string name="commandRemount1">mount -o rw,remount /vendor</string>
+    <string name="commandRemountMtk">remount</string>
+    <string
+        name="commandCopy"
+        formatted="false">cp -f %s %s</string>
+    <string
+        name="commandChmod644"
+        formatted="false">chmod 644 %s</string>
+    <string
+        name="commandChmod777"
+        formatted="false">chmod 777 %s</string>
+    <string name="commandSecureSettings">pm grant com.thf.AppSwitcher android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="commandReadLogs">pm grant com.thf.AppSwitcher android.permission.READ_LOGS</string>
+    <string name="commandUsageStatistic">pm grant com.thf.AppSwitcher android.permission.PACKAGE_USAGE_STATS</string>
+
+    <string name="automatePackage">com.llamalab.automate</string>
+    <string name="automateService">com.llamalab.automate.AutomateAccessibilityService</string>
+    <string name="automateFlowStartIntent">com.llamalab.automate.intent.action.START_FLOW</string>
+
+    <string name="LTErecover">LTErecover</string>
+    <string name="LTErecoverPackage">com.thf.lterecover</string>
+    <string name="LTErecoverActivity">com.thf.lterecover.RecoverActivity</string>
+</resources>

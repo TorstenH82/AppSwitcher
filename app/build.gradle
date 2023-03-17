@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 32
+    buildToolsVersion "33.0.0"
+
+    defaultConfig {
+        applicationId "com.thf.AppSwitcher"
+        minSdk 21
+        targetSdk 30
+        versionCode 2626
+        versionName "2.6.26alpha"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+		sourceCompatibility JavaVersion.VERSION_11
+		targetCompatibility JavaVersion.VERSION_11
+	}
+	
+	buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'org.shredzone.commons:commons-suncalc:3.5'
+}

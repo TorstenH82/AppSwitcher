@@ -1,0 +1,9 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/set_dwn" android:state_pressed="true"/> <!-- pressed -->
+
+    <item android:drawable="@drawable/set_up" android:state_focused="false"/> <!-- focused -->
+
+    <item android:drawable="@drawable/set_up"/> <!-- default -->
+
+</selector>

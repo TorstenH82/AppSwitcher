@@ -1,0 +1,105 @@
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--
+    <androidx.preference.PreferenceCategory android:title="General">
+        <androidx.preference.Preference
+            android:summary="To realize autostart install app &apos;AppSwitcher Starter&apos; and set it as navigation app in your head units settings"
+            android:title="Start AppSwitcher Service">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.StartServiceActivity"
+                android:targetPackage="com.thf.AppSwitcher" />
+        </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
+    -->
+    <androidx.preference.PreferenceCategory android:title="Settings">
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Apps and activities">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="apps_activities" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Log listener">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="log_listener" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Dialog">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="dialog" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Screen">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="screen" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Autostart">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="start" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Automate">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="automate" />
+            </intent>
+        </androidx.preference.Preference>
+        <androidx.preference.Preference
+            android:summary=""
+            android:title="Others">
+            <intent
+                android:targetClass="com.thf.AppSwitcher.SettingsActivity"
+                android:targetPackage="com.thf.AppSwitcher">
+                <extra
+                    android:name="screen"
+                    android:value="others" />
+            </intent>
+        </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory android:title="About">
+        <androidx.preference.Preference
+            android:key="prefAbout"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="version vx"
+            android:title="AppSwitcher">
+        </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>
