@@ -525,27 +525,9 @@ public class Utils {
         return output;
     }
 
-    public static AppData getAppDataFromListByKey(final List<AppData> list, final String key) {
-        if (list.stream().filter(o -> (o.getKey().equals(key))).findFirst().isPresent()) {
-            return list.stream()
-                    .filter(o -> o.getKey().equals(key))
-                    .collect(Collectors.toList())
-                    .get(0);
-        } else {
-            return null;
-        }
-    }
+    
 
-    public static boolean listContainsKey(
-            final List<AppData> list, final String key, final String listName) {
-        return list.stream()
-                .filter(
-                        o ->
-                                (o.getKey().equals(key))
-                                        && ((o.getList().equals(listName)) || listName == null))
-                .findFirst()
-                .isPresent();
-    }
+    
 
     public static void enableAutostart(Context context, boolean enable)
             throws SetAutostartException {

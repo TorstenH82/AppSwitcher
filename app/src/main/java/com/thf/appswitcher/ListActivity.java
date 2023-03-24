@@ -1,32 +1,16 @@
 package com.thf.AppSwitcher;
 
-import android.app.backup.SharedPreferencesBackupHelper;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,17 +21,14 @@ import com.thf.AppSwitcher.utils.ItemMoveCallback;
 import com.thf.AppSwitcher.utils.RecyclerViewAdapter;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListActivity extends AppCompatActivity {
 	private static final String TAG = "AppSwitcherService";
+    private SharedPreferencesHelper sharedPreferencesHelper;
 	private static RecyclerViewAdapter adapter;
 	private List<AppData> selectedList = new ArrayList<>();
 	private Boolean apps;
@@ -73,6 +54,9 @@ public class ListActivity extends AppCompatActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        
+        sharedPreferencesHelper = new SharedPreferencesHelper(getApplicationContext());
+        
 		setContentView(R.layout.activity_list);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,7 +76,7 @@ public class ListActivity extends AppCompatActivity {
 
 		String category = "";
 
-		selectedList = SharedPreferencesHelper.loadList(getApplicationContext(), "selected");
+		selectedList = sharedPreferencesHelper.loadList("selected");
 		switch (data) {
 
 		case "navi":

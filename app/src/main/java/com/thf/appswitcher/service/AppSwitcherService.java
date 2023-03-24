@@ -5,8 +5,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -27,8 +29,8 @@ import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
-import com.thf.appswitcher.utils.RunActivity;
-import com.thf.appswitcher.utils.RunMediaApp;
+import com.thf.AppSwitcher.utils.RunActivity;
+import com.thf.AppSwitcher.utils.RunMediaApp;
 
 public class AppSwitcherService extends Service
     implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -36,6 +38,7 @@ public class AppSwitcherService extends Service
   private AppSwitcherApp mApplication;
   // private Looper mServiceLooper;
   private Context context;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private LogReaderUtil logReaderUtil;
   private UsageStatsUtil usageStatsUtil;
   private SunriseSunset sunriseSunset;
@@ -47,8 +50,8 @@ public class AppSwitcherService extends Service
   private SharedPreferences sharedPreferences;
 
   private static Boolean disableNaviMainActivity = false;
-  // private Thread threadRestartComSrv;
   private boolean runMediaApp;
+  private Thread runMediaAppThread;
 
   private OverlayWindow overlayWindow;
   private int dimMode;
@@ -59,7 +62,7 @@ public class AppSwitcherService extends Service
 
   private Handler handler = new Handler(Looper.getMainLooper());
 
-  // private static BroadcastReceiver mQuickBootRecv = null;
+  private static BroadcastReceiver bootUpReceiver = null;
 
   public Handler logHandler =
       new Handler(Looper.getMainLooper()) {
@@ -67,6 +70,7 @@ public class AppSwitcherService extends Service
         public void handleMessage(android.os.Message msg) {
           int action = msg.what;
           Log.i(TAG, "Received LogReaderUtil action: " + action);
+
           switch (action) {
             case LogReaderUtil.ACTION_ON_PRESS:
               // got action on press - short or long press will follow
@@ -84,8 +88,8 @@ public class AppSwitcherService extends Service
                 Intent intent = new Intent("switch-message");
                 intent.putExtra("close", true);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                // switch to home on long press
               } else {
+                // switch to home on long press
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -117,6 +121,10 @@ public class AppSwitcherService extends Service
               }
               break;
           }
+
+          if (runMediaApp && runMediaAppThread != null && runMediaAppThread.isAlive()) {
+            runMediaAppThread.interrupt();
+          }
         }
       };
 
@@ -140,7 +148,7 @@ public class AppSwitcherService extends Service
       logLongPress =
           sharedPreferences.getString(key, getResources().getString(R.string.pref_logLongPress));
     } else if (key.equals("dimMode")) {
-      dimMode = SharedPreferencesHelper.getInteger(context, "dimMode");
+      dimMode = sharedPreferencesHelper.getInteger("dimMode");
       updateNotification("running...");
       switch (dimMode) {
         case DIM_MODE_ON:
@@ -163,9 +171,9 @@ public class AppSwitcherService extends Service
           break;
       }
     } else if (key.equals("forceLandscape")) {
-      overlayWindow.setLandscape(SharedPreferencesHelper.getBoolean(context, "forceLandscape"));
+      overlayWindow.setLandscape(sharedPreferencesHelper.getBoolean("forceLandscape"));
     } else if (key.equals("dimScreen")) {
-      overlayWindow.setBrightness(SharedPreferencesHelper.getInteger(context, "dimScreen"));
+      overlayWindow.setBrightness(sharedPreferencesHelper.getInteger("dimScreen"));
     }
     if (key.equals("logTag")
         || key.equals("logOnPress")
@@ -183,6 +191,8 @@ public class AppSwitcherService extends Service
     isRunning = true;
     mApplication = (AppSwitcherApp) getApplicationContext();
     context = this;
+
+    sharedPreferencesHelper = new SharedPreferencesHelper(context);
 
     mApplication.registerPermissionGrantedCallback(
         new AppSwitcherApp.PermissionGrantedCallbacks() {
@@ -206,8 +216,7 @@ public class AppSwitcherService extends Service
             } else {
               if (dimMode == DIM_MODE_AUTO) {
                 dimMode = DIM_MODE_OFF;
-                SharedPreferencesHelper.setInteger(
-                    context, "dimMode", AppSwitcherService.DIM_MODE_OFF);
+                sharedPreferencesHelper.setInteger("dimMode", AppSwitcherService.DIM_MODE_OFF);
               }
             }
           }
@@ -218,10 +227,10 @@ public class AppSwitcherService extends Service
     startForeground(NOTIFCATION_ID, notification);
     // createchannel();
 
-    logTag = SharedPreferencesHelper.getString(context, "logTag");
-    logOnPress = SharedPreferencesHelper.getString(context, "logOnPress");
-    logShortPress = SharedPreferencesHelper.getString(context, "logShortPress");
-    logLongPress = SharedPreferencesHelper.getString(context, "logLongPress");
+    logTag = sharedPreferencesHelper.getString("logTag");
+    logOnPress = sharedPreferencesHelper.getString("logOnPress");
+    logShortPress = sharedPreferencesHelper.getString("logShortPress");
+    logLongPress = sharedPreferencesHelper.getString("logLongPress");
 
     logReaderUtil = new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
     // logReaderUtil.startProgress();
@@ -232,26 +241,7 @@ public class AppSwitcherService extends Service
     sharedPreferences = this.getSharedPreferences("USERDATA", MODE_PRIVATE);
     sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-    boolean runLteRecover =
-        SharedPreferencesHelper.getBoolean(getApplicationContext(), "lterecover");
-    if (runLteRecover)
-      handler.post(
-          new RunActivity(
-              context,
-              getString(R.string.LTErecoverPackage),
-              getString(R.string.LTErecoverActivity)));
-
-    runMediaApp = SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
-    if (runMediaApp) handler.post(new RunMediaApp(context, usageStatsUtil.getCurrentActivity()));
-
-    try {
-      Utils.enableAutostart(context, false);
-    } catch (Utils.SetAutostartException ex) {
-      Log.w(TAG, "Error setting autostart property: " + ex.getMessage());
-    }
-
-    boolean enableAutomate =
-        SharedPreferencesHelper.getBoolean(getApplicationContext(), "enableAutomateSrv");
+    boolean enableAutomate = sharedPreferencesHelper.getBoolean("enableAutomateSrv");
     if (enableAutomate) {
       Utils.enableService(
           context,
@@ -259,18 +249,32 @@ public class AppSwitcherService extends Service
           context.getString(R.string.automateService),
           utilCallbacks);
 
-      String automateFlow = SharedPreferencesHelper.getString(context, "automateFlow");
+      String automateFlow = sharedPreferencesHelper.getString("automateFlow");
       if (!"".equals(automateFlow)
           && !context.getString(R.string.pref_automateFlow).equals(automateFlow))
         Utils.startAutomateFlow(context, automateFlow, utilCallbacks);
     }
 
-    forceLandscape = SharedPreferencesHelper.getBoolean(context, "forceLandscape");
+    forceLandscape = sharedPreferencesHelper.getBoolean("forceLandscape");
     overlayWindow =
-        new OverlayWindow(mApplication, SharedPreferencesHelper.getInteger(context, "dimScreen"));
+        new OverlayWindow(mApplication, sharedPreferencesHelper.getInteger("dimScreen"));
     overlayWindow.setLandscape(forceLandscape);
-    dimMode = SharedPreferencesHelper.getInteger(context, "dimMode");
+    dimMode = sharedPreferencesHelper.getInteger("dimMode");
     sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
+  }
+
+  private void registerBootUpRecv() {
+    if (bootUpReceiver == null) {
+      bootUpReceiver = new BootUpReceiver();
+      IntentFilter filter = new IntentFilter();
+      // filter.addAction("autochips.intent.action.QB_POWERON");
+      filter.addAction("com.ts.main.uiaccon");
+      // filter.addAction("autochips.intent.action.QB_POWEROFF");
+      filter.addAction("com.ts.main.uiaccoff");
+      filter.setPriority(1000);
+      getApplicationContext().registerReceiver(bootUpReceiver, filter);
+      Log.i(TAG, "Registered broadcast receiver");
+    }
   }
 
   public static final String ACTION_WAKE_UP = "ACTION_WAKE_UP";
@@ -285,11 +289,11 @@ public class AppSwitcherService extends Service
     if (intent != null) action = intent.getAction();
 
     if (ACTION_STOP_SERVICE.equals(action)) {
-      Log.d(TAG, "called to cancel service due to action " + intent.getAction());
-
+      Log.d(TAG, "called to stop");
       stopForeground(true);
       stopSelf();
       return START_NOT_STICKY;
+
     } else if (ACTION_OPEN_SETTINGS.equals(action)) {
       Log.d(TAG, "called to open settings");
       Intent intentSettings = new Intent(context, SettingsActivity.class);
@@ -297,44 +301,42 @@ public class AppSwitcherService extends Service
       // intentSettings.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
       startActivity(intentSettings);
       return START_STICKY;
-    } else if (ACTION_WAKE_UP.equals(action)) {
-      Log.d(TAG, "called wake up");
-      boolean runMediaApp =
-          SharedPreferencesHelper.getBoolean(getApplicationContext(), "runMediaApp");
-      if (runMediaApp) handler.post(new RunMediaApp(context, usageStatsUtil.getCurrentActivity()));
 
-      boolean runLteRecover =
-          SharedPreferencesHelper.getBoolean(getApplicationContext(), "lterecover");
-      if (runLteRecover)
-        handler.post(
-            new RunActivity(
-                context,
-                getString(R.string.LTErecoverPackage),
-                getString(R.string.LTErecoverActivity)));
-
-      // if (dimMode == DIM_MODE_AUTO) sunriseSunset.enableAuto();
     } else if (ACTION_SLEEP.equals(action)) {
+      isSleeping = true;
+      Log.d(TAG, "called to sleep");
       stopThreads();
       updateNotification("sleeping...");
       return START_STICKY;
+
+    } else if (ACTION_WAKE_UP.equals(action)) {
+      Log.d(TAG, "called to wake up");
+      Toast.makeText(this, "Wake up AppSwitcher Service", Toast.LENGTH_SHORT).show();
+
     } else { // standard start of service
+      Log.d(TAG, "called to start");
       Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
-      Log.i(TAG, "Starting AppSwitcher Service");
     }
-    /*
-            if (mQuickBootRecv == null) {
-                Log.i(TAG, "register QB_POWEROFF and QB_POWERON");
-                mQuickBootRecv = new BootUpReceiver();
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("autochips.intent.action.QB_POWERON");
-                filter.addAction("com.ts.main.uiaccon");
-                filter.addAction("autochips.intent.action.QB_POWEROFF");
-                filter.addAction("com.ts.main.uiaccoff");
-                filter.setPriority(1000);
-                mApplication.registerReceiver(mQuickBootRecv, filter);
-                Log.i(TAG, "Registered broadcast receiver");
-            }
-    */
+
+    isSleeping = false;
+
+    registerBootUpRecv();
+
+    runMediaApp = sharedPreferencesHelper.getBoolean("runMediaApp");
+    if (runMediaApp) {
+      runMediaAppThread = new Thread(new RunMediaApp(context, usageStatsUtil));
+      runMediaAppThread.start();
+    }
+
+    boolean runLteRecover = sharedPreferencesHelper.getBoolean("lterecover");
+    if (runLteRecover)
+      new Thread(
+              new RunActivity(
+                  context,
+                  getString(R.string.LTErecoverPackage),
+                  getString(R.string.LTErecoverActivity)))
+          .start();
+
     updateNotification("running...");
     switch (dimMode) {
       case DIM_MODE_ON:
@@ -366,12 +368,11 @@ public class AppSwitcherService extends Service
   public void onDestroy() {
     isRunning = false;
     sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-    /*
-    if (mQuickBootRecv != null) {
-        unregisterReceiver(mQuickBootRecv);
-        mQuickBootRecv = null;
+
+    if (bootUpReceiver != null) {
+      // unregisterReceiver(bootUpReceiver);
+      bootUpReceiver = null;
     }
-    */
 
     stopThreads();
     Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
@@ -418,6 +419,7 @@ public class AppSwitcherService extends Service
         .setChannelId(id1)
         .setContentTitle("AppSwitcher Service") // Title message top row.
         .setContentText(message) // message when looking at the notification, second row
+        .setContentIntent(pOpenSettings)
         .addAction(R.mipmap.ic_stat_ic_launcher_adaptive_fore, "Stop", pStopSelf)
         .addAction(R.mipmap.ic_stat_ic_launcher_adaptive_fore, "Settings", pOpenSettings)
         .build(); // finally build and return a Notification.
@@ -434,6 +436,12 @@ public class AppSwitcherService extends Service
 
   public static boolean isRunning() {
     return isRunning;
+  }
+
+  private static boolean isSleeping = false;
+
+  public static boolean isSleeping() {
+    return isSleeping;
   }
 
   public static String id1 = "appswitcher_channel_01";
@@ -491,7 +499,6 @@ public class AppSwitcherService extends Service
         }
       };
 
-  private boolean tempHidden = false;
   private UsageStatsUtil.UsageStatsCallbacks usageStatsCallbacks =
       new UsageStatsUtil.UsageStatsCallbacks() {
         @Override
@@ -502,18 +509,6 @@ public class AppSwitcherService extends Service
           } else {
             overlayWindow.reShow();
           }
-
-          /*
-          if (foreground != null
-              && foreground.startsWith("com.android.vending")
-              && mApplication.getOverlayVisibility()) {
-            overlayWindow.hide();
-            tempHidden = true;
-          } else if (tempHidden && !foreground.startsWith("com.android.vending")) {
-            overlayWindow.show();
-            tempHidden = false;
-          }
-            */
         }
       };
 }

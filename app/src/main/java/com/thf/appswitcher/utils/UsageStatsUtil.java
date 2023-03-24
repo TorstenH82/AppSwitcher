@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class UsageStatsUtil {
   private static final String TAG = "AppSwitcherService";
   private Context context;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private UsageStatsCallbacks listener;
   private static String foregroundActivity;
   private Thread thread;
@@ -23,6 +25,7 @@ public class UsageStatsUtil {
 
   public UsageStatsUtil(Context context, UsageStatsCallbacks listener) {
     this.context = context;
+    this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
     this.listener = listener;
   }
 
@@ -82,7 +85,7 @@ public class UsageStatsUtil {
           @Override
           public void run() {
 
-            selectedList = SharedPreferencesHelper.loadList(context, "selected");
+            selectedList = sharedPreferencesHelper.loadList("selected");
 
             while (true) {
 
@@ -96,11 +99,11 @@ public class UsageStatsUtil {
                 Boolean collected = false;
 
                 String key = s.getPackageName() + "/" + s.getClassName();
-                AppData app = Utils.getAppDataFromListByKey(selectedList, key);
+                AppData app = sharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
 
                 if (app == null) {
                   key = s.getPackageName();
-                  app = Utils.getAppDataFromListByKey(selectedList, key);
+                  app = sharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
                 }
 
                 if (app != null && !key.equals(lastCollectedKey)) {
@@ -110,7 +113,7 @@ public class UsageStatsUtil {
                     Log.i(TAG, "Collected with key: " + app.getKey());
                   }
                   */
-                  SharedPreferencesHelper.putIntoRecentsList(context, app);
+                  sharedPreferencesHelper.putIntoRecentsList(app);
                   Log.i(TAG, "Collected: " + key);
                   lastCollectedKey = key;
                 }

@@ -1,4 +1,4 @@
-package com.thf.appswitcher.utils;
+package com.thf.AppSwitcher.utils;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,15 +26,15 @@ public class RunActivity implements Runnable {
     @Override
     public void run() {
         if (!Utils.isPackageInstalled(context, packageName)){
-            Log.d(TAG, "Package " + packageName + " is not installed");
+            Log.d(TAG, "package " + packageName + " is not installed");
             return;
         }
         
         
-        Log.d(TAG, "Run activity " + packageName + "/" + activity);
+        Log.d(TAG, "run activity " + packageName + "/" + activity);
         ComponentName name = new ComponentName(packageName, activity);
         Intent intentStartMedia = new Intent(Intent.ACTION_MAIN);
-        intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
+        //intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
         intentStartMedia.setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED

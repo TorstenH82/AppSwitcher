@@ -12,7 +12,7 @@ import com.thf.AppSwitcher.utils.AppData;
 public class AppSwitcherApp extends Application {
     private static final String TAG = "AppSwitcherService";
 	private static AppSwitcherApp appSwitcherApp;
-    private static BroadcastReceiver mQuickBootRecv = null;
+    //private static BroadcastReceiver mQuickBootRecv = null;
 	private static boolean isOverlayVisible = false;
 	private static boolean isSwitchActivityRunning = false;
     private static PackageManager packageManager;
@@ -30,6 +30,7 @@ public class AppSwitcherApp extends Application {
 		super.onCreate();
 		appSwitcherApp = this;
         
+        /*
         if (mQuickBootRecv == null) {
             Log.i(TAG, "register QB_POWEROFF and QB_POWERON");
             mQuickBootRecv = new BootUpReceiver();
@@ -42,6 +43,7 @@ public class AppSwitcherApp extends Application {
             this.registerReceiver(mQuickBootRecv, filter);
             Log.i(TAG, "Registered broadcast receiver");
         }
+        */
         packageManager = this.getPackageManager();
         ActivityUtil activityUtil = new ActivityUtil(appSwitcherApp, null, null);
         launcher = activityUtil.getLauncher();

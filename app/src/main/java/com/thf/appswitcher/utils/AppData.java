@@ -2,8 +2,6 @@ package com.thf.AppSwitcher.utils;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import com.thf.AppSwitcher.AppSwitcherApp;
 
@@ -144,19 +142,7 @@ public class AppData {
     this.sort = sort;
   }
 
-  /*
-  public void setIcon(Drawable icon) {
-  	this.icon = icon;
-  }
-
-  public Object getObject() {
-  	return object;
-  }
-
-  public void setObject(Object object) {
-  	this.object = object;
-  }
-  */
+  
   public String getKey() {
     if ("app".equals(getCategory())) {
       return getPackageName();

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
   private static final String TAG = "AppSwitcherService";
   private Context context;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private ItemTouchHelper touchHelper;
   private boolean apps;
   private String list;
@@ -77,10 +79,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
           if (checkBox.isChecked()) {
             selectedList.add(app);
             app.setSort(9999);
-            SharedPreferencesHelper.putIntoList(context, app, "selected");
+            sharedPreferencesHelper.putIntoList(app, "selected");
           } else {
             selectedList.remove(app);
-            SharedPreferencesHelper.removeFromList(context, app, "selected");
+            sharedPreferencesHelper.removeFromList(app, "selected");
           }
           break;
         default:
@@ -91,10 +93,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     appDataList0.get(getAdapterPosition()).getActivityName());
             Intent i = new Intent(Intent.ACTION_MAIN);
 
-            //i.addCategory(Intent.CATEGORY_LAUNCHER);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
-                       | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            // i.addCategory(Intent.CATEGORY_LAUNCHER);
+            i.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             i.setComponent(name);
             try {
               context.startActivity(i);
@@ -130,6 +133,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
       String list,
       List<AppData> selectedList) {
     this.context = context;
+    this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
     this.appDataList0 = appDataList;
     this.apps = apps;
     this.list = list;
@@ -228,7 +232,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
       app.setSort(sort);
       selectedList.add(app);
     }
-    SharedPreferencesHelper.saveList(context, selectedList, "selected");
+    sharedPreferencesHelper.saveList(selectedList, "selected");
   }
 
   private Hashtable<String, Boolean> htExpanded;

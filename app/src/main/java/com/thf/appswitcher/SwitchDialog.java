@@ -37,6 +37,7 @@ public class SwitchDialog extends Dialog {
 
   private static Bomb bomb;
   private Activity activity;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private SwitchDialogCallbacks listener;
   public Handler handler = new Handler(Looper.getMainLooper());
   private LinearLayoutManager linearLayoutManager;
@@ -67,6 +68,7 @@ public class SwitchDialog extends Dialog {
     // super(activity, R.style.Theme_Transparent);
     super(activity);
     this.activity = activity;
+    this.sharedPreferencesHelper = new SharedPreferencesHelper(activity);
     this.listener = listener;
     this.dialogDelay = dialogDelay;
     this.showClock = showClock;
@@ -119,31 +121,14 @@ public class SwitchDialog extends Dialog {
   }
 
   public interface SwitchDialogCallbacks {
-    public void onResult(Intent intent);
+    public void onResult(AppData app);
   }
 
   public void callBackAppData(AppData app) {
     this.dismiss();
     Intent intent;
-    if ("launcher".equals(app.getCategory())) {
-      intent = new Intent(Intent.ACTION_MAIN);
-      intent.addCategory(Intent.CATEGORY_HOME);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      // mApplication.startActivity(startMain);
-    } else {
-      ComponentName name = new ComponentName(app.getPackageName(), app.getActivityName());
-      //Log.i(TAG, "package " + app.getPackageName() + " / activity " + app.getActivityName());
-            
-      intent = new Intent(Intent.ACTION_MAIN);
-      //intent.addCategory(Intent.CATEGORY_LAUNCHER);
-      intent.setFlags(
-          Intent.FLAG_ACTIVITY_NEW_TASK
-              | Intent.FLAG_ACTIVITY_SINGLE_TOP
-              | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-              | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-      intent.setComponent(name);
-    }
-    listener.onResult(intent);
+    
+    listener.onResult(app);
   }
 
   public void action(int action) {
@@ -254,26 +239,22 @@ public class SwitchDialog extends Dialog {
           public void onState(FlashButton.FlashEnum state) {
             switch (state) {
               case ON:
-                SharedPreferencesHelper.setInteger(
-                    AppSwitcherApp.getInstance(), "dimMode", AppSwitcherService.DIM_MODE_ON);
+                sharedPreferencesHelper.setInteger("dimMode", AppSwitcherService.DIM_MODE_ON);
                 break;
               case OFF:
-                SharedPreferencesHelper.setInteger(
-                    AppSwitcherApp.getInstance(), "dimMode", AppSwitcherService.DIM_MODE_OFF);
+                sharedPreferencesHelper.setInteger("dimMode", AppSwitcherService.DIM_MODE_OFF);
                 break;
               case AUTO:
                 int checkVal =
                     AppSwitcherApp.getInstance()
                         .checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
                 if (checkVal == PackageManager.PERMISSION_GRANTED) {
-                  SharedPreferencesHelper.setInteger(
-                      AppSwitcherApp.getInstance(), "dimMode", AppSwitcherService.DIM_MODE_AUTO);
+                  sharedPreferencesHelper.setInteger("dimMode", AppSwitcherService.DIM_MODE_AUTO);
                 } else {
                   // SharedPreferencesHelper.setInteger(context, "dimMode",
                   // AppSwitcherService.DIM_MODE_ON);
                   dimScreenMode.setState(FlashButton.FlashEnum.OFF);
-                  SharedPreferencesHelper.setInteger(
-                      AppSwitcherApp.getInstance(), "dimMode", AppSwitcherService.DIM_MODE_OFF);
+                  sharedPreferencesHelper.setInteger("dimMode", AppSwitcherService.DIM_MODE_OFF);
                 }
                 break;
             }
@@ -281,7 +262,7 @@ public class SwitchDialog extends Dialog {
         });
     dimScreenMode.setVisibility(View.GONE);
 
-    int mode = SharedPreferencesHelper.getInteger(AppSwitcherApp.getInstance(), "dimMode");
+    int mode = sharedPreferencesHelper.getInteger("dimMode");
     switch (mode) {
       case AppSwitcherService.DIM_MODE_ON:
         dimScreenMode.setState(FlashButton.FlashEnum.ON);

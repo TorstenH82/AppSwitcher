@@ -2,6 +2,7 @@ package com.thf.AppSwitcher;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,6 +30,7 @@ public class SwitchActivity extends Activity {
   private List<AppData> newAppList = new ArrayList<AppData>();
   private static SwitchAppsAdapter adapter;
   private static Context context;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private static int dialogDelay;
 
   SwitchDialog newDialog;
@@ -46,21 +48,22 @@ public class SwitchActivity extends Activity {
     mApplication.setSwitchActivityRunning(true);
     context = getApplicationContext();
 
+    sharedPreferencesHelper = new SharedPreferencesHelper(context);
+
     LocalBroadcastManager.getInstance(this)
         .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
 
     Log.i(TAG, "SwitchActivity onCreate");
-    context = getApplicationContext();
 
-    dialogDelay = SharedPreferencesHelper.getInteger(context, "dialogDelay");
+    dialogDelay = sharedPreferencesHelper.getInteger("dialogDelay");
     Log.i(TAG, "Dialog delay: " + Integer.toString(dialogDelay));
-    disableNaviMainActivity = SharedPreferencesHelper.getBoolean(context, "disableNaviStart");
-    showClock = SharedPreferencesHelper.getBoolean(context, "showClock");
-    brightness = ((float) SharedPreferencesHelper.getInteger(context, "itemsBrightness")) / 100;
-    grayscale = SharedPreferencesHelper.getBoolean(context, "grayscaleIcons");
+    disableNaviMainActivity = sharedPreferencesHelper.getBoolean("disableNaviStart");
+    showClock = sharedPreferencesHelper.getBoolean("showClock");
+    brightness = ((float) sharedPreferencesHelper.getInteger("itemsBrightness")) / 100;
+    grayscale = sharedPreferencesHelper.getBoolean("grayscaleIcons");
 
     new Thread(runnablePrepareData).start();
-        
+
     newDialog =
         new SwitchDialog(
             SwitchActivity.this,
@@ -74,9 +77,24 @@ public class SwitchActivity extends Activity {
   private SwitchDialog.SwitchDialogCallbacks switchDialogListener =
       new SwitchDialog.SwitchDialogCallbacks() {
         @Override
-        public void onResult(Intent intent) {
-          if (intent != null) {
-            context.startActivity(intent);
+        public void onResult(AppData app) {
+          if (app != null) {
+            Intent intent = new Intent();
+            // intent = new Intent(Intent.ACTION_MAIN);
+            if ("launcher".equals(app.getCategory())) {
+              intent.addCategory(Intent.CATEGORY_HOME);
+              intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            } else {
+              ComponentName name = new ComponentName(app.getPackageName(), app.getActivityName());
+              // intent.addCategory(Intent.CATEGORY_LAUNCHER);
+              intent.setFlags(
+                  Intent.FLAG_ACTIVITY_NEW_TASK
+                      | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                      | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                      | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+              intent.setComponent(name);
+            }
+            startActivity(intent);
           }
           finish();
         }
@@ -155,20 +173,17 @@ public class SwitchActivity extends Activity {
         }
       };
 
-  
-
   private Runnable runnablePrepareData =
       new Runnable() {
         @Override
         public void run() {
 
-          List<AppData> selectedList =
-              SharedPreferencesHelper.loadList(getApplicationContext(), "selected");
+          List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
 
           boolean launcherIsInForeground = false;
-          boolean addLauncher = SharedPreferencesHelper.getBoolean(context, "addLauncher");
+          boolean addLauncher = sharedPreferencesHelper.getBoolean("addLauncher");
 
-          if (SharedPreferencesHelper.getBoolean(context, "smartList")) {
+          if (sharedPreferencesHelper.getBoolean("smartList")) {
             String foregroundApp = "";
             try {
               Intent intent = getIntent();
@@ -183,19 +198,20 @@ public class SwitchActivity extends Activity {
               foregroundApp = "-/-";
             }
 
-            List<AppData> recentsAppList =
-                SharedPreferencesHelper.getRecentsList(getApplicationContext());
+            List<AppData> recentsAppList = sharedPreferencesHelper.getRecentsList();
 
             boolean mediaAppInForeground = false;
             AppData naviInForeground = new AppData();
             boolean naviIsInForeground = false;
 
-            if (Utils.listContainsKey(selectedList, foregroundApp, "media")) {
+            if (sharedPreferencesHelper.listContainsKey(selectedList, foregroundApp, "media")) {
               mediaAppInForeground = true;
-            } else if (Utils.listContainsKey(selectedList, foregroundApp.split("/")[0], "media")) {
+            } else if (sharedPreferencesHelper.listContainsKey(
+                selectedList, foregroundApp.split("/")[0], "media")) {
               foregroundApp = foregroundApp.split("/")[0];
               mediaAppInForeground = true;
-            } else if (Utils.listContainsKey(selectedList, foregroundApp.split("/")[0], "navi")) {
+            } else if (sharedPreferencesHelper.listContainsKey(
+                selectedList, foregroundApp.split("/")[0], "navi")) {
               foregroundApp = foregroundApp.split("/")[0];
               naviIsInForeground = true;
             } else if (foregroundApp.split("/")[0].equals(
@@ -214,12 +230,13 @@ public class SwitchActivity extends Activity {
 
               // skip current app and apps not selected by user anymore
               if (TextUtils.equals(s.getKey(), foregroundApp)
-                  || !Utils.listContainsKey(selectedList, s.getKey(), null)) continue;
+                  || !sharedPreferencesHelper.listContainsKey(selectedList, s.getKey(), null))
+                continue;
 
               Boolean posSet = false;
 
               // special handling for recent navis
-              if (Utils.listContainsKey(selectedList, s.getKey(), "navi")) {
+              if (sharedPreferencesHelper.listContainsKey(selectedList, s.getKey(), "navi")) {
 
                 // navi is not in front, media app in front
                 // -> offer recent navi on 1st pos
