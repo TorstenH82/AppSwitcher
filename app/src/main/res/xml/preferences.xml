@@ -2,17 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!--
-    <androidx.preference.PreferenceCategory android:title="General">
-        <androidx.preference.Preference
-            android:summary="To realize autostart install app &apos;AppSwitcher Starter&apos; and set it as navigation app in your head units settings"
-            android:title="Start AppSwitcher Service">
-            <intent
-                android:targetClass="com.thf.AppSwitcher.StartServiceActivity"
-                android:targetPackage="com.thf.AppSwitcher" />
-        </androidx.preference.Preference>
-    </androidx.preference.PreferenceCategory>
-    -->
+    <!-- <androidx.preference.PreferenceCategory android:title="General"> <androidx.preference.Preference android:summary="To realize autostart install app &apos;AppSwitcher Starter&apos; and set it as navigation app in your head units settings" android:title="Start AppSwitcher Service"> <intent android:targetClass="com.thf.AppSwitcher.StartServiceActivity" android:targetPackage="com.thf.AppSwitcher" /> </androidx.preference.Preference> </androidx.preference.PreferenceCategory> -->
     <androidx.preference.PreferenceCategory android:title="Settings">
         <androidx.preference.Preference
             android:summary=""
@@ -92,7 +82,19 @@
             </intent>
         </androidx.preference.Preference>
     </androidx.preference.PreferenceCategory>
-
+    <androidx.preference.PreferenceCategory android:title="Donate">
+        <androidx.preference.Preference
+                android:key="prefDonate"
+                android:persistent="false"
+                android:selectable="true"
+                android:summary="Do you like AppSwitcher? Then support me with a donation via\nko-fi.com/appswitcher"
+                android:icon="@drawable/kofi"
+                android:title="Donate">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="https://ko-fi.com/appswitcher" />
+            </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="About">
         <androidx.preference.Preference
             android:key="prefAbout"

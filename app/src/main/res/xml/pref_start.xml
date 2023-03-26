@@ -1,5 +1,7 @@
 <androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,6 +29,8 @@
             android:summary="Start LTErecover after sleep"
             android:title="Start LTErecover"
             android:enabled="false"
-            android:selectable="false" />
+            android:selectable="false" 
+            app:allowDividerAbove="true"
+            />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

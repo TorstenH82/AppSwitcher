@@ -2,7 +2,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.preference.PreferenceCategory android:title="Screen">
        <androidx.preference.SeekBarPreference
             android:defaultValue="@string/pref_dimScreen"
@@ -26,6 +25,5 @@
             android:key="darkmode"
             android:summary="Same setting you can find in Android Developer Options\nRequires reboot"
             android:title="Dark/night mode" />
-        
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>
