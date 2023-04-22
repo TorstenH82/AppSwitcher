@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -195,7 +196,7 @@ public class ActivityUtil {
     return appDataList;
   }
 
-  public AppData getLauncher() {
+  public AppDataIcon getLauncher() {
     Intent intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(Intent.CATEGORY_HOME);
     PackageManager packageManager = context.getPackageManager();
@@ -218,7 +219,12 @@ public class ActivityUtil {
     app.setActivityName(resolveInfo.activityInfo.name);
     app.setCategory("launcher");
     app.setName(resolveInfo.loadLabel(packageManager).toString());
-
-    return app;
+        AppDataIcon appIcon = new AppDataIcon(app);
+    Drawable icon = app.getIcon(context);
+    if (icon != null) {
+      icon.mutate();
+      appIcon.setIcon(icon);
+    }
+    return appIcon;
   }
 }

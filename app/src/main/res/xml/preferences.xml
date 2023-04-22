@@ -59,6 +59,7 @@
                     android:value="start" />
             </intent>
         </androidx.preference.Preference>
+        <!--
         <androidx.preference.Preference
             android:summary=""
             android:title="Automate">
@@ -70,6 +71,7 @@
                     android:value="automate" />
             </intent>
         </androidx.preference.Preference>
+        -->
         <androidx.preference.Preference
             android:summary=""
             android:title="Others">

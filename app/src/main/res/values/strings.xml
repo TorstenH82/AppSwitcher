@@ -22,9 +22,13 @@
     <string name="pref_dimScreen">50</string>
     <string name="pref_dimMode">0</string>
     <string name="pref_lterecover">false</string>
+    <string name="pref_lterecoverDelay">20000</string>
+    <string name="pref_lterecoverDelayBtw">3000</string>
+
+    <string name="pref_buttonSound">true</string>
+    
     <string name="pref_grayscaleIcons">true</string>
     <string name="pref_forceLandscape">false</string>
-
 
     <string name="yes">OK</string>
     <string name="no">Cancel</string>
@@ -38,7 +42,7 @@
     <string name="commandEnableDuraspeedSupport">setprop persist.vendor.duraspeed.support 1</string>
     <string name="commandDisableDuraspeedSupport">setprop persist.vendor.duraspeed.support 0</string>
 
-     
+
     <string name="commandRemount1">mount -o rw,remount /vendor</string>
     <string name="commandRemountMtk">remount</string>
     <string

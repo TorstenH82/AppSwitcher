@@ -37,6 +37,18 @@ public class AppData {
     setPermissions(copy.getPermissions());
   }
 
+  public AppData(AppDataIcon copy) {
+    setPackageName(copy.getPackageName());
+    setName(copy.getName());
+    setCategory(copy.getCategory());
+    setList(copy.getList());
+    setFlags(copy.getFlags());
+    setActivityName(copy.getActivityName());
+    setActivityDescription(copy.getActivityDescription());
+    setSort(copy.getSort());
+    setPermissions(copy.getPermissions());
+  }
+
   public String[] getPermissions() {
     return permissions;
   }
@@ -142,7 +154,6 @@ public class AppData {
     this.sort = sort;
   }
 
-  
   public String getKey() {
     if ("app".equals(getCategory())) {
       return getPackageName();

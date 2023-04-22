@@ -1,10 +1,7 @@
 package com.thf.AppSwitcher.utils;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
@@ -12,9 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +20,7 @@ import com.thf.AppSwitcher.R;
 
 public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.MyViewHolder> {
   private static final String TAG = "AppSwitcherService";
-  private List<AppData> appDataList0;
+  private List<AppDataIcon> appDataList0;
   private int position = 0;
   private int selectedPosition = 0;
   private static String STREAM_URL;
@@ -38,7 +34,7 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
   private ColorMatrixColorFilter cmfActive;
 
   public interface Listener {
-    void onItemClick(View item, AppData app);
+    void onItemClick(View item, AppDataIcon app);
 
     void onTouch();
 
@@ -48,11 +44,8 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
   private final Listener listener;
 
   public SwitchAppsAdapter(
-      Context context,
-      float brightness,
-      boolean grayscaleIcons,
-      Listener listener) {
-    
+      Context context, float brightness, boolean grayscaleIcons, Listener listener) {
+
     this.brightness = brightness;
     this.listener = listener;
     this.context = context;
@@ -98,7 +91,7 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
     @Override
     public void onClick(View v) {
       v.setBackgroundColor(Color.TRANSPARENT);
-      AppData app = appDataList0.get(getAdapterPosition());
+      AppDataIcon app = appDataList0.get(getAdapterPosition());
       // Toast.makeText(context, getAdapterPosition() + "", Toast.LENGTH_SHORT).show();
       listener.onItemClick(v, app);
     }
@@ -106,20 +99,13 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
     @Override
     public boolean onTouch(View v, MotionEvent event) {
       if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-        // myBomb.disarm();
         clearPosition();
-        // settingsSel.setVisibility(View.VISIBLE);
         v.setBackgroundColor(Color.TRANSPARENT);
         listener.onTouch();
       }
       return false;
     }
   }
-
-  // MyAdapter(List<AppData> appDataList) {
-  //		appDataList0 = appDataList;
-  //	}
 
   @Override
   public SwitchAppsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -130,13 +116,12 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 
   @Override
   public void onBindViewHolder(MyViewHolder holder, int position) {
-    AppData app = appDataList0.get(position);
+    AppDataIcon app = appDataList0.get(position);
     // holder.itemView.setSelected(true);
 
     holder.name.setText(app.getDescription());
 
-    Drawable icon = app.getIcon(context);
-    icon.mutate();
+    Drawable icon = app.getIcon();
     if (icon != null) holder.logo.setImageDrawable(icon);
 
     holder.border.setBackground(null);
@@ -150,11 +135,6 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 
       if (position == selectedPosition) {
         listener.onTitleChanged(app.getDescription());
-        // txtTitle.setText(app.getDescription());
-        /*
-        if (grayscaleIcons)
-          holder.border.setBackground(context.getDrawable(R.drawable.round_rect_shape));
-        */
       }
     } else {
       holder.name.setAlpha(brightness);
@@ -169,29 +149,25 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
     return appDataList0.size();
   }
 
-  public void setItems(List<AppData> newList) {
+  public void setItems(List<AppDataIcon> newList) {
     appDataList0 = newList;
     selectedPosition = 0;
     this.notifyDataSetChanged();
   }
 
   public void clearPosition() {
+    if (appDataList0 == null) return;
     if (selectedPosition != -99) {
       Integer oldPosition = selectedPosition;
       selectedPosition = -99;
 
       this.notifyItemRangeChanged(0, appDataList0.size());
     }
-    /*
-    for (int i = 0; i <= appDataList0.size() - 1; i++) {
-    	this.notifyItemChanged(i);
-    }
-    */
-    // selectedPosition = oldPosition;
-
   }
 
-  public int setPosition() {
+  public Integer setPosition() {
+
+    if (appDataList0 == null) return null;
 
     this.notifyItemRangeChanged(0, appDataList0.size());
 
@@ -207,13 +183,16 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 
       this.notifyItemChanged(oldPosition);
       this.notifyItemChanged(selectedPosition);
-
-      // linearLayoutManager.scrollToPosition(selectedPosition);
     }
     return selectedPosition;
   }
 
   public AppData getCurrentApp() {
-    return appDataList0.get(selectedPosition);
+    try {
+      return appDataList0.get(selectedPosition);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      Log.e(TAG, "current application cannot be provided based on index " + selectedPosition);
+      return null;
+    }
   }
 }

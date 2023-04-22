@@ -1,10 +1,8 @@
 <androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.preference.PreferenceCategory android:title="Autostart">
         <androidx.preference.SwitchPreference
             android:defaultValue="@string/pref_runMediaApp"
@@ -22,15 +20,24 @@
             android:max="20000"
             android:min="0"
             android:summary="xs"
-            android:title="Delay (seconds) before start of media app" />
-        <androidx.preference.SwitchPreference
-            android:defaultValue="@string/pref_lterecover"
-            android:key="lterecover"
-            android:summary="Start LTErecover after sleep"
-            android:title="Start LTErecover"
-            android:enabled="false"
-            android:selectable="false" 
-            app:allowDividerAbove="true"
-            />
+            android:title="Delay before start of media app" />
     </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="Automate">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_enableAutomateSrv"
+            android:key="enableAutomateSrv"
+            android:summary="Enable Automate Service on service start"
+            android:title="Enable Automate" />
+        <EditTextPreference
+            android:defaultValue="@string/pref_automateFlow"
+            android:dialogMessage="Paste flow URI you can find in &apos;flow beginning block&apos; of your Automate Flow"
+            android:dialogTitle="Flow URI"
+            android:enabled="false"
+            android:inputType="text"
+            android:key="automateFlow"
+            android:selectable="false"
+            android:singleLine="true"
+            android:title="Start Automate Flow" />
+    </androidx.preference.PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

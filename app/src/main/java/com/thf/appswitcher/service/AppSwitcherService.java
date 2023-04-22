@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -25,11 +26,11 @@ import com.thf.AppSwitcher.R;
 import com.thf.AppSwitcher.SettingsActivity;
 import com.thf.AppSwitcher.SwitchActivity;
 import com.thf.AppSwitcher.utils.LogReaderUtil;
+import com.thf.AppSwitcher.utils.LteRecover;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
-import com.thf.AppSwitcher.utils.RunActivity;
 import com.thf.AppSwitcher.utils.RunMediaApp;
 
 public class AppSwitcherService extends Service
@@ -39,15 +40,15 @@ public class AppSwitcherService extends Service
   // private Looper mServiceLooper;
   private Context context;
   private SharedPreferencesHelper sharedPreferencesHelper;
-  private LogReaderUtil logReaderUtil;
-  private UsageStatsUtil usageStatsUtil;
-  private SunriseSunset sunriseSunset;
+  private static LogReaderUtil logReaderUtil;
+  private static UsageStatsUtil usageStatsUtil;
+  private static SunriseSunset sunriseSunset;
   private String logTag;
   private String logOnPress;
   private String logShortPress;
   private String logLongPress;
 
-  private SharedPreferences sharedPreferences;
+  // private SharedPreferences sharedPreferences;
 
   private static Boolean disableNaviMainActivity = false;
   private boolean runMediaApp;
@@ -59,6 +60,9 @@ public class AppSwitcherService extends Service
   public static final int DIM_MODE_ON = 1;
   public static final int DIM_MODE_OFF = 0;
   public static final int DIM_MODE_AUTO = 2;
+
+  private boolean buttonSound = false;
+  private MediaPlayer mediaPlayer;
 
   private Handler handler = new Handler(Looper.getMainLooper());
 
@@ -80,6 +84,7 @@ public class AppSwitcherService extends Service
                 intent.putExtra("onPress", true);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
               }
+              // do not open switch activity because this can be the start of a long press
               break;
             case LogReaderUtil.ACTION_LONG_PRESS:
               // send bc to close if activity is running
@@ -89,7 +94,7 @@ public class AppSwitcherService extends Service
                 intent.putExtra("close", true);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
               } else {
-                // switch to home on long press
+                // switch to home on long press if activity and so dialog is not visible
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
                 startMain.addCategory(Intent.CATEGORY_HOME);
                 startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -122,6 +127,8 @@ public class AppSwitcherService extends Service
               break;
           }
 
+          if (buttonSound && LogReaderUtil.ACTION_ON_PRESS != action) mediaPlayer.start();
+
           if (runMediaApp && runMediaAppThread != null && runMediaAppThread.isAlive()) {
             runMediaAppThread.interrupt();
           }
@@ -136,17 +143,15 @@ public class AppSwitcherService extends Service
       usageStatsUtil.stopProgress();
       usageStatsUtil = new UsageStatsUtil(context, usageStatsCallbacks);
       usageStatsUtil.startProgress();
+            sharedPreferencesHelper.getSelected(true);
     } else if (key.equals("logTag")) {
-      logTag = sharedPreferences.getString(key, getResources().getString(R.string.pref_logTag));
+      logTag = sharedPreferencesHelper.getString(key);
     } else if (key.equals("logOnPress")) {
-      logOnPress =
-          sharedPreferences.getString(key, getResources().getString(R.string.pref_logOnPress));
+      logOnPress = sharedPreferencesHelper.getString(key);
     } else if (key.equals("logShortPress")) {
-      logShortPress =
-          sharedPreferences.getString(key, getResources().getString(R.string.pref_logShortPress));
+      logShortPress = sharedPreferencesHelper.getString(key);
     } else if (key.equals("logLongPress")) {
-      logLongPress =
-          sharedPreferences.getString(key, getResources().getString(R.string.pref_logLongPress));
+      logLongPress = sharedPreferencesHelper.getString(key);
     } else if (key.equals("dimMode")) {
       dimMode = sharedPreferencesHelper.getInteger("dimMode");
       updateNotification("running...");
@@ -174,6 +179,8 @@ public class AppSwitcherService extends Service
       overlayWindow.setLandscape(sharedPreferencesHelper.getBoolean("forceLandscape"));
     } else if (key.equals("dimScreen")) {
       overlayWindow.setBrightness(sharedPreferencesHelper.getInteger("dimScreen"));
+    } else if (key.equals("buttonSound")) {
+      buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
     }
     if (key.equals("logTag")
         || key.equals("logOnPress")
@@ -192,7 +199,7 @@ public class AppSwitcherService extends Service
     mApplication = (AppSwitcherApp) getApplicationContext();
     context = this;
 
-    sharedPreferencesHelper = new SharedPreferencesHelper(context);
+    sharedPreferencesHelper = new SharedPreferencesHelper(context, this);
 
     mApplication.registerPermissionGrantedCallback(
         new AppSwitcherApp.PermissionGrantedCallbacks() {
@@ -233,27 +240,8 @@ public class AppSwitcherService extends Service
     logLongPress = sharedPreferencesHelper.getString("logLongPress");
 
     logReaderUtil = new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
-    // logReaderUtil.startProgress();
 
     usageStatsUtil = new UsageStatsUtil(this, usageStatsCallbacks);
-    // usageStatsUtil.startProgress();
-
-    sharedPreferences = this.getSharedPreferences("USERDATA", MODE_PRIVATE);
-    sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-    boolean enableAutomate = sharedPreferencesHelper.getBoolean("enableAutomateSrv");
-    if (enableAutomate) {
-      Utils.enableService(
-          context,
-          context.getString(R.string.automatePackage),
-          context.getString(R.string.automateService),
-          utilCallbacks);
-
-      String automateFlow = sharedPreferencesHelper.getString("automateFlow");
-      if (!"".equals(automateFlow)
-          && !context.getString(R.string.pref_automateFlow).equals(automateFlow))
-        Utils.startAutomateFlow(context, automateFlow, utilCallbacks);
-    }
 
     forceLandscape = sharedPreferencesHelper.getBoolean("forceLandscape");
     overlayWindow =
@@ -261,6 +249,9 @@ public class AppSwitcherService extends Service
     overlayWindow.setLandscape(forceLandscape);
     dimMode = sharedPreferencesHelper.getInteger("dimMode");
     sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
+
+    buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
+    mediaPlayer = MediaPlayer.create(context, R.raw.buttonpress);
   }
 
   private void registerBootUpRecv() {
@@ -285,6 +276,7 @@ public class AppSwitcherService extends Service
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
+
     String action = "";
     if (intent != null) action = intent.getAction();
 
@@ -329,13 +321,21 @@ public class AppSwitcherService extends Service
     }
 
     boolean runLteRecover = sharedPreferencesHelper.getBoolean("lterecover");
-    if (runLteRecover)
-      new Thread(
-              new RunActivity(
-                  context,
-                  getString(R.string.LTErecoverPackage),
-                  getString(R.string.LTErecoverActivity)))
-          .start();
+    if (runLteRecover) new Thread(new LteRecover(context)).start();
+
+    boolean enableAutomate = sharedPreferencesHelper.getBoolean("enableAutomateSrv");
+    if (enableAutomate) {
+      Utils.enableService(
+          context,
+          context.getString(R.string.automatePackage),
+          context.getString(R.string.automateService),
+          utilCallbacks);
+
+      String automateFlow = sharedPreferencesHelper.getString("automateFlow");
+      if (!"".equals(automateFlow)
+          && !context.getString(R.string.pref_automateFlow).equals(automateFlow))
+        Utils.startAutomateFlow(context, automateFlow, utilCallbacks);
+    }
 
     updateNotification("running...");
     switch (dimMode) {
@@ -367,14 +367,19 @@ public class AppSwitcherService extends Service
   @Override
   public void onDestroy() {
     isRunning = false;
-    sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    sharedPreferencesHelper.unregisterOnSharedPreferenceChangeListener(this);
 
+    /*
     if (bootUpReceiver != null) {
       // unregisterReceiver(bootUpReceiver);
-      bootUpReceiver = null;
+      // bootUpReceiver = null;
+      Log.d(TAG, "receiver unregistered");
+      getApplicationContext().unregisterReceiver(bootUpReceiver);
     }
+    */
 
     stopThreads();
+    mediaPlayer = null;
     Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
   }
 

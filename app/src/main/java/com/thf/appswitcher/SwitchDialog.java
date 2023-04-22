@@ -3,10 +3,7 @@ package com.thf.AppSwitcher;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
 import android.view.Window;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,9 +13,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.State;
 import com.thf.AppSwitcher.SwitchDialog;
 import com.thf.AppSwitcher.utils.FlashButton;
-import com.thf.AppSwitcher.utils.LogReaderUtil;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.service.AppSwitcherService;
 import android.widget.TextClock;
@@ -26,6 +23,7 @@ import android.content.DialogInterface;
 import android.widget.ProgressBar;
 import com.thf.AppSwitcher.utils.SwitchAppsAdapter;
 import com.thf.AppSwitcher.utils.AppData;
+import com.thf.AppSwitcher.utils.AppDataIcon;
 import java.util.List;
 import android.content.Intent;
 import android.util.Log;
@@ -39,7 +37,7 @@ public class SwitchDialog extends Dialog {
   private Activity activity;
   private SharedPreferencesHelper sharedPreferencesHelper;
   private SwitchDialogCallbacks listener;
-  public Handler handler = new Handler(Looper.getMainLooper());
+  private Handler handler = new Handler(Looper.getMainLooper());
   private LinearLayoutManager linearLayoutManager;
   private ProgressBar progressBar;
   private LinearLayout settingsSel;
@@ -49,7 +47,8 @@ public class SwitchDialog extends Dialog {
   private static SwitchAppsAdapter adapter;
   private AppSwitcherApp mApplication;
 
-  private static boolean dataLoaded = false;
+  private static boolean adapterDataSet = false;
+  private static boolean layoutComplete = false;
   private int dialogDelay;
   private float brightness;
   private boolean grayscaleIcons = false;
@@ -74,7 +73,6 @@ public class SwitchDialog extends Dialog {
     this.showClock = showClock;
     bomb = new Bomb(dialogDelay);
 
-    Log.d(TAG, "Create adapter");
     adapter =
         new SwitchAppsAdapter(
             activity,
@@ -82,7 +80,7 @@ public class SwitchDialog extends Dialog {
             grayscaleIcons,
             new SwitchAppsAdapter.Listener() {
               @Override
-              public void onItemClick(View item, AppData app) {
+              public void onItemClick(View item, AppDataIcon app) {
                 SwitchDialog.this.dismiss();
                 callBackAppData(app);
               }
@@ -105,10 +103,9 @@ public class SwitchDialog extends Dialog {
     prepareDialog();
   }
 
-  public void setItems(List<AppData> newData) {
-    Log.d(TAG, "set items adapter");
+  public void setItems(List<AppDataIcon> newData) {
     adapter.setItems(newData);
-    dataLoaded = true;
+    adapterDataSet = true;
   }
 
   private void setShowClock(boolean showClock) {
@@ -127,25 +124,32 @@ public class SwitchDialog extends Dialog {
   public void callBackAppData(AppData app) {
     this.dismiss();
     Intent intent;
-    
+
     listener.onResult(app);
   }
 
-  public void action(int action) {
+  public enum Action {
+    CLOSE,
+    NOTHING,
+    NEXT
+  }
+
+  public void action(Action action) {
     if (bomb != null) bomb.disarm();
-    Log.d(TAG, "received action");
     switch (action) {
-      case LogReaderUtil.ACTION_LONG_PRESS:
+      case CLOSE:
         this.dismiss();
 
-      case LogReaderUtil.ACTION_ON_PRESS:
+      case NOTHING:
         // nothing to do. Bomb already disarmed
         break;
 
-      case LogReaderUtil.ACTION_SHORT_PRESS:
-        position = adapter.setPosition();
-        Log.d(TAG, "adapter position " + position);
-        linearLayoutManager.scrollToPosition(position);
+      case NEXT:
+        Integer pos = adapter.setPosition();
+        if (pos != null) {
+          position = pos;
+          linearLayoutManager.scrollToPosition(position);
+        }
         bomb.start();
         break;
     }
@@ -158,6 +162,7 @@ public class SwitchDialog extends Dialog {
     // wait for loaded data before bomb ticks
     new Thread(
             new Runnable() {
+              /*
               Runnable showDialog =
                   new Runnable() {
                     @Override
@@ -165,26 +170,27 @@ public class SwitchDialog extends Dialog {
                       SwitchDialog.super.show();
                     }
                   };
-
+              */
               @Override
               public void run() {
-                while (!dataLoaded) {
+                while (!adapterDataSet || !layoutComplete) {
                   // we just wait to get data
                 }
-                handler.post(showDialog); // need to be executed on ui thread
+                // handler.post(showDialog); // need to be executed on ui thread
                 bomb.start();
               }
             })
         .start();
+    super.show();
   }
 
   @Override
   public void dismiss() {
     if (bomb != null) bomb.disarm();
-    super.dismiss();
     setShowClock(showClock);
     settingsSel.setVisibility(View.GONE);
     dimScreenMode.setVisibility(View.GONE);
+    super.dismiss();
   }
 
   private void prepareDialog() {
@@ -285,7 +291,14 @@ public class SwitchDialog extends Dialog {
 
     linearLayoutManager =
         new LinearLayoutManager(
-            AppSwitcherApp.getInstance(), LinearLayoutManager.HORIZONTAL, false);
+            AppSwitcherApp.getInstance(), LinearLayoutManager.HORIZONTAL, false) {
+          // after the layout has finished drawing on the screen
+          @Override
+          public void onLayoutCompleted(RecyclerView.State state) {
+            super.onLayoutCompleted(state);
+            layoutComplete = true;
+          }
+        };
     recyclerView.setLayoutManager(linearLayoutManager);
 
     this.setCanceledOnTouchOutside(true);
@@ -342,7 +355,7 @@ public class SwitchDialog extends Dialog {
                 try {
                   Thread.sleep(wait / 3); // 100
                 } catch (InterruptedException ex) {
-                  Log.i(TAG, "timer of SwitchActivity interrupted");
+                  Log.i(TAG, "timer of SwitchDialog interrupted");
                   handler.post(
                       new Runnable() {
                         @Override
@@ -361,7 +374,8 @@ public class SwitchDialog extends Dialog {
                   new Runnable() {
                     @Override
                     public void run() {
-                      callBackAppData(adapter.getCurrentApp());
+                      AppData app = adapter.getCurrentApp();
+                      if (app != null) callBackAppData(app);
                       // SwitchDialog.this.dismiss();
                     }
                   });
@@ -373,8 +387,6 @@ public class SwitchDialog extends Dialog {
         bombThread = null;
       }
       bombThread = new Thread(runnable);
-      // Log.i(TAG, "tick");
-      // this.disarmed = false;
       bombThread.start();
     }
   }

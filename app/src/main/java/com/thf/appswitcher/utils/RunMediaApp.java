@@ -36,8 +36,8 @@ public class RunMediaApp implements Runnable {
     String foregroundApp = usageStatsUtil.getCurrentActivity();
     List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
 
-    if (SharedPreferencesHelper.listContainsKey(selectedList, foregroundApp, null)
-        || SharedPreferencesHelper.listContainsKey(
+    if (SharedPreferencesHelper.appDataListContainsKey(selectedList, foregroundApp, null)
+        || SharedPreferencesHelper.appDataListContainsKey(
             selectedList, foregroundApp.split("/")[0], null)) {
       Log.d(TAG, "navi or media app (" + foregroundApp + ") already in foreground");
       return;
@@ -49,7 +49,7 @@ public class RunMediaApp implements Runnable {
       Iterator<AppData> i = recentsAppList.iterator();
       while (i.hasNext()) {
         AppData s = i.next();
-        if (SharedPreferencesHelper.listContainsKey(selectedList, s.getKey(), "media")) {
+        if (SharedPreferencesHelper.appDataListContainsKey(selectedList, s.getKey(), "media")) {
           Log.d(TAG, "autostart of " + s.getName());
           ComponentName name = new ComponentName(s.getPackageName(), s.getActivityName());
           Intent intentStartMedia = new Intent(Intent.ACTION_MAIN);

@@ -1,15 +1,18 @@
 package com.thf.AppSwitcher.utils;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
+import android.media.metrics.Event;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class UsageStatsUtil {
   private static String foregroundActivity;
   private Thread thread;
 
-  List<AppData> selectedList = new ArrayList<>();
+  List<AppDataIcon> selectedList = new ArrayList<>();
 
   public UsageStatsUtil(Context context, UsageStatsCallbacks listener) {
     this.context = context;
@@ -54,26 +57,17 @@ public class UsageStatsUtil {
     return false;
   }
 
+  private static class RecentUseComparator implements Comparator<UsageStats> {
+    @Override
+    public int compare(UsageStats lhs, UsageStats rhs) {
+      return (lhs.getLastTimeUsed() > rhs.getLastTimeUsed())
+          ? -1
+          : (lhs.getLastTimeUsed() == rhs.getLastTimeUsed()) ? 0 : 1;
+    }
+  }
+
   public String getCurrentActivity() {
-    if (UsageStatsUtil.foregroundActivity != null) {
-      return UsageStatsUtil.foregroundActivity;
-    }
-
-    String foregroundActivity = "";
-    UsageStatsManager mUsageStatsManager =
-        (UsageStatsManager) context.getSystemService(Service.USAGE_STATS_SERVICE);
-    long time = System.currentTimeMillis();
-
-    UsageEvents usageEvents = mUsageStatsManager.queryEvents(time - 1000 * 3600, time + 1000);
-    UsageEvents.Event event = new UsageEvents.Event();
-    while (usageEvents.hasNextEvent()) {
-      usageEvents.getNextEvent(event);
-      if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED
-          && !ignoreActivity(event.getPackageName(), event.getClassName())) {
-        foregroundActivity = event.getPackageName() + "/" + event.getClassName();
-      }
-    }
-    return foregroundActivity;
+    return foregroundActivity != null ? foregroundActivity : "";
   }
 
   String lastCollectedKey = "";
@@ -82,43 +76,62 @@ public class UsageStatsUtil {
     // do something long
     Runnable runnable =
         new Runnable() {
+          private String fgActivity = null;
+
           @Override
           public void run() {
 
-            selectedList = sharedPreferencesHelper.loadList("selected");
+            selectedList = sharedPreferencesHelper.getSelected(false);
 
             while (true) {
 
               List<UsageEvents.Event> readUsageStatList = readUsageStats(context);
-
               Iterator<UsageEvents.Event> i = readUsageStatList.iterator();
-              UsageEvents.Event s = null;
+              UsageEvents.Event s;
+              fgActivity = null;
 
               while (i.hasNext()) {
                 s = i.next(); // must be called before you can call i.remove()
                 Boolean collected = false;
 
                 String key = s.getPackageName() + "/" + s.getClassName();
-                AppData app = sharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
+
+                AppDataIcon app =
+                    SharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
 
                 if (app == null) {
                   key = s.getPackageName();
-                  app = sharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
+                  app = SharedPreferencesHelper.getAppDataFromListByKey(selectedList, key);
                 }
 
+                // collect recent apps
                 if (app != null && !key.equals(lastCollectedKey)) {
-                  /*
-                  if ("app".equals(app.getCategory())) {
-                    app.setActivityName(s.getClassName());
-                    Log.i(TAG, "Collected with key: " + app.getKey());
-                  }
-                  */
-                  sharedPreferencesHelper.putIntoRecentsList(app);
+                  sharedPreferencesHelper.putIntoRecentsList(new AppData(app));
                   Log.i(TAG, "Collected: " + key);
                   lastCollectedKey = key;
                 }
+
+                // current foreground app
+                if (!ignoreActivity(s.getPackageName(), s.getClassName())) {
+                  fgActivity = s.getPackageName() + "/" + s.getClassName();
+                }
+              } // end loop on usage data
+
+              if (fgActivity != null && !fgActivity.equals(foregroundActivity)) {
+                foregroundActivity = fgActivity;
+                if (listener != null) {
+                  new Handler(Looper.getMainLooper())
+                      .post(
+                          new Runnable() {
+                            @Override
+                            public void run() {
+                              listener.onForegroundApp(foregroundActivity);
+                            }
+                          });
+                }
               }
 
+              /*
               if (s != null) {
                 String packageName = s.getPackageName();
                 String activity = s.getClassName();
@@ -140,6 +153,7 @@ public class UsageStatsUtil {
                   }
                 }
               }
+              */
               try {
                 Thread.sleep(500);
               } catch (InterruptedException ex) {
@@ -148,6 +162,7 @@ public class UsageStatsUtil {
             }
           }
         };
+
     if (thread == null || !thread.isAlive()) {
       thread = new Thread(runnable); // , Process.THREAD_PRIORITY_BACKGROUND);
       thread.start();
@@ -156,6 +171,8 @@ public class UsageStatsUtil {
   }
 
   private static long readFromTimestamp = 0;
+  // private static long id = 0;
+  private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   private ArrayList<UsageEvents.Event> readUsageStats(Context context) {
 
@@ -163,23 +180,51 @@ public class UsageStatsUtil {
     UsageStatsManager mUsageStatsManager =
         (UsageStatsManager) context.getSystemService(Service.USAGE_STATS_SERVICE);
 
-    long time = System.currentTimeMillis();
+    long endTime = System.currentTimeMillis();
     // mEventList.clear();
     if (readFromTimestamp == 0) {
       Log.i(TAG, "read usage stat of last h");
-      readFromTimestamp = time - 1000 * 3600;
+      readFromTimestamp = endTime - 1000 * 3600;
     }
 
-    UsageEvents usageEvents = mUsageStatsManager.queryEvents(readFromTimestamp, time);
+    // The inclusive beginning of the range of stats
+    // The exclusive end of the range of stats
 
+    /*
+    Log.d(
+        TAG,
+        "read usage data with ID "
+            + id
+            + " from "
+            + formatter.format(new Date(readFromTimestamp))
+            + " to "
+            + formatter.format(new Date(endTime)));
+    */
+
+    UsageEvents usageEvents = mUsageStatsManager.queryEvents(readFromTimestamp, endTime);
+    UsageEvents.Event event = new UsageEvents.Event();
     while (usageEvents.hasNextEvent()) {
-      UsageEvents.Event event = new UsageEvents.Event();
+
       usageEvents.getNextEvent(event);
+
       if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
         mEventList.add(event);
+        /*
+        Log.d(
+            TAG,
+            id
+                + " - resumed "
+                + event.getPackageName()
+                + "/"
+                + event.getClassName()
+                + " - "
+                + formatter.format(new Date(event.getTimeStamp())));
+        */
         readFromTimestamp = event.getTimeStamp() + 1;
       }
     }
+    // readFromTimestamp = endTime + 1;
+    // id++;
     return mEventList;
   }
 }

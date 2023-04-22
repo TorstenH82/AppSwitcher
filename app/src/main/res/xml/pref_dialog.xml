@@ -28,5 +28,10 @@
             android:key="grayscaleIcons"
             android:summary="Grayscale not selected items"
             android:title="Grayscale app icons" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_buttonSound"
+            android:key="buttonSound"
+            android:summary="Play sound on key press"
+            android:title="Key sound" />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

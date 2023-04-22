@@ -10,8 +10,8 @@ android {
         applicationId "com.thf.AppSwitcher"
         minSdk 21
         targetSdk 30
-        versionCode 2700
-        versionName "2.7"
+        versionCode 2703
+        versionName "2.7.3"
     }
 
     buildTypes {

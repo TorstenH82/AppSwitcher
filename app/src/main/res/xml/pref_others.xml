@@ -14,12 +14,30 @@
             android:selectable="false"
             android:summary=""
             android:title="DuraSpeed" />
-        <androidx.preference.Preference
-            android:key="qbproperty"
-            android:persistent="false"
-            android:selectable="false"
-            android:summary=""
-            android:title="Quickbootmgr property value"/>
-        
+        <!-- <androidx.preference.Preference android:key="qbproperty" android:persistent="false" android:selectable="false" android:summary="" android:title="Quickbootmgr property value"/> -->
+    </androidx.preference.PreferenceCategory>
+<androidx.preference.PreferenceCategory android:title="Restore LTE">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_lterecover"
+            android:key="lterecover"
+            android:summary="Restore 4G/LTE connection on service start"
+            android:title="Restore LTE connection"
+            android:enabled="true"
+            android:selectable="true"/>
+        <!-- app:allowDividerAbove="true" -->
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_lterecoverDelay"
+            android:key="lterecoverDelay"
+            android:max="60000"
+            android:min="0"
+            android:summary="xs"
+            android:title="Delay before stop services" />
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="@string/pref_lterecoverDelayBtw"
+            android:key="lterecoverDelayBtw"
+            android:max="20000"
+            android:min="0"
+            android:summary="xs"
+            android:title="Delay before restart after stop" />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

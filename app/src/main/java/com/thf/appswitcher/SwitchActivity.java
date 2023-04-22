@@ -17,23 +17,23 @@ import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SwitchAppsAdapter;
 import com.thf.AppSwitcher.utils.Utils;
+import com.thf.AppSwitcher.utils.AppDataIcon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import com.thf.AppSwitcher.utils.LogReaderUtil;
 
 public class SwitchActivity extends Activity {
   private static final String TAG = "AppSwitcherService";
   private AppSwitcherApp mApplication;
-  private List<AppData> newAppList = new ArrayList<AppData>();
+
   private static SwitchAppsAdapter adapter;
   private static Context context;
   private SharedPreferencesHelper sharedPreferencesHelper;
   private static int dialogDelay;
 
-  SwitchDialog newDialog;
+  private static SwitchDialog switchDialog;
 
   public Handler handler = new Handler(Looper.getMainLooper());
   private boolean disableNaviMainActivity = false;
@@ -50,9 +50,6 @@ public class SwitchActivity extends Activity {
 
     sharedPreferencesHelper = new SharedPreferencesHelper(context);
 
-    LocalBroadcastManager.getInstance(this)
-        .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
-
     Log.i(TAG, "SwitchActivity onCreate");
 
     dialogDelay = sharedPreferencesHelper.getInteger("dialogDelay");
@@ -64,7 +61,7 @@ public class SwitchActivity extends Activity {
 
     new Thread(runnablePrepareData).start();
 
-    newDialog =
+    switchDialog =
         new SwitchDialog(
             SwitchActivity.this,
             switchDialogListener,
@@ -82,6 +79,8 @@ public class SwitchActivity extends Activity {
             Intent intent = new Intent();
             // intent = new Intent(Intent.ACTION_MAIN);
             if ("launcher".equals(app.getCategory())) {
+              Log.d(TAG, "start home");
+              intent = new Intent(Intent.ACTION_MAIN);
               intent.addCategory(Intent.CATEGORY_HOME);
               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
@@ -104,9 +103,11 @@ public class SwitchActivity extends Activity {
   protected void onPause() {
     super.onPause();
     Log.d(TAG, "pause SwitchActivity");
-    newDialog.dismiss();
-
-    if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false, utilCallbacks);
+    // do not unregister here because NaviStartActivity may become fg app
+    // LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
+    // if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false,
+    // utilCallbacks);
   }
 
   private Utils.UtilCallbacks utilCallbacks =
@@ -120,8 +121,12 @@ public class SwitchActivity extends Activity {
   @Override
   protected void onResume() {
     super.onResume();
-    Log.d(TAG, "onResume SwitchActivity");
-    newDialog.show();
+    Log.d(TAG, "resume SwitchActivity");
+    // unregister here because we cant do it in onPause
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    LocalBroadcastManager.getInstance(this)
+        .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
+    switchDialog.show();
     if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, true, utilCallbacks);
   }
 
@@ -133,16 +138,17 @@ public class SwitchActivity extends Activity {
   @Override
   protected void onStop() {
     super.onStop();
+
+    Log.d(TAG, "stop SwitchActivity");
     mApplication.setSwitchActivityRunning(false);
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if (newDialog != null) {
-      newDialog.dismiss();
-    }
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
+    if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false, utilCallbacks);
   }
 
   private BroadcastReceiver messageReceiver =
@@ -157,7 +163,7 @@ public class SwitchActivity extends Activity {
           boolean onPress = intent.getBooleanExtra("onPress", false);
 
           if (close) {
-            newDialog.dismiss();
+            switchDialog.action(SwitchDialog.Action.CLOSE);
             finish();
             return;
           }
@@ -165,20 +171,25 @@ public class SwitchActivity extends Activity {
           if (onPress) {
             // nothing to do because bomb already disarmed
             // next bc will come after user releases swc button
-            newDialog.action(LogReaderUtil.ACTION_ON_PRESS);
+            switchDialog.action(SwitchDialog.Action.NOTHING);
             return;
           }
+
           Log.d(TAG, "jump to next entry");
-          newDialog.action(LogReaderUtil.ACTION_SHORT_PRESS);
+          switchDialog.action(SwitchDialog.Action.NEXT);
         }
       };
 
   private Runnable runnablePrepareData =
       new Runnable() {
+
+        // private List<AppData> newAppList = new ArrayList<AppData>();
+        private List<AppDataIcon> newAppList = new ArrayList<AppDataIcon>();
+
         @Override
         public void run() {
 
-          List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
+          List<AppDataIcon> selectedList = sharedPreferencesHelper.getSelected(false);
 
           boolean launcherIsInForeground = false;
           boolean addLauncher = sharedPreferencesHelper.getBoolean("addLauncher");
@@ -188,7 +199,7 @@ public class SwitchActivity extends Activity {
             try {
               Intent intent = getIntent();
               foregroundApp = intent.getStringExtra("foregroundApp");
-              Log.i(TAG, "Foreground app from intent: " + foregroundApp);
+              Log.i(TAG, "foreground app from intent: " + foregroundApp);
 
             } catch (Exception ex) {
               Log.e(TAG, ex.getMessage());
@@ -204,13 +215,13 @@ public class SwitchActivity extends Activity {
             AppData naviInForeground = new AppData();
             boolean naviIsInForeground = false;
 
-            if (sharedPreferencesHelper.listContainsKey(selectedList, foregroundApp, "media")) {
+            if (SharedPreferencesHelper.appDataListIconContainsKey(selectedList, foregroundApp, "media")) {
               mediaAppInForeground = true;
-            } else if (sharedPreferencesHelper.listContainsKey(
+            } else if (SharedPreferencesHelper.appDataListIconContainsKey(
                 selectedList, foregroundApp.split("/")[0], "media")) {
               foregroundApp = foregroundApp.split("/")[0];
               mediaAppInForeground = true;
-            } else if (sharedPreferencesHelper.listContainsKey(
+            } else if (SharedPreferencesHelper.appDataListIconContainsKey(
                 selectedList, foregroundApp.split("/")[0], "navi")) {
               foregroundApp = foregroundApp.split("/")[0];
               naviIsInForeground = true;
@@ -226,36 +237,41 @@ public class SwitchActivity extends Activity {
             boolean prioPosSet = false;
 
             while (i.hasNext()) {
-              AppData s = i.next(); // must be called before you can call i.remove()
+              AppData r = i.next(); // must be called before you can call i.remove()
 
               // skip current app and apps not selected by user anymore
-              if (TextUtils.equals(s.getKey(), foregroundApp)
-                  || !sharedPreferencesHelper.listContainsKey(selectedList, s.getKey(), null))
+              if (TextUtils.equals(r.getKey(), foregroundApp)
+                  || !SharedPreferencesHelper.appDataListIconContainsKey(selectedList, r.getKey(), null))
                 continue;
+
+              AppDataIcon app = new AppDataIcon(r);
+              int idx = selectedList.indexOf(app);
+              if (idx == -1) continue;
+              app = selectedList.get(idx);
 
               Boolean posSet = false;
 
               // special handling for recent navis
-              if (sharedPreferencesHelper.listContainsKey(selectedList, s.getKey(), "navi")) {
+              if (SharedPreferencesHelper.appDataListIconContainsKey(selectedList, r.getKey(), "navi")) {
 
                 // navi is not in front, media app in front
                 // -> offer recent navi on 1st pos
                 if (!naviIsInForeground && mediaAppInForeground && !prioPosSet) {
-                  s.setSort(-1);
+                  app.setSort(-1);
                   prioPosSet = true;
                   posSet = true;
 
                   // navi is not in front, media app not in front
                   // --> offer recent navi on 2nd pos
                 } else if (!naviIsInForeground && !mediaAppInForeground && !prioPosSet) {
-                  s.setSort(1);
+                  app.setSort(1);
                   prioPosSet = true;
                   posSet = true;
 
                   // navi ia in front and previous app is also a navi
                   // --> offer recent navi on 2nd pos
                 } else if (sort == -1 && naviIsInForeground) {
-                  s.setSort(1); // not on 1st position
+                  app.setSort(1); // not on 1st position
 
                   posSet = true;
                 }
@@ -266,16 +282,16 @@ public class SwitchActivity extends Activity {
                 // positions 1 is reserved
                 if (sort == 1) sort = 2;
 
-                s.setSort(sort);
+                app.setSort(sort);
               }
 
-              newAppList.add(0, s);
-              selectedList.remove(s);
+              newAppList.add(0, app);
+              selectedList.remove(r);
             }
 
-            for (AppData app : selectedList) {
+            // add apps not removed from selected list by looping on recent apps
+            for (AppDataIcon app : selectedList) {
               if (!app.getKey().equals(foregroundApp)) {
-                // Log.d(TAG, "added " + app.getPackageName() + " to pos 9999");
                 app.setSort(9999);
                 newAppList.add(app);
               }
@@ -286,9 +302,9 @@ public class SwitchActivity extends Activity {
           }
           Collections.sort(
               newAppList,
-              new Comparator<AppData>() {
-                public int compare(AppData o1, AppData o2) {
-                  // compare two instance of `Score` and return `int` as
+              new Comparator<AppDataIcon>() {
+                public int compare(AppDataIcon o1, AppDataIcon o2) {
+                  // compare two instance of `AppData` and return `int` as
                   // result.
                   int cmp = Integer.compare(o1.getSort(), o2.getSort());
                   if (cmp == 0) {
@@ -302,11 +318,23 @@ public class SwitchActivity extends Activity {
             newAppList.add(1, mApplication.getLauncher());
           }
 
+          // add the icons here
+          /*
+          for (AppData app : newAppList) {
+            Drawable icon = app.getIcon(context);
+            if (icon == null) continue;
+            icon.mutate();
+            AppDataIcon appIcon = new AppDataIcon(app);
+            appIcon.setIcon(icon);
+            newAppListIcon.add(appIcon);
+          }
+          */
+
           handler.post(
               new Runnable() {
                 @Override
                 public void run() {
-                  newDialog.setItems(newAppList);
+                  switchDialog.setItems(newAppList);
                 }
               });
         }
