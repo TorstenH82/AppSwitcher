@@ -1,99 +1,117 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
-    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".SwitchActivity" >
+    android:layout_width="match_parent"
+    android:id="@+id/constraintLayout"
+    tools:context=".SwitchActivity">
 
     <TextView
-        android:id="@+id/titleTxt"
+        android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:singleLine="true"
-        android:text="selected app"
-        android:textColor="#ffffffff"
         android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <com.thf.AppSwitcher.utils.FlashButton
-        android:id="@+id/dimScreenMode"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/textClock"
-        app:layout_constraintTop_toTopOf="parent"
-        android:adjustViewBounds="false"
-        android:background="@null"
-        android:scaleType="fitXY" />
-
-    <TextClock
-        android:id="@+id/textClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:singleLine="true"
         android:textColor="#ffffffff"
-        app:layout_constraintEnd_toStartOf="@+id/settingsSel"
+        android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:format12Hour="hh:mm a"
-        android:format24Hour="HH:mm" />
+        app:layout_constraintBottom_toTopOf="@+id/layoutMain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/titleTxt"
+        android:text="selected app"
+        android:textStyle="bold" />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/settingsSel"
-        android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:visibility="gone"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/equalizer_selector"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/settings_selector"
-        android:padding="0dp" />
+        android:padding="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layoutMain"
+        android:layout_marginStart="16dp"
+        android:id="@+id/equalizerSel">
+    </LinearLayout>
+
+    <com.thf.AppSwitcher.utils.FlashButton
+        android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:layout_marginEnd="16dp"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY"
+        android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layoutMain"
+        app:layout_constraintEnd_toStartOf="@+id/textClock"
+        android:layout_marginStart="0dp"
+        android:id="@+id/dimScreenMode" />
+
+    <TextClock
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layoutMain"
+        android:format12Hour="hh:mm a"
+        android:format24Hour="HH:mm"
+        android:textColor="#ffffffff"
+        app:layout_constraintEnd_toStartOf="@+id/settingsSel"
+        android:id="@+id/textClock" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/settings_selector"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layoutMain"
+        android:padding="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/settingsSel">
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutMain"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/titleTxt"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginTop="54dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
-            android:id="@+id/progressbarSw"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:forceDarkAllowed="false"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="0dp"
             android:max="100"
-            android:progress="100"/>
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_marginTop="0dp"
+            android:forceDarkAllowed="false"
+            android:layout_marginStart="0dp"
+            android:progress="100"
+            android:id="@+id/progressbarSw" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/activityRecycler"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressbarSw"
-            android:orientation="horizontal" >
-        </androidx.recyclerview.widget.RecyclerView>
+            android:id="@+id/activityRecycler"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

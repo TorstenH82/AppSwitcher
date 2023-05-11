@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
@@ -143,7 +144,7 @@ public class AppSwitcherService extends Service
       usageStatsUtil.stopProgress();
       usageStatsUtil = new UsageStatsUtil(context, usageStatsCallbacks);
       usageStatsUtil.startProgress();
-            sharedPreferencesHelper.getSelected(true);
+      sharedPreferencesHelper.getSelected(true);
     } else if (key.equals("logTag")) {
       logTag = sharedPreferencesHelper.getString(key);
     } else if (key.equals("logOnPress")) {
@@ -302,6 +303,10 @@ public class AppSwitcherService extends Service
       return START_STICKY;
 
     } else if (ACTION_WAKE_UP.equals(action)) {
+      if (!isSleeping) {
+        Log.d(TAG, "called to wake up but not sleeping");
+        return START_STICKY;
+      }
       Log.d(TAG, "called to wake up");
       Toast.makeText(this, "Wake up AppSwitcher Service", Toast.LENGTH_SHORT).show();
 

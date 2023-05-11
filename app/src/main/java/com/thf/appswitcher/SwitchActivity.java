@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import com.thf.AppSwitcher.OverlayWindow;
 import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SwitchAppsAdapter;
@@ -38,6 +39,7 @@ public class SwitchActivity extends Activity {
   public Handler handler = new Handler(Looper.getMainLooper());
   private boolean disableNaviMainActivity = false;
   private boolean showClock = true;
+  private boolean showEqualizer = false;
   private float brightness;
   private static boolean grayscale = true;
 
@@ -56,6 +58,7 @@ public class SwitchActivity extends Activity {
     Log.i(TAG, "Dialog delay: " + Integer.toString(dialogDelay));
     disableNaviMainActivity = sharedPreferencesHelper.getBoolean("disableNaviStart");
     showClock = sharedPreferencesHelper.getBoolean("showClock");
+    showEqualizer = sharedPreferencesHelper.getBoolean("showEqualizer");
     brightness = ((float) sharedPreferencesHelper.getInteger("itemsBrightness")) / 100;
     grayscale = sharedPreferencesHelper.getBoolean("grayscaleIcons");
 
@@ -68,7 +71,8 @@ public class SwitchActivity extends Activity {
             dialogDelay,
             brightness,
             grayscale,
-            showClock);
+            showClock,
+            showEqualizer);
   }
 
   private SwitchDialog.SwitchDialogCallbacks switchDialogListener =
@@ -105,7 +109,7 @@ public class SwitchActivity extends Activity {
     Log.d(TAG, "pause SwitchActivity");
     // do not unregister here because NaviStartActivity may become fg app
     // LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
-    if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
+    // if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
     // if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false,
     // utilCallbacks);
   }
@@ -215,7 +219,8 @@ public class SwitchActivity extends Activity {
             AppData naviInForeground = new AppData();
             boolean naviIsInForeground = false;
 
-            if (SharedPreferencesHelper.appDataListIconContainsKey(selectedList, foregroundApp, "media")) {
+            if (SharedPreferencesHelper.appDataListIconContainsKey(
+                selectedList, foregroundApp, "media")) {
               mediaAppInForeground = true;
             } else if (SharedPreferencesHelper.appDataListIconContainsKey(
                 selectedList, foregroundApp.split("/")[0], "media")) {
@@ -241,8 +246,8 @@ public class SwitchActivity extends Activity {
 
               // skip current app and apps not selected by user anymore
               if (TextUtils.equals(r.getKey(), foregroundApp)
-                  || !SharedPreferencesHelper.appDataListIconContainsKey(selectedList, r.getKey(), null))
-                continue;
+                  || !SharedPreferencesHelper.appDataListIconContainsKey(
+                      selectedList, r.getKey(), null)) continue;
 
               AppDataIcon app = new AppDataIcon(r);
               int idx = selectedList.indexOf(app);
@@ -252,7 +257,8 @@ public class SwitchActivity extends Activity {
               Boolean posSet = false;
 
               // special handling for recent navis
-              if (SharedPreferencesHelper.appDataListIconContainsKey(selectedList, r.getKey(), "navi")) {
+              if (SharedPreferencesHelper.appDataListIconContainsKey(
+                  selectedList, r.getKey(), "navi")) {
 
                 // navi is not in front, media app in front
                 // -> offer recent navi on 1st pos

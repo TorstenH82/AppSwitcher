@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.view.Window;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -24,6 +25,7 @@ import android.widget.ProgressBar;
 import com.thf.AppSwitcher.utils.SwitchAppsAdapter;
 import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.AppDataIcon;
+import com.thf.AppSwitcher.utils.Utils;
 import java.util.List;
 import android.content.Intent;
 import android.util.Log;
@@ -43,9 +45,10 @@ public class SwitchDialog extends Dialog {
   private LinearLayout settingsSel;
   private FlashButton dimScreenMode;
   private TextClock textClock;
+  private LinearLayout equalizerSel;
   private TextView txtTitle;
   private static SwitchAppsAdapter adapter;
-  private AppSwitcherApp mApplication;
+  // private AppSwitcherApp mApplication;
 
   private static boolean adapterDataSet = false;
   private static boolean layoutComplete = false;
@@ -53,6 +56,7 @@ public class SwitchDialog extends Dialog {
   private float brightness;
   private boolean grayscaleIcons = false;
   private boolean showClock = true;
+  private boolean showEqualizer = false;
   // private boolean forceLandscape = false;
   private int position = -99;
 
@@ -62,15 +66,17 @@ public class SwitchDialog extends Dialog {
       int dialogDelay,
       float brightness,
       boolean grayscaleIcons,
-      boolean showClock) {
+      boolean showClock,
+      boolean showEqualizer) {
 
-    // super(activity, R.style.Theme_Transparent);
+    //super(activity.getApplicationContext(), R.style.Theme_Transparent);
     super(activity);
     this.activity = activity;
     this.sharedPreferencesHelper = new SharedPreferencesHelper(activity);
     this.listener = listener;
     this.dialogDelay = dialogDelay;
     this.showClock = showClock;
+    this.showEqualizer = showEqualizer;
     bomb = new Bomb(dialogDelay);
 
     adapter =
@@ -89,9 +95,7 @@ public class SwitchDialog extends Dialog {
               public void onTouch() {
                 bomb.disarm();
                 adapter.clearPosition();
-                textClock.setVisibility(View.GONE);
-                settingsSel.setVisibility(View.VISIBLE);
-                dimScreenMode.setVisibility(View.VISIBLE);
+                showControls(true);
               }
 
               @Override
@@ -117,6 +121,25 @@ public class SwitchDialog extends Dialog {
     }
   }
 
+  private void showControls(boolean show) {
+    if (show) {
+      textClock.setVisibility(View.GONE);
+      settingsSel.setVisibility(View.VISIBLE);
+      dimScreenMode.setVisibility(View.VISIBLE);
+      if (showEqualizer) {
+        equalizerSel.setVisibility(View.VISIBLE);
+        txtTitle.setVisibility(View.INVISIBLE);
+      }
+    } else {
+      settingsSel.setVisibility(View.GONE);
+      dimScreenMode.setVisibility(View.GONE);
+      if (showEqualizer) {
+        equalizerSel.setVisibility(View.GONE);
+        txtTitle.setVisibility(View.VISIBLE);
+      }
+    }
+  }
+
   public interface SwitchDialogCallbacks {
     public void onResult(AppData app);
   }
@@ -136,6 +159,7 @@ public class SwitchDialog extends Dialog {
 
   public void action(Action action) {
     if (bomb != null) bomb.disarm();
+    showControls(false);
     switch (action) {
       case CLOSE:
         this.dismiss();
@@ -188,8 +212,8 @@ public class SwitchDialog extends Dialog {
   public void dismiss() {
     if (bomb != null) bomb.disarm();
     setShowClock(showClock);
-    settingsSel.setVisibility(View.GONE);
-    dimScreenMode.setVisibility(View.GONE);
+    showControls(false);
+
     super.dismiss();
   }
 
@@ -220,9 +244,10 @@ public class SwitchDialog extends Dialog {
               public void onClick(View v) {
                 bomb.disarm();
                 adapter.clearPosition();
-                textClock.setVisibility(View.GONE);
-                settingsSel.setVisibility(View.VISIBLE);
-                dimScreenMode.setVisibility(View.VISIBLE);
+                showControls(true);
+                // textClock.setVisibility(View.GONE);
+                // settingsSel.setVisibility(View.VISIBLE);
+                // dimScreenMode.setVisibility(View.VISIBLE);
               }
             });
 
@@ -282,8 +307,19 @@ public class SwitchDialog extends Dialog {
     }
     txtTitle = this.findViewById(R.id.titleTxt);
 
+    // Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fonts/ds_digi.ttf");
     textClock = this.findViewById(R.id.textClock);
+    // textClock.setTypeface(typeFace);
     setShowClock(showClock);
+
+    equalizerSel = this.findViewById(R.id.equalizerSel);
+    equalizerSel.setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Utils.runEqualizer(activity);
+          }
+        });
 
     RecyclerView recyclerView = this.findViewById(R.id.activityRecycler);
     recyclerView.setHasFixedSize(true);

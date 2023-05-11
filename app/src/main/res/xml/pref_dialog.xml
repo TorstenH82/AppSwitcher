@@ -16,6 +16,11 @@
             android:key="showClock"
             android:summary="Show clock on top bar"
             android:title="Clock" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_showEqualizer"
+            android:key="showEqualizer"
+            android:summary="Show equalizer in manual mode"
+            android:title="Equalizer" />
         <androidx.preference.SeekBarPreference
             android:defaultValue="@string/pref_itemsBrightness"
             android:key="itemsBrightness"

@@ -14,6 +14,7 @@
     <string name="pref_runMediaAppTwice">false</string>
     <string name="pref_runMediaAppDelay">0</string>
     <string name="pref_showClock">true</string>
+    <string name="pref_showEqualizer">false</string>
     <string name="pref_disableNaviStart">false</string>
     <string name="pref_itemsBrightness">60</string>
     <string name="pref_scanWifi">false</string>
@@ -26,7 +27,7 @@
     <string name="pref_lterecoverDelayBtw">3000</string>
 
     <string name="pref_buttonSound">true</string>
-    
+
     <string name="pref_grayscaleIcons">true</string>
     <string name="pref_forceLandscape">false</string>
 
@@ -65,4 +66,6 @@
     <string name="LTErecover">LTErecover</string>
     <string name="LTErecoverPackage">com.thf.lterecover</string>
     <string name="LTErecoverActivity">com.thf.lterecover.RecoverActivity</string>
+
+    <string name="commandRunEqualizer">am start -n com.ts.MainUI/com.ts.set.dsp.SetDspMainActivity</string>
 </resources>
