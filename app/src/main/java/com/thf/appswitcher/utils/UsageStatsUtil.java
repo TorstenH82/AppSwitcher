@@ -47,9 +47,12 @@ public class UsageStatsUtil {
 
   private boolean ignoreActivity(String packageName, String activity) {
     if (packageName == null
-        || context.getPackageName().equals(packageName)
+        || (context.getPackageName().equals(packageName)
+            && "com.thf.AppSwitcher.SwitchActivity".equals(activity))
         || "com.thf.AppSwitcherStarter".equals(packageName)
+        || "com.google.android.permissioncontroller".equals(packageName)
         || "com.thf.FlowStarter".equals(packageName)
+        || "android".equals(packageName)
         || ("com.ts.MainUI".equals(packageName)
             && "com.ts.main.navi.NaviMainActivity".equals(activity))) {
       return true;
@@ -119,6 +122,7 @@ public class UsageStatsUtil {
 
               if (fgActivity != null && !fgActivity.equals(foregroundActivity)) {
                 foregroundActivity = fgActivity;
+                Log.d(TAG, "foreground app is " + foregroundActivity);
                 if (listener != null) {
                   new Handler(Looper.getMainLooper())
                       .post(
@@ -132,31 +136,36 @@ public class UsageStatsUtil {
               }
 
               /*
-              if (s != null) {
-                String packageName = s.getPackageName();
-                String activity = s.getClassName();
+                if (s != null) {
+                  String packageName = s.getPackageName();
+                  String activity = s.getClassName();
 
-                if (!ignoreActivity(packageName, activity)) {
-                  if (foregroundActivity == null
-                      || !foregroundActivity.equals(packageName + "/" + activity)) {
-                    foregroundActivity = packageName + "/" + activity;
-                    if (listener != null) {
-                      new Handler(Looper.getMainLooper())
-                          .post(
-                              new Runnable() {
-                                @Override
-                                public void run() {
-                                  listener.onForegroundApp(foregroundActivity);
-                                }
-                              });
+                  if (!ignoreActivity(packageName, activity)) {
+                    if (foregroundActivity == null
+                        || !foregroundActivity.equals(packageName + "/" + activity)) {
+                      foregroundActivity = packageName + "/" + activity;
+                      if (listener != null) {
+                        new Handler(Looper.getMainLooper())
+                            .post(
+                                new Runnable() {
+                                  @Override
+                                  public void run() {
+                                    listener.onForegroundApp(foregroundActivity);
+                                  }
+                                });
+                      }
                     }
                   }
                 }
-              }
+
+
+                try {
+                  Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                  return;
+                }
               */
-              try {
-                Thread.sleep(500);
-              } catch (InterruptedException ex) {
+              if (Thread.interrupted()) {
                 return;
               }
             }
@@ -189,17 +198,6 @@ public class UsageStatsUtil {
 
     // The inclusive beginning of the range of stats
     // The exclusive end of the range of stats
-
-    /*
-    Log.d(
-        TAG,
-        "read usage data with ID "
-            + id
-            + " from "
-            + formatter.format(new Date(readFromTimestamp))
-            + " to "
-            + formatter.format(new Date(endTime)));
-    */
 
     UsageEvents usageEvents = mUsageStatsManager.queryEvents(readFromTimestamp, endTime);
     UsageEvents.Event event = new UsageEvents.Event();

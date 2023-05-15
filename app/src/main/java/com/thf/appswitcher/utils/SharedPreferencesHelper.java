@@ -132,7 +132,7 @@ public class SharedPreferencesHelper {
         i.remove();
         // we could save the list after this
       } else {
-        icon.mutate();
+        //icon.mutate();
         AppDataIcon appIcon = new AppDataIcon(s);
         appIcon.setIcon(icon);
         selectedApps.add(appIcon);

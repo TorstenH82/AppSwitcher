@@ -11,7 +11,6 @@ import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.AppDataIcon;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 
-
 public class AppSwitcherApp extends Application {
   private static final String TAG = "AppSwitcherService";
   private static AppSwitcherApp appSwitcherApp;
@@ -32,10 +31,9 @@ public class AppSwitcherApp extends Application {
     packageManager = this.getPackageManager();
     ActivityUtil activityUtil = new ActivityUtil(appSwitcherApp, null, null);
     launcher = activityUtil.getLauncher();
-        
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this);
-        sharedPreferencesHelper.getSelected(true);
-        
+
+    SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this);
+    sharedPreferencesHelper.getSelected(true);
   }
 
   public AppDataIcon getLauncher() {

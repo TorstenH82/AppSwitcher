@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.view.Window;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.State;
-import com.thf.AppSwitcher.SwitchDialog;
 import com.thf.AppSwitcher.utils.FlashButton;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.service.AppSwitcherService;
@@ -34,7 +31,6 @@ import android.os.Looper;
 
 public class SwitchDialog extends Dialog {
   private static final String TAG = "AppSwitcherService";
-
   private static Bomb bomb;
   private Activity activity;
   private SharedPreferencesHelper sharedPreferencesHelper;
@@ -58,7 +54,7 @@ public class SwitchDialog extends Dialog {
   private boolean showClock = true;
   private boolean showEqualizer = false;
   // private boolean forceLandscape = false;
-  private int position = -99;
+  private static int position = -99;
 
   public SwitchDialog(
       Activity activity,
@@ -69,7 +65,7 @@ public class SwitchDialog extends Dialog {
       boolean showClock,
       boolean showEqualizer) {
 
-    //super(activity.getApplicationContext(), R.style.Theme_Transparent);
+    // super(activity.getApplicationContext(), R.style.Theme_Transparent);
     super(activity);
     this.activity = activity;
     this.sharedPreferencesHelper = new SharedPreferencesHelper(activity);
@@ -215,6 +211,7 @@ public class SwitchDialog extends Dialog {
     showControls(false);
 
     super.dismiss();
+    //listener.onResult(null);
   }
 
   private void prepareDialog() {

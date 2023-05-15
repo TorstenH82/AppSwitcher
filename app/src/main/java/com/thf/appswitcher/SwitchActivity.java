@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import com.thf.AppSwitcher.OverlayWindow;
 import com.thf.AppSwitcher.utils.AppData;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SwitchAppsAdapter;
@@ -24,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
 
 public class SwitchActivity extends Activity {
   private static final String TAG = "AppSwitcherService";
@@ -42,6 +42,7 @@ public class SwitchActivity extends Activity {
   private boolean showEqualizer = false;
   private float brightness;
   private static boolean grayscale = true;
+  private static String foregroundApp;
 
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -52,7 +53,7 @@ public class SwitchActivity extends Activity {
 
     sharedPreferencesHelper = new SharedPreferencesHelper(context);
 
-    Log.i(TAG, "SwitchActivity onCreate");
+    Log.d(TAG, "create SwitchActivity");
 
     dialogDelay = sharedPreferencesHelper.getInteger("dialogDelay");
     Log.i(TAG, "Dialog delay: " + Integer.toString(dialogDelay));
@@ -130,7 +131,11 @@ public class SwitchActivity extends Activity {
     LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     LocalBroadcastManager.getInstance(this)
         .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
-    switchDialog.show();
+
+        
+        
+        
+    if (!switchDialog.isShowing()) switchDialog.show();
     if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, true, utilCallbacks);
   }
 
@@ -144,14 +149,18 @@ public class SwitchActivity extends Activity {
     super.onStop();
 
     Log.d(TAG, "stop SwitchActivity");
+    if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
+    LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     mApplication.setSwitchActivityRunning(false);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
-    if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
+        
+        Log.d(TAG, "destroy SwitchActivity");
+    // LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+    // if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
     if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false, utilCallbacks);
   }
 

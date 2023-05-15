@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 import java.util.List;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +20,11 @@ import com.thf.AppSwitcher.R;
 public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.MyViewHolder> {
   private static final String TAG = "AppSwitcherService";
   private List<AppDataIcon> appDataList0;
-  private int position = 0;
-  private int selectedPosition = 0;
-  private static String STREAM_URL;
-  // private Station currentStation;
+  private static int selectedPosition = 0;
   private Context context;
   private float brightness;
   private boolean grayscaleIcons = false;
-  private ColorMatrix cmInactive = new ColorMatrix();
-  private ColorMatrix cmActive = new ColorMatrix();
-  private ColorMatrixColorFilter cmfInactive;
-  private ColorMatrixColorFilter cmfActive;
-
+  
   public interface Listener {
     void onItemClick(View item, AppDataIcon app);
 
@@ -51,10 +43,7 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
     this.context = context;
     this.grayscaleIcons = grayscaleIcons;
 
-    if (grayscaleIcons) cmInactive.setSaturation(0);
-    // cmActive.setSaturation(1);
-    cmfInactive = new ColorMatrixColorFilter(cmInactive);
-    cmfActive = new ColorMatrixColorFilter(cmActive);
+    
   }
 
   public void setBrightness(float brightness) {
@@ -63,12 +52,6 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 
   public void setGrayscaleIcons(boolean grayscaleIcons) {
     this.grayscaleIcons = grayscaleIcons;
-    if (grayscaleIcons) {
-      cmInactive.setSaturation(0);
-    } else {
-      cmInactive.setSaturation(1);
-    }
-    cmfInactive = new ColorMatrixColorFilter(cmInactive);
     this.notifyDataSetChanged();
   }
 
@@ -118,29 +101,31 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
   public void onBindViewHolder(MyViewHolder holder, int position) {
     AppDataIcon app = appDataList0.get(position);
     // holder.itemView.setSelected(true);
-
     holder.name.setText(app.getDescription());
 
     Drawable icon = app.getIcon();
-    if (icon != null) holder.logo.setImageDrawable(icon);
+    if (icon != null) holder.logo.setImageDrawable(icon.mutate());
+    holder.logo.getDrawable().clearColorFilter();
 
     holder.border.setBackground(null);
 
-    if (position == selectedPosition || selectedPosition == -99) {
-      if (icon != null) icon.setColorFilter(cmfActive);
-      // holder.logo.setImageDrawable(icon);
+    ColorMatrix matrix = new ColorMatrix();
+    matrix.setSaturation(1f);
 
+    if (position == selectedPosition || selectedPosition == -99) {
       holder.name.setAlpha(1f);
       holder.logo.setAlpha(1f);
-
       if (position == selectedPosition) {
         listener.onTitleChanged(app.getDescription());
       }
     } else {
+      if (grayscaleIcons) matrix.setSaturation(0);
       holder.name.setAlpha(brightness);
       holder.logo.setAlpha(brightness);
-      icon.setColorFilter(cmfInactive);
     }
+
+    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+    holder.logo.setColorFilter(filter);
   }
 
   @Override
@@ -169,20 +154,20 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
 
     if (appDataList0 == null) return null;
 
-    this.notifyItemRangeChanged(0, appDataList0.size());
+    // this.notifyItemRangeChanged(0, appDataList0.size());
 
     if (selectedPosition == -99) {
       selectedPosition = 0;
-      this.notifyItemChanged(selectedPosition);
+      this.notifyItemRangeChanged(0, appDataList0.size());
+      // this.notifyItemChanged(selectedPosition);
     } else {
       Integer oldPosition = selectedPosition;
       selectedPosition++;
       if (selectedPosition > getItemCount() - 1) {
         selectedPosition = 0;
       }
-
-      this.notifyItemChanged(oldPosition);
       this.notifyItemChanged(selectedPosition);
+      this.notifyItemChanged(oldPosition);
     }
     return selectedPosition;
   }

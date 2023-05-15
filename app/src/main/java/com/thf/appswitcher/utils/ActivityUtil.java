@@ -222,7 +222,7 @@ public class ActivityUtil {
         AppDataIcon appIcon = new AppDataIcon(app);
     Drawable icon = app.getIcon(context);
     if (icon != null) {
-      icon.mutate();
+      //icon.mutate();
       appIcon.setIcon(icon);
     }
     return appIcon;
