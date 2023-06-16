@@ -24,6 +24,19 @@ public class BootUpReceiver extends BroadcastReceiver {
       context.startForegroundService(intentSrv);
       return;
     }
+
+    if ("com.ts.main.DEAL_KEY".equals(action)) {
+      Log.i(TAG, "received " + action);
+      Intent intentSrv = new Intent(context, AppSwitcherService.class);
+      intentSrv.setAction(AppSwitcherService.ACTION_KEY);
+      int key = intent.getExtras().getInt("key");
+      intentSrv.putExtra("key", key);
+      String topact = intent.getExtras().getString("topact");
+      intentSrv.putExtra("topact", topact);
+      context.startForegroundService(intentSrv);
+      return;
+    }
+
     if ("autochips.intent.action.QB_POWEROFF".equals(action)
         || "com.ts.main.uiaccoff".equals(action)) {
       Log.i(TAG, "received " + action);
@@ -35,7 +48,7 @@ public class BootUpReceiver extends BroadcastReceiver {
     if ("android.intent.action.BOOT_COMPLETEDx".equals(action)) {
       Log.i(TAG, "received " + action);
       Intent intentSrv = new Intent(context, StartServiceActivity.class);
-           intentSrv.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      intentSrv.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       context.startActivity(intentSrv);
       return;
     }

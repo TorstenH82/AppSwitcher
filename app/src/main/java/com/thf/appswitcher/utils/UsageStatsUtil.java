@@ -47,8 +47,11 @@ public class UsageStatsUtil {
 
   private boolean ignoreActivity(String packageName, String activity) {
     if (packageName == null
+        || "null".equals(activity)
         || (context.getPackageName().equals(packageName)
             && "com.thf.AppSwitcher.SwitchActivity".equals(activity))
+        || (context.getPackageName().equals(packageName)
+            && "com.thf.AppSwitcher.StartServiceActivity".equals(activity))
         || "com.thf.AppSwitcherStarter".equals(packageName)
         || "com.google.android.permissioncontroller".equals(packageName)
         || "com.thf.FlowStarter".equals(packageName)

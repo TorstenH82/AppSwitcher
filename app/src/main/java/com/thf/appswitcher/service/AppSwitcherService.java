@@ -12,9 +12,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,6 +44,7 @@ public class AppSwitcherService extends Service
   private static LogReaderUtil logReaderUtil;
   private static UsageStatsUtil usageStatsUtil;
   private static SunriseSunset sunriseSunset;
+  private boolean enableLogListener;
   private String logTag;
   private String logOnPress;
   private String logShortPress;
@@ -49,7 +52,7 @@ public class AppSwitcherService extends Service
 
   // private SharedPreferences sharedPreferences;
 
-  private static Boolean disableNaviMainActivity = false;
+  private static boolean disableNaviMainActivity = false;
   private boolean runMediaApp;
   private Thread runMediaAppThread;
 
@@ -72,7 +75,7 @@ public class AppSwitcherService extends Service
         @Override
         public void handleMessage(android.os.Message msg) {
           int action = msg.what;
-          Log.i(TAG, "Received LogReaderUtil action: " + action);
+          Log.i(TAG, "Received action: " + action);
 
           switch (action) {
             case LogReaderUtil.ACTION_ON_PRESS:
@@ -102,9 +105,14 @@ public class AppSwitcherService extends Service
               break;
             case LogReaderUtil.ACTION_SHORT_PRESS:
               if (!mApplication.getSwitchActivityRunning()) {
+                String foregroundApp;
                 // get the current foreground app
-                String foregroundApp = usageStatsUtil.getCurrentActivity();
-
+                // we may get it from MainUI in future
+                if (msg.obj == null) {
+                  foregroundApp = usageStatsUtil.getCurrentActivity();
+                } else {
+                  foregroundApp = (String) msg.obj;
+                }
                 Log.i(TAG, "start dialog");
                 Intent intent = new Intent(context, SwitchActivity.class);
                 intent.putExtra("foregroundApp", foregroundApp);
@@ -143,6 +151,8 @@ public class AppSwitcherService extends Service
       usageStatsUtil = new UsageStatsUtil(context, usageStatsCallbacks);
       usageStatsUtil.startProgress();
       sharedPreferencesHelper.getSelected(true);
+    } else if (key.equals("enableLogListener")) {
+      enableLogListener = sharedPreferencesHelper.getBoolean(key);
     } else if (key.equals("logTag")) {
       logTag = sharedPreferencesHelper.getString(key);
     } else if (key.equals("logOnPress")) {
@@ -184,11 +194,18 @@ public class AppSwitcherService extends Service
     if (key.equals("logTag")
         || key.equals("logOnPress")
         || key.equals("logShortPress")
-        || key.equals("logLongPress")) {
-      logReaderUtil.stopProgress();
-      logReaderUtil =
-          new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
-      logReaderUtil.startProgress();
+        || key.equals("logLongPress")
+        || key.equals("enableLogListener")) {
+
+      if (logReaderUtil != null) logReaderUtil.stopProgress();
+
+      if (enableLogListener) {
+        logReaderUtil =
+            new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
+        logReaderUtil.startProgress();
+      } else {
+        logReaderUtil = null;
+      }
     }
   }
 
@@ -233,13 +250,17 @@ public class AppSwitcherService extends Service
     startForeground(NOTIFCATION_ID, notification);
     // createchannel();
 
+    enableLogListener = sharedPreferencesHelper.getBoolean("enableLogListener");
     logTag = sharedPreferencesHelper.getString("logTag");
     logOnPress = sharedPreferencesHelper.getString("logOnPress");
     logShortPress = sharedPreferencesHelper.getString("logShortPress");
     logLongPress = sharedPreferencesHelper.getString("logLongPress");
 
-    logReaderUtil = new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
-
+    if (enableLogListener) {
+      Log.i(TAG, "LogListener create");
+      logReaderUtil =
+          new LogReaderUtil(logHandler, logTag, logOnPress, logShortPress, logLongPress);
+    }
     usageStatsUtil = new UsageStatsUtil(this, usageStatsCallbacks);
 
     forceLandscape = sharedPreferencesHelper.getBoolean("forceLandscape");
@@ -261,6 +282,7 @@ public class AppSwitcherService extends Service
       filter.addAction("com.ts.main.uiaccon");
       // filter.addAction("autochips.intent.action.QB_POWEROFF");
       filter.addAction("com.ts.main.uiaccoff");
+      filter.addAction("com.ts.main.DEAL_KEY");
       filter.setPriority(1000);
       getApplicationContext().registerReceiver(bootUpReceiver, filter);
       Log.i(TAG, "Registered broadcast receiver");
@@ -271,6 +293,7 @@ public class AppSwitcherService extends Service
   public static final String ACTION_SLEEP = "ACTION_SLEEP";
   private static final String ACTION_STOP_SERVICE = "ACTION_STOP";
   private static final String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
+  public static final String ACTION_KEY = "ACTION_KEY";
   private static final int NOTIFCATION_ID = 1337;
 
   @Override
@@ -301,14 +324,33 @@ public class AppSwitcherService extends Service
       return START_STICKY;
 
     } else if (ACTION_WAKE_UP.equals(action)) {
-      /*      
-      if (!isSleeping) {
-        Log.d(TAG, "called to wake up but not sleeping");
-        return START_STICKY;
-      }
-      */      
       Log.d(TAG, "called to wake up");
       Toast.makeText(this, "Wake up AppSwitcher Service", Toast.LENGTH_SHORT).show();
+
+    } else if (ACTION_KEY.equals(action)) {
+      int key = intent.getExtras().getInt("key");
+
+      //Toast.makeText(this, "Received key " + key + " from MainUI", Toast.LENGTH_SHORT).show();
+
+      Message completeMessage;
+      switch (key) {
+        case 809:
+          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_ON_PRESS);
+          completeMessage.sendToTarget();
+          break;
+        case 10:
+        case 810:
+          String fgApp = intent.getExtras().getString("topact");
+          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_SHORT_PRESS);
+          completeMessage.obj = fgApp;
+          completeMessage.sendToTarget();
+          break;
+        case 811:
+          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_LONG_PRESS);
+          completeMessage.sendToTarget();
+          break;
+      }
+      return START_STICKY;
 
     } else { // standard start of service
       Log.d(TAG, "called to start");
@@ -356,8 +398,7 @@ public class AppSwitcherService extends Service
         sunriseSunset.enableAuto();
         break;
     }
-
-    logReaderUtil.startProgress();
+    if (enableLogListener) logReaderUtil.startProgress();
     usageStatsUtil.startProgress();
     // If we get killed, after returning from here, restart
     return START_STICKY;

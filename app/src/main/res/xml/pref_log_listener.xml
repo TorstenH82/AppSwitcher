@@ -4,6 +4,11 @@
     android:layout_height="match_parent">
 
     <androidx.preference.PreferenceCategory android:title="Log listener">
+        <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_enableLogListener"
+            android:key="enableLogListener"
+            android:summary="Needs to be enabled if modded MainUI can not be used"
+            android:title="Enable log listener" />
         <EditTextPreference
             android:defaultValue="@string/pref_logTag"
             android:dialogMessage="AppSwitcher will listen to Android log considering entries with the tag set below"

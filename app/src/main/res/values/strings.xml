@@ -5,6 +5,7 @@
     <string name="channel_description">AppSwitcher channel</string>
     <string name="pref_addLauncher">false</string>
     <string name="pref_smartList">true</string>
+    <string name="pref_enableLogListener">false</string>
     <string name="pref_logTag">MainUI</string>
     <string name="pref_logOnPress">nDealPkey = = 829</string>
     <string name="pref_logShortPress">nDealPkey = = 830</string>
@@ -23,8 +24,8 @@
     <string name="pref_dimScreen">50</string>
     <string name="pref_dimMode">0</string>
     <string name="pref_lterecover">false</string>
-    <string name="pref_lterecoverDelay">20000</string>
-    <string name="pref_lterecoverDelayBtw">3000</string>
+    <string name="pref_lterecoverDelay">15000</string>
+    <string name="pref_lterecoverDelayBtw">5000</string>
 
     <string name="pref_buttonSound">true</string>
 

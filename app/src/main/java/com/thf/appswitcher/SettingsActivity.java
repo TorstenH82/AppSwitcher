@@ -184,14 +184,24 @@ public class SettingsActivity extends AppCompatActivity {
       } else if ("log_listener".equals(screen)) {
         setPreferencesFromResource(R.xml.pref_log_listener, rootKey);
 
+        SwitchPreference enableLogListener = findPreference("enableLogListener");
+
         findPreference("logTag")
             .setSummary(((EditTextPreference) findPreference("logTag")).getText());
+        findPreference("logTag").setEnabled(enableLogListener.isChecked());
+        findPreference("logTag").setSelectable(enableLogListener.isChecked());
         findPreference("logOnPress")
             .setSummary(((EditTextPreference) findPreference("logOnPress")).getText());
+        findPreference("logOnPress").setEnabled(enableLogListener.isChecked());
+        findPreference("logOnPress").setSelectable(enableLogListener.isChecked());
         findPreference("logShortPress")
             .setSummary(((EditTextPreference) findPreference("logShortPress")).getText());
+        findPreference("logShortPress").setEnabled(enableLogListener.isChecked());
+        findPreference("logShortPress").setSelectable(enableLogListener.isChecked());
         findPreference("logLongPress")
             .setSummary(((EditTextPreference) findPreference("logLongPress")).getText());
+        findPreference("logLongPress").setEnabled(enableLogListener.isChecked());
+        findPreference("logLongPress").setSelectable(enableLogListener.isChecked());
 
       } else if ("dialog".equals(screen)) {
         setPreferencesFromResource(R.xml.pref_dialog, rootKey);
@@ -539,6 +549,19 @@ public class SettingsActivity extends AppCompatActivity {
                     true)
                 .show();
           }
+          break;
+
+        case "enableLogListener":
+          switchPreference = findPreference(key);
+          findPreference("logTag").setEnabled(switchPreference.isChecked());
+          findPreference("logTag").setSelectable(switchPreference.isChecked());
+          findPreference("logOnPress").setEnabled(switchPreference.isChecked());
+          findPreference("logOnPress").setSelectable(switchPreference.isChecked());
+          findPreference("logShortPress").setEnabled(switchPreference.isChecked());
+          findPreference("logShortPress").setSelectable(switchPreference.isChecked());
+          findPreference("logLongPress").setEnabled(switchPreference.isChecked());
+          findPreference("logLongPress").setSelectable(switchPreference.isChecked());
+
           break;
 
         case "enableAutomateSrv":
