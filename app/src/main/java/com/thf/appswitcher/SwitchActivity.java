@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class SwitchActivity extends Activity {
   private static final String TAG = "AppSwitcherService";
   private AppSwitcherApp mApplication;
@@ -127,18 +128,17 @@ public class SwitchActivity extends Activity {
     super.onResume();
     Log.d(TAG, "resume SwitchActivity");
     // unregister here because we cant do it in onPause
-    //LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
-    
+    // LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+
     //  LocalBroadcastManager.getInstance(this)
     //      .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
-    
 
-    
     if (!switchDialog.isShowing()) {
       LocalBroadcastManager.getInstance(this)
           .registerReceiver(messageReceiver, new IntentFilter("switch-message"));
       switchDialog.show();
     }
+
     if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, true, utilCallbacks);
   }
 
@@ -154,6 +154,7 @@ public class SwitchActivity extends Activity {
     Log.d(TAG, "stop SwitchActivity");
     if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
     LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+
     mApplication.setSwitchActivityRunning(false);
   }
 

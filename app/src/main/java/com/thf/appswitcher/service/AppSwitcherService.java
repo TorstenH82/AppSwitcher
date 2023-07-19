@@ -329,26 +329,27 @@ public class AppSwitcherService extends Service
 
     } else if (ACTION_KEY.equals(action)) {
       int key = intent.getExtras().getInt("key");
+      int cameraMode = intent.getExtras().getInt("cammode");
 
-      //Toast.makeText(this, "Received key " + key + " from MainUI", Toast.LENGTH_SHORT).show();
-
-      Message completeMessage;
-      switch (key) {
-        case 809:
-          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_ON_PRESS);
-          completeMessage.sendToTarget();
-          break;
-        case 10:
-        case 810:
-          String fgApp = intent.getExtras().getString("topact");
-          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_SHORT_PRESS);
-          completeMessage.obj = fgApp;
-          completeMessage.sendToTarget();
-          break;
-        case 811:
-          completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_LONG_PRESS);
-          completeMessage.sendToTarget();
-          break;
+      if (cameraMode == 0) {
+        Message completeMessage;
+        switch (key) {
+          case 9809:
+            completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_ON_PRESS);
+            completeMessage.sendToTarget();
+            break;
+          case 9010:
+          case 9810:
+            String fgApp = intent.getStringExtra("topact");
+            completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_SHORT_PRESS);
+            completeMessage.obj = fgApp;
+            completeMessage.sendToTarget();
+            break;
+          case 9811:
+            completeMessage = logHandler.obtainMessage(LogReaderUtil.ACTION_LONG_PRESS);
+            completeMessage.sendToTarget();
+            break;
+        }
       }
       return START_STICKY;
 
@@ -358,7 +359,7 @@ public class AppSwitcherService extends Service
     }
 
     isSleeping = false;
-
+    usageStatsUtil.startProgress(); //start before run of media app
     registerBootUpRecv();
 
     runMediaApp = sharedPreferencesHelper.getBoolean("runMediaApp");
@@ -399,7 +400,7 @@ public class AppSwitcherService extends Service
         break;
     }
     if (enableLogListener) logReaderUtil.startProgress();
-    usageStatsUtil.startProgress();
+    // usageStatsUtil.startProgress();
     // If we get killed, after returning from here, restart
     return START_STICKY;
   }

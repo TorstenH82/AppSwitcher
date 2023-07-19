@@ -36,6 +36,7 @@ public class RunMediaApp implements Runnable {
     String foregroundApp = usageStatsUtil.getCurrentActivity();
     List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
 
+    Log.d(TAG, "app in foreground: " + foregroundApp);
     if (SharedPreferencesHelper.appDataListContainsKey(selectedList, foregroundApp, null)
         || SharedPreferencesHelper.appDataListContainsKey(
             selectedList, foregroundApp.split("/")[0], null)) {
@@ -53,7 +54,7 @@ public class RunMediaApp implements Runnable {
           Log.d(TAG, "autostart of " + s.getName());
           ComponentName name = new ComponentName(s.getPackageName(), s.getActivityName());
           Intent intentStartMedia = new Intent(Intent.ACTION_MAIN);
-          //intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
+          // intentStartMedia.addCategory(Intent.CATEGORY_LAUNCHER);
           intentStartMedia.setFlags(
               Intent.FLAG_ACTIVITY_NEW_TASK
                   | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED

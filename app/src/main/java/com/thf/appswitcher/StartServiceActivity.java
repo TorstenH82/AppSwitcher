@@ -21,7 +21,7 @@ import com.thf.AppSwitcher.utils.Utils.SuCommandException;
 public class StartServiceActivity extends Activity {
   private static final String TAG = "AppSwitcherService";
   private static Context context;
-    private SharedPreferencesHelper sharedPreferencesHelper;
+  private SharedPreferencesHelper sharedPreferencesHelper;
   private static Activity activity;
 
   @Override
@@ -30,9 +30,10 @@ public class StartServiceActivity extends Activity {
 
     context = getApplicationContext();
     activity = StartServiceActivity.this;
-        this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
+    this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
 
     if (AppSwitcherService.isSleeping()) {
+
       Intent intentSrv = new Intent(context, AppSwitcherService.class);
       intentSrv.setAction(AppSwitcherService.ACTION_WAKE_UP);
       startForegroundService(intentSrv);
@@ -99,8 +100,7 @@ public class StartServiceActivity extends Activity {
   }
 
   private void startAppSwitcherService() {
-    List<AppData> selectedList =
-        sharedPreferencesHelper.loadList("selected");
+    List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
 
     if (selectedList.size() == 0) {
       new SimpleDialog(
@@ -113,8 +113,8 @@ public class StartServiceActivity extends Activity {
           .show();
     } else {
       if (!AppSwitcherService.isRunning()) {
-        Intent intent = new Intent(context, AppSwitcherService.class);
-        startForegroundService(intent);
+        Intent intentSrv = new Intent(context, AppSwitcherService.class);
+        startForegroundService(intentSrv);
       }
     }
     finish();

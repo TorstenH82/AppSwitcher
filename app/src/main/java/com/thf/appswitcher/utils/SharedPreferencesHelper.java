@@ -112,17 +112,9 @@ public class SharedPreferencesHelper {
 
     Log.d(TAG, "read shared preferences");
     selectedApps = new ArrayList<AppDataIcon>();
-    String storedString = sharedPreferences.getString("selected", (new JsonObject()).toString());
-
-    List<AppData> list;
-    if (!TextUtils.equals(storedString, "{}")) {
-      java.lang.reflect.Type type = new TypeToken<List<AppData>>() {}.getType();
-      Gson gson = new Gson();
-      list = gson.fromJson(storedString, type);
-    } else {
-      list = new ArrayList<AppData>();
-    }
-
+    
+    List<AppData> list = loadList("selected");
+        
     Iterator<AppData> i = list.iterator();
     while (i.hasNext()) {
       AppData s = i.next(); // must be called before you can call i.remove()

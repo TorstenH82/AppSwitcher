@@ -41,7 +41,7 @@ public class UsageStatsUtil {
       thread.interrupt();
       Log.i(TAG, "Stopped UsageStats reader");
       thread = null;
-      foregroundActivity = null;
+      //foregroundActivity = null;
     }
   }
 

@@ -68,6 +68,9 @@
             android:screenOrientation="sensor"
             android:taskAffinity=".SwitchActivity"
             android:theme="@style/Theme.Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
         </activity>
         <activity android:name="com.thf.AppSwitcher.ListActivity" />
         <activity
@@ -110,6 +113,13 @@
                 <!-- <action android:name="com.mediatek.intent.action.ACTION_BOOT_IPO" /> <action android:name="com.mediatek.intent.action.ACTION_SHUTDOWN_IPO" /> <action android:name="autochips.intent.action.RESUME_APPS" /> <action android:name="android.intent.action.BOOT_COMPLETED" /> <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <action android:name="android.intent.action.QUICKBOOT_POWEROFF" /> <action android:name="com.ts.main.uiaccon" /> Whats here? -->
             </intent-filter>
         </receiver>
+        
+        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>
