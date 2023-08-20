@@ -27,130 +27,138 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListActivity extends AppCompatActivity {
-	private static final String TAG = "AppSwitcherService";
-    private SharedPreferencesHelper sharedPreferencesHelper;
-	private static RecyclerViewAdapter adapter;
-	private List<AppData> selectedList = new ArrayList<>();
-	private Boolean apps;
-	ActivityUtil au;
-	private int checkedPos = -1;
-	private String data;
-	private String list;
-	public Handler handler = new Handler(Looper.getMainLooper()) {
-		public void handleMessage(Message message) {
-			if (au == null) {
-				Log.e(TAG, "au is null");
-			}
-			//List<AppData> newAppList = au.getValue();
-			adapter.setItems(au.getValue());
-			progressBar.setVisibility(View.GONE);
-		}
-	};
-	private RecyclerView.LayoutManager layoutManager;
-	private Intent mainIntent;
+  private static final String TAG = "AppSwitcherService";
+  private SharedPreferencesHelper sharedPreferencesHelper;
+  private static RecyclerViewAdapter adapter;
+  private List<AppData> selectedList = new ArrayList<>();
+  private Boolean apps;
+  ActivityUtil au;
+  private int checkedPos = -1;
+  private String data;
+  private String list;
+  public Handler handler =
+      new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message message) {
+          if (au == null) {
+            Log.e(TAG, "au is null");
+          }
+          // List<AppData> newAppList = au.getValue();
+          adapter.setItems(au.getValue());
+          progressBar.setVisibility(View.GONE);
+        }
+      };
+  private RecyclerView.LayoutManager layoutManager;
+  private Intent mainIntent;
 
-	private ProgressBar progressBar;
-	private RecyclerView recyclerView;
+  private ProgressBar progressBar;
+  private RecyclerView recyclerView;
 
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        
-        sharedPreferencesHelper = new SharedPreferencesHelper(getApplicationContext());
-        
-		setContentView(R.layout.activity_list);
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    sharedPreferencesHelper = new SharedPreferencesHelper(getApplicationContext());
 
-		progressBar = findViewById(R.id.progressBar);
-		recyclerView = findViewById(R.id.listView);
+    setContentView(R.layout.activity_list);
 
-		recyclerView.setHasFixedSize(true);
-		layoutManager = new LinearLayoutManager(this);
-		recyclerView.setItemAnimator(new DefaultItemAnimator());
-		recyclerView.setLayoutManager(layoutManager);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		progressBar.setVisibility(View.VISIBLE);
+    progressBar = findViewById(R.id.progressBar);
+    recyclerView = findViewById(R.id.listView);
 
-		Intent intent = getIntent();
-		data = intent.getStringExtra("appDataList");
+    recyclerView.setHasFixedSize(true);
+    layoutManager = new LinearLayoutManager(this);
+    recyclerView.setItemAnimator(new DefaultItemAnimator());
+    recyclerView.setLayoutManager(layoutManager);
 
-		String category = "";
+    progressBar.setVisibility(View.VISIBLE);
 
-		selectedList = sharedPreferencesHelper.loadList("selected");
-		switch (data) {
+    Intent intent = getIntent();
+    data = intent.getStringExtra("appDataList");
 
-		case "navi":
-			apps = true;
-			category = "app";
-			list = "navi";
-			selectedList = selectedList.stream().filter(appData -> list.equals(appData.getList()))
-					.collect(Collectors.toList());
-			break;
-		case "activities":
-			apps = false;
-			category = "activity";
-			list = "media";
-			selectedList = selectedList.stream().filter(appData -> list.equals(appData.getList()))
-					.collect(Collectors.toList());
-			break;
-		case "sort":
-			apps = false;
-			category = "navi";
-			list = "sort";
-			break;
-		}
+    String category = "";
 
-		adapter = new RecyclerViewAdapter(new ArrayList<AppData>(), getApplicationContext(), apps, list, selectedList);		
-		
-		recyclerView.setAdapter(adapter);
+    //selectedList = sharedPreferencesHelper.loadList("selected");
+    selectedList = sharedPreferencesHelper.getSelectedNoIcon();
+            
+    switch (data) {
+      case "navi":
+        apps = true;
+        category = "app";
+        list = "navi";
+        selectedList =
+            selectedList.stream()
+                .filter(appData -> list.equals(appData.getList()))
+                .collect(Collectors.toList());
+        break;
+      case "activities":
+        apps = false;
+        category = "activity";
+        list = "media";
+        selectedList =
+            selectedList.stream()
+                .filter(appData -> list.equals(appData.getList()))
+                .collect(Collectors.toList());
+        break;
+      case "sort":
+        apps = false;
+        category = "navi";
+        list = "sort";
+        break;
+    }
 
-		if ("sort".equals(list)) {
-			ItemTouchHelper.Callback callback = new ItemMoveCallback(adapter);
-			ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-			touchHelper.attachToRecyclerView(recyclerView);
-			
-			adapter.setTouchHelper(touchHelper);
-			
-			Collections.sort(selectedList, new Comparator<AppData>() {
-				public int compare(AppData o1, AppData o2) {
-					// compare two instance of `Score` and return `int` as result.
-					int cmp = Integer.compare(o1.getSort(), o2.getSort());
-					if (cmp == 0) {
-						cmp = o1.getDescription().compareTo(o2.getDescription());
-					}
-					return cmp;
-				}
-			});
-			adapter.setItems(selectedList);
-			progressBar.setVisibility(View.GONE);
-		} else {
-			au = new ActivityUtil(getApplicationContext(), handler, category);
-			au.startProgress();
-		}
-		
-	}
+    adapter =
+        new RecyclerViewAdapter(
+            new ArrayList<AppData>(), getApplicationContext(), apps, list, selectedList);
 
-	protected void onPause() {
-		super.onPause();
-		//SharedPreferencesHelper.SaveDict(getApplicationContext(), my_dict, "my_dict" + data);
-	}
+    recyclerView.setAdapter(adapter);
 
-	protected void onResume() {
-		super.onResume();
-	}
+    if ("sort".equals(list)) {
+      ItemTouchHelper.Callback callback = new ItemMoveCallback(adapter);
+      ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+      touchHelper.attachToRecyclerView(recyclerView);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+      adapter.setTouchHelper(touchHelper);
 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
+      Collections.sort(
+          selectedList,
+          new Comparator<AppData>() {
+            public int compare(AppData o1, AppData o2) {
+              // compare two instance of `Score` and return `int` as result.
+              int cmp = Integer.compare(o1.getSort(), o2.getSort());
+              if (cmp == 0) {
+                cmp = o1.getDescription().compareTo(o2.getDescription());
+              }
+              return cmp;
+            }
+          });
+      adapter.setItems(selectedList);
+      progressBar.setVisibility(View.GONE);
+    } else {
+      au = new ActivityUtil(getApplicationContext(), handler, category);
+      au.startProgress();
+    }
+  }
 
+  protected void onPause() {
+    super.onPause();
+    // SharedPreferencesHelper.SaveDict(getApplicationContext(), my_dict, "my_dict" + data);
+  }
+
+  protected void onResume() {
+    super.onResume();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  public boolean onCreateOptionsMenu(Menu menu) {
+    return true;
+  }
 }

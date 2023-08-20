@@ -19,8 +19,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
-import com.thf.AppSwitcher.SettingsActivity;
-import com.thf.AppSwitcher.utils.AppData;
+import com.thf.AppSwitcher.utils.AppDataIcon;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SimpleDialog;
 import com.thf.AppSwitcher.utils.Utils;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SettingsActivity extends AppCompatActivity {
-  // private static final String TAG = "AppSwitcherService";
-
   private static AppSwitcherApp mApplication;
   private static Context context;
   private static SharedPreferencesHelper sharedPreferencesHelper;
@@ -110,7 +107,8 @@ public class SettingsActivity extends AppCompatActivity {
       getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
       if (screen != null && "apps_activities".equals(screen)) {
-        List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
+        // List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
+        List<AppDataIcon> selectedList = sharedPreferencesHelper.getSelected(true);
         int iNaviCount =
             selectedList.stream()
                 .filter(appData -> "navi".equals(appData.getList()))

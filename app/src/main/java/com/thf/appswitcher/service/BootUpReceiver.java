@@ -52,25 +52,15 @@ public class BootUpReceiver extends BroadcastReceiver {
       context.startActivity(intentSrv);
       return;
     }
-
-    /*
-    if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-        Log.d(TAG, "received boot completed");
-        run = true;
-    } else {
-        Log.d(TAG, "received action: " + intent.getAction());
-        Toast.makeText(
-                        context,
-                        "AppSwitcher received action: " + intent.getAction(),
-                        Toast.LENGTH_LONG)
-                .show();
-        run = true;
-    }
-
-    if (run) {
-        Intent i = new Intent(context, AppSwitcherService.class);
-        // i.putExtra("times", 5);
-        context.startForegroundService(i);
+    /*    
+    if ("broadcast_send_carinfo".equals(action)) {
+      Log.i(TAG, "received " + action);
+      Intent intentSrv = new Intent(context, AppSwitcherService.class);
+      intentSrv.setAction(AppSwitcherService.ACTION_ILL);
+      int ill = intent.getExtras().getInt("ILL_LIGHT");
+      intentSrv.putExtra("ill", ill);
+      context.startForegroundService(intentSrv);
+      return;
     }
     */
   }

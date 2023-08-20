@@ -4,7 +4,8 @@ ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManif
 INJECTED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:1:1-125:12
 INJECTED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:1:1-125:12
 INJECTED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:1:1-125:12
-MERGED from [androidx.databinding:viewbinding:7.2.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/addda1b8b83b184c0f696484891374ea/transformed/viewbinding-7.2.1/AndroidManifest.xml:17:1-24:12
+MERGED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:18:1-42:12
+MERGED from [androidx.databinding:viewbinding:8.0.2] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/c9631f5629f4b7e8eaadfe9686080b67/transformed/viewbinding-8.0.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.6.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/e3232df8abaa09c28d5edcb33a5694bd/transformed/material-1.6.1/AndroidManifest.xml:17:1-26:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/288ba055ca0c9c4a4537311767ea88bb/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.preference:preference:1.2.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/f35691f113af4b78a6aec8f9646f208c/transformed/preference-1.2.0/AndroidManifest.xml:17:1-24:12
@@ -77,8 +78,10 @@ uses-sdk
 ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:6:5-8:41
 INJECTED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:6:5-8:41
 INJECTED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:6:5-8:41
-MERGED from [androidx.databinding:viewbinding:7.2.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/addda1b8b83b184c0f696484891374ea/transformed/viewbinding-7.2.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.databinding:viewbinding:7.2.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/addda1b8b83b184c0f696484891374ea/transformed/viewbinding-7.2.1/AndroidManifest.xml:20:5-22:41
+MERGED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:21:5-44
+MERGED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:21:5-44
+MERGED from [androidx.databinding:viewbinding:8.0.2] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/c9631f5629f4b7e8eaadfe9686080b67/transformed/viewbinding-8.0.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:viewbinding:8.0.2] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/c9631f5629f4b7e8eaadfe9686080b67/transformed/viewbinding-8.0.2/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.material:material:1.6.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/e3232df8abaa09c28d5edcb33a5694bd/transformed/material-1.6.1/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.material:material:1.6.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/e3232df8abaa09c28d5edcb33a5694bd/transformed/material-1.6.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/288ba055ca0c9c4a4537311767ea88bb/transformed/constraintlayout-2.1.4/AndroidManifest.xml:5:5-7:41
@@ -245,6 +248,8 @@ ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManif
 		ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:25:19-67
 application
 ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:27:5-123:19
+MERGED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:30:5-40:19
+MERGED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:30:5-40:19
 MERGED from [com.google.android.material:material:1.6.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/e3232df8abaa09c28d5edcb33a5694bd/transformed/material-1.6.1/AndroidManifest.xml:24:5-20
 MERGED from [com.google.android.material:material:1.6.1] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/e3232df8abaa09c28d5edcb33a5694bd/transformed/material-1.6.1/AndroidManifest.xml:24:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/288ba055ca0c9c4a4537311767ea88bb/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
@@ -395,6 +400,36 @@ receiver#androidx.media.session.MediaButtonReceiver
 ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:117:9-121:20
 	android:name
 		ADDED from /storage/emulated/0/AppProjects/AppSwitcher/app/src/main/AndroidManifest.xml:117:19-76
+queries
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:23:5-25:15
+package#com.itsaky.androidide
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:24:9-57
+	android:name
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:24:18-54
+uses-permission#android.permission.INTERNET
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:27:5-67
+	android:name
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:27:22-64
+uses-permission#com.itsaky.androidide.permission.BIND_LOG_SERVICE
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:28:5-89
+	android:name
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:28:22-86
+provider#com.itsaky.androidide.logsender.utils.LogSenderInstaller
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:31:9-35:40
+	android:enabled
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:34:13-54
+	android:authorities
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:33:13-71
+	android:exported
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:35:13-37
+	android:name
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:32:13-84
+service#com.itsaky.androidide.logsender.LogSenderService
+ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:37:9-39:40
+	android:exported
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:39:13-37
+	android:name
+		ADDED from [com.itsaky.androidide:logsender:2.5.0-beta] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/26a340745b2e989a99c5af8f2c73594f/transformed/logsender-2.5.0-beta-debug/AndroidManifest.xml:38:13-76
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.0.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/eb58c084dafe1c8a19c3aba32b9df641/transformed/emoji2-1.0.0/AndroidManifest.xml:26:9-34:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.4.0] /data/data/com.itsaky.androidide/files/home/.gradle/caches/transforms-3/a272a8a48b99f3ed40e8f260d9fd8f85/transformed/lifecycle-process-2.4.0/AndroidManifest.xml:26:9-34:20

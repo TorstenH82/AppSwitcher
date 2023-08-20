@@ -1,0 +1,20 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AppProjects/AppSwitcher/app/build.gradle",
+      "selection": {
+        "end": {
+          "column": 24,
+          "index": -1,
+          "line": 12
+        },
+        "start": {
+          "column": 24,
+          "index": -1,
+          "line": 12
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AppProjects/AppSwitcher/app/build.gradle"
+}

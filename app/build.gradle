@@ -10,12 +10,30 @@ android {
         applicationId "com.thf.AppSwitcher"
         minSdk 21
         targetSdk 30
-        versionCode 3100
-        versionName "3.1"
+        versionCode 3203
+        versionName "3.2.3"
+    }
+    
+    signingConfigs {
+        release {
+            // Specify the name of your keystore file
+            // The file must be located in your module directory
+            storeFile file("/data/data/com.itsaky.androidide/files/home/.android/debug.keystore")
+						
+            // The keystore password
+            storePassword "android"
+						
+            // The key alias, same as the one you specified with '-alias' argument while creating the keystore
+            keyAlias "androiddebugkey"
+						
+            // The key password
+            keyPassword "android"
+        }            
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release   
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

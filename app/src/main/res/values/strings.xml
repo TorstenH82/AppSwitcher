@@ -69,4 +69,7 @@
     <string name="LTErecoverActivity">com.thf.lterecover.RecoverActivity</string>
 
     <string name="commandRunEqualizer">am start -n com.ts.MainUI/com.ts.set.dsp.SetDspMainActivity</string>
+    
+    <string name ="autoLinkPackage">com.suding.speedplay</string>
+    <string name ="autoLinkReceiver">com.texustek.speedplay.broadcast.VendorBroadcastReceiver</string>
 </resources>

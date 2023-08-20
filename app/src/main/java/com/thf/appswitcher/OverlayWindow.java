@@ -40,20 +40,6 @@ public class OverlayWindow {
       a.setBackgroundColor(Color.BLACK);
     }
 
-    // setBrightness(brightness);
-
-    /*
-    layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-    layoutParams.height = -1;
-    layoutParams.width = -1;
-    layoutParams.flags = 3864;
-    layoutParams.format = 1;
-    layoutParams.gravity = 48;
-    layoutParams.windowAnimations = 0;
-    layoutParams.x = 0;
-    layoutParams.y = 0;
-    */
-
     layoutParams =
         new WindowManager.LayoutParams(
             // WindowManager.LayoutParams.WRAP_CONTENT,
@@ -79,7 +65,7 @@ public class OverlayWindow {
       layoutParams.screenOrientation = -1;
     }
 
-    if (this.landscape != landscape ) {
+    if (this.landscape != landscape) {
       if (OverlayMode.OM_DIM.equals(overlayMode) && mApplication.getOverlayVisibility()) {
         hide();
         show(OverlayMode.OM_DIM);
@@ -140,6 +126,7 @@ public class OverlayWindow {
   }
 
   public void hide() {
+    reShow = false;
     if (mApplication.getOverlayVisibility()) {
       try {
         windowManager.removeView((View) a);
@@ -147,6 +134,13 @@ public class OverlayWindow {
       }
     }
     mApplication.setOverlayVisibility(false);
+  }
+
+  public void prepareReShow(OverlayMode overlayMode) {
+    this.overlayMode = overlayMode;
+    hideTmp();
+    reShow = true;
+        
   }
 
   public void hideTmp() {

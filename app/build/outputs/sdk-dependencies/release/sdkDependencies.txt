@@ -828,10 +828,10 @@ library {
   maven_library {
     groupId: "org.shredzone.commons"
     artifactId: "commons-suncalc"
-    version: "3.5"
+    version: "3.7"
   }
   digests {
-    sha256: "L\021\356$/\311\020\275SmO\357\316d\237\372bg\212\225\363\315\320x\026\'\302\272\322 \3358"
+    sha256: "G]\002\300\177V\001O\257\377\355\304[\253\306\330L.\2756t\303\3564\351\370\032\307\244\306>O"
   }
   repo_index {
     value: 1
@@ -1248,5 +1248,15 @@ repositories {
 repositories {
   maven_repo {
     url: "https://repo.maven.apache.org/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://repo.maven.apache.org/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://s01.oss.sonatype.org/content/repositories/snapshots/"
   }
 }

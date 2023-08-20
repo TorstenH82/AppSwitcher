@@ -109,29 +109,38 @@ public class SharedPreferencesHelper {
     if (selectedApps != null && !forceReload) {
       return new ArrayList<AppDataIcon>(selectedApps);
     }
-
     Log.d(TAG, "read shared preferences");
     selectedApps = new ArrayList<AppDataIcon>();
-    
     List<AppData> list = loadList("selected");
-        
     Iterator<AppData> i = list.iterator();
     while (i.hasNext()) {
       AppData s = i.next(); // must be called before you can call i.remove()
-      Drawable icon = s.getIcon(context);
-
+      boolean isInstalled = Utils.isPackageInstalled(context, s.getPackageName());
+      Drawable icon = isInstalled ? s.getIcon(context) : null;
       if (icon == null) {
         i.remove();
         // we could save the list after this
       } else {
-        //icon.mutate();
+        // icon.mutate();
         AppDataIcon appIcon = new AppDataIcon(s);
         appIcon.setIcon(icon);
         selectedApps.add(appIcon);
       }
     }
-
     return new ArrayList<AppDataIcon>(selectedApps);
+  }
+
+  public List<AppData> getSelectedNoIcon() {
+    List<AppData> list = loadList("selected");
+    Iterator<AppData> i = list.iterator();
+    while (i.hasNext()) {
+      AppData s = i.next();
+      boolean isInstalled = Utils.isPackageInstalled(context, s.getPackageName());
+      if (!isInstalled) {
+        i.remove();
+      }
+    }
+    return list;
   }
 
   public void saveList(List list, String key) {
@@ -204,7 +213,8 @@ public class SharedPreferencesHelper {
     }
   }
 
-  public static AppDataIcon getAppDataFromListByKey(final List<AppDataIcon> list, final String key) {
+  public static AppDataIcon getAppDataFromListByKey(
+      final List<AppDataIcon> list, final String key) {
     if (list.stream().filter(o -> (o.getKey().equals(key))).findFirst().isPresent()) {
       return list.stream().filter(o -> o.getKey().equals(key)).collect(Collectors.toList()).get(0);
     } else {

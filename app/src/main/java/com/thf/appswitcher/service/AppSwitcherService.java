@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -34,6 +33,7 @@ import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
 import com.thf.AppSwitcher.utils.RunMediaApp;
+import com.thf.AppSwitcher.utils.AutoLinkBroadcast;
 
 public class AppSwitcherService extends Service
     implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -44,6 +44,7 @@ public class AppSwitcherService extends Service
   private static LogReaderUtil logReaderUtil;
   private static UsageStatsUtil usageStatsUtil;
   private static SunriseSunset sunriseSunset;
+  private static AutoLinkBroadcast autoLinkBroadcast;
   private boolean enableLogListener;
   private String logTag;
   private String logOnPress;
@@ -58,6 +59,7 @@ public class AppSwitcherService extends Service
 
   private OverlayWindow overlayWindow;
   private int dimMode;
+  private boolean autoDimActive = false;
   private boolean forceLandscape = false;
   public static final int DIM_MODE_ON = 1;
   public static final int DIM_MODE_OFF = 0;
@@ -164,26 +166,8 @@ public class AppSwitcherService extends Service
     } else if (key.equals("dimMode")) {
       dimMode = sharedPreferencesHelper.getInteger("dimMode");
       updateNotification("running...");
-      switch (dimMode) {
-        case DIM_MODE_ON:
-          sunriseSunset.disableAuto();
-          overlayWindow.show(OverlayWindow.OverlayMode.OM_DIM);
-          break;
-        case DIM_MODE_OFF:
-          sunriseSunset.disableAuto();
-          if (forceLandscape) {
-            overlayWindow.show(OverlayWindow.OverlayMode.OM_TRANSPARENT);
-          } else {
-            overlayWindow.hide();
-          }
-          break;
-        case DIM_MODE_AUTO:
-          if (sunriseSunset.getLocation() == null) {
-            sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
-          }
-          sunriseSunset.enableAuto();
-          break;
-      }
+      setDimming(dimMode);
+      setAutoLinkDayNight(dimMode);
     } else if (key.equals("forceLandscape")) {
       overlayWindow.setLandscape(sharedPreferencesHelper.getBoolean("forceLandscape"));
     } else if (key.equals("dimScreen")) {
@@ -223,19 +207,8 @@ public class AppSwitcherService extends Service
           public void onGrant(String permission, boolean granted) {
             if (granted) {
               sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
-              switch (dimMode) {
-                case DIM_MODE_ON:
-                  overlayWindow.show(OverlayWindow.OverlayMode.OM_DIM);
-                  break;
-                case DIM_MODE_OFF:
-                  if (forceLandscape) {
-                    overlayWindow.show(OverlayWindow.OverlayMode.OM_TRANSPARENT);
-                  }
-                  break;
-                case DIM_MODE_AUTO:
-                  sunriseSunset.enableAuto();
-                  break;
-              }
+              setDimming(dimMode);
+              setAutoLinkDayNight(dimMode);
             } else {
               if (dimMode == DIM_MODE_AUTO) {
                 dimMode = DIM_MODE_OFF;
@@ -270,6 +243,8 @@ public class AppSwitcherService extends Service
     dimMode = sharedPreferencesHelper.getInteger("dimMode");
     sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
 
+    autoLinkBroadcast = new AutoLinkBroadcast(context);
+
     buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
     mediaPlayer = MediaPlayer.create(context, R.raw.buttonpress);
   }
@@ -283,6 +258,7 @@ public class AppSwitcherService extends Service
       // filter.addAction("autochips.intent.action.QB_POWEROFF");
       filter.addAction("com.ts.main.uiaccoff");
       filter.addAction("com.ts.main.DEAL_KEY");
+      filter.addAction("broadcast_send_carinfo");
       filter.setPriority(1000);
       getApplicationContext().registerReceiver(bootUpReceiver, filter);
       Log.i(TAG, "Registered broadcast receiver");
@@ -294,6 +270,7 @@ public class AppSwitcherService extends Service
   private static final String ACTION_STOP_SERVICE = "ACTION_STOP";
   private static final String ACTION_OPEN_SETTINGS = "ACTION_SETTINGS";
   public static final String ACTION_KEY = "ACTION_KEY";
+  public static final String ACTION_ILL = "ACTION_ILL";
   private static final int NOTIFCATION_ID = 1337;
 
   @Override
@@ -352,14 +329,23 @@ public class AppSwitcherService extends Service
         }
       }
       return START_STICKY;
+      /*
+      } else if (ACTION_ILL.equals(action)) {
+        int ill = intent.getExtras().getInt("ill");
+        Toast.makeText(this, "Illumination is: " + ill, Toast.LENGTH_SHORT).show();
+        Intent intentSuding = new Intent();
+        intentSuding.putExtra("command", "REQ_NIGHT_MODE_CMD");
+        intentSuding.setAction("com.suding.speedplay");
 
+        return START_STICKY;
+      */
     } else { // standard start of service
       Log.d(TAG, "called to start");
       Toast.makeText(this, "Starting AppSwitcher Service", Toast.LENGTH_SHORT).show();
     }
 
     isSleeping = false;
-    usageStatsUtil.startProgress(); //start before run of media app
+    usageStatsUtil.startProgress(); // start before run of media app
     registerBootUpRecv();
 
     runMediaApp = sharedPreferencesHelper.getBoolean("runMediaApp");
@@ -386,19 +372,9 @@ public class AppSwitcherService extends Service
     }
 
     updateNotification("running...");
-    switch (dimMode) {
-      case DIM_MODE_ON:
-        overlayWindow.show(OverlayWindow.OverlayMode.OM_DIM);
-        break;
-      case DIM_MODE_OFF:
-        if (forceLandscape) {
-          overlayWindow.show(OverlayWindow.OverlayMode.OM_TRANSPARENT);
-        }
-        break;
-      case DIM_MODE_AUTO:
-        sunriseSunset.enableAuto();
-        break;
-    }
+    setDimming(dimMode);
+    setAutoLinkDayNight(dimMode);
+
     if (enableLogListener) logReaderUtil.startProgress();
     // usageStatsUtil.startProgress();
     // If we get killed, after returning from here, restart
@@ -415,23 +391,13 @@ public class AppSwitcherService extends Service
   public void onDestroy() {
     isRunning = false;
     sharedPreferencesHelper.unregisterOnSharedPreferenceChangeListener(this);
-
-    /*
-    if (bootUpReceiver != null) {
-      // unregisterReceiver(bootUpReceiver);
-      // bootUpReceiver = null;
-      Log.d(TAG, "receiver unregistered");
-      getApplicationContext().unregisterReceiver(bootUpReceiver);
-    }
-    */
-
     stopThreads();
+    autoLinkBroadcast.setDay(false);
     mediaPlayer = null;
     Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
   }
 
   private void stopThreads() {
-
     if (logReaderUtil != null) {
       logReaderUtil.stopProgress();
     }
@@ -533,12 +499,16 @@ public class AppSwitcherService extends Service
           } else {
             overlayWindow.hide();
           }
+          autoLinkBroadcast.setDay(false);
+          autoDimActive = false;
           updateNotification("Auto dimming active (off)");
         }
 
         @Override
         public void onSunset() {
-          overlayWindow.show(OverlayWindow.OverlayMode.OM_DIM);
+          showOverlayNight();
+          autoLinkBroadcast.setNight(false);
+          autoDimActive = true;
           updateNotification("Auto dimming active (on)");
         }
 
@@ -556,11 +526,67 @@ public class AppSwitcherService extends Service
         @Override
         public void onForegroundApp(String foreground) {
           // hide overlay if Google PlayStore is in foreground
-          if (foreground.startsWith("com.android.vending")) {
-            overlayWindow.hideTmp();
+          if (foreground.startsWith("com.android.vending")
+              || foreground.startsWith(getString(R.string.autoLinkPackage))) {
+            overlayWindow.hideTmp(); // hide if currently visible
           } else {
-            overlayWindow.reShow();
+            overlayWindow.reShow(); // show again if overlay was visible
+          }
+          if (foreground.startsWith(getString(R.string.autoLinkPackage))) {
+            setAutoLinkDayNight(dimMode);
+          } else {
+            autoLinkBroadcast.stop();
           }
         }
       };
+
+  private void setDimming(int dimMode) {
+    switch (dimMode) {
+      case DIM_MODE_ON:
+        sunriseSunset.disableAuto();
+        showOverlayNight();
+        break;
+      case DIM_MODE_OFF:
+        sunriseSunset.disableAuto();
+        if (forceLandscape) {
+          overlayWindow.show(OverlayWindow.OverlayMode.OM_TRANSPARENT);
+        } else {
+          overlayWindow.hide();
+        }
+        break;
+      case DIM_MODE_AUTO:
+        if (sunriseSunset.getLocation() == null) {
+          sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
+        }
+        sunriseSunset.enableAuto();
+        break;
+    }
+  }
+
+  private void showOverlayNight() {
+    if (usageStatsUtil.getCurrentActivity().startsWith("com.android.vending")
+        || usageStatsUtil.getCurrentActivity().startsWith(getString(R.string.autoLinkPackage))) {
+      overlayWindow.prepareReShow(OverlayWindow.OverlayMode.OM_DIM);
+    } else {
+      overlayWindow.show(OverlayWindow.OverlayMode.OM_DIM);
+    }
+  }
+
+  private void setAutoLinkDayNight(int dimMode) {
+    switch (dimMode) {
+      case DIM_MODE_ON:
+        autoLinkBroadcast.setNight(true);
+        break;
+      case DIM_MODE_OFF:
+        autoLinkBroadcast.setDay(false);
+        break;
+      case DIM_MODE_AUTO:
+        if (autoDimActive) {
+          autoLinkBroadcast.setNight(true);
+        } else {
+          autoLinkBroadcast.setDay(false);
+        }
+        break;
+    }
+  }
 }
