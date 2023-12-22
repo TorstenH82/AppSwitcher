@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher.utils;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,11 +21,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
-  private static final String TAG = "AppSwitcherService";
+  private static final String TAG = "AppSwitcher";
 
   public interface UtilCallbacks {
     public void onException(Throwable e);
@@ -318,17 +320,38 @@ public class Utils {
 
   public static String getSetFullscreenFlag(Context context, String newValue)
       throws FileReadModException {
+
+    if (newValue != null) {
+      newValue = newValue.trim();
+    }
+
+    /*
+    if (!"825X_Pro".equals(android.os.Build.DEVICE)) {
+      if (newValue != null) {
+        String command = "setprop forfan.force_direct " + newValue;
+        try {
+          sudoForResult(context, command);
+        } catch (SuCommandException e) {
+          Log.e(TAG, "Error executing command: \"" + command + "\" Exception:" + e.getMessage());
+          throw new Utils()
+          .new FileReadModException(
+              "Error executing command: \"" + command + "\" Exception:" + e.getMessage());
+        }
+      } else {
+        try {
+          newValue = getSystemProperty("forfan.force_direct");
+        } catch (SysPropException e) {
+          throw new Utils()
+          .new FileReadModException("Error getting system property 'forfan.force_direct'");
+        }
+      }
+      return newValue;
+    }
+    */
     String returnValue = "";
     boolean modification = false;
     boolean found = false;
-    if (newValue != null) {
-      /*
-      if (!"825X_Pro".equals(android.os.Build.DEVICE)) {
-          throw new Utils().new FileReadModException("This device is not a 825X_Pro");
-      }
-      */
-      newValue = newValue.trim();
-    }
+
     try {
       // copy file from /vendor folder and change permission
       String copyCommand =
@@ -386,32 +409,31 @@ public class Utils {
       temp.renameTo(file);
 
       if (modification) {
-        /*
-        String[] rootCmds =
-                new String[] {
-                    "echo 0 > /sys/kernel/debug/mmc0/sw_wp_en",
-                    "mount -o remount,rw -t ext4 /dev/root /",
-                    "mount -o remount,rw -t ext4 /dev/block/platform/bootdevice/by-name/vendor /vendor"
-                };
 
-        String[] unRootCmds = new String[]{"chmod 0751 /system", "mount -o ro,remount /system";
-        */
-
-        // file was modified - replace original
-        /*
-        String remountCommand = context.getString(R.string.commandRemount1);
-        try {
-            execSuCommand(context, remountCommand);
-        } catch (SuCommandException e) {
-            Log.w(TAG, "Error ignored on executing remount command: " + e.getMessage());
-        }
-        */
-
-        String remountCommand = context.getString(R.string.commandRemountMtk);
+        // make vendor partition writeable
+        String remountCommand = getRemountCommand(context, "/vendor");
         sudoForResult(context, remountCommand);
 
-        // copy file to vendors folder and change permission
+        // check free space on vendor partition
+        int freeSpace = partitionHasFreeSpace(context, "/vendor");
+        switch (freeSpace) {
+          case 0: // no free space
+            // move file
+            if (new File("/vendor/").exists()) {
+              String command = "mv /vendor/build.prop /sdcard/build.prop.bck";
+            } else {
+              throw new Utils()
+              .new FileReadModException(
+                  "Deletion victim '/vendor/' not found. Cannot free space on vendor partition");
+            }
+            break;
+            // case 1: // we have free space and nothing to do
+          case -1:
+            throw new Utils()
+            .new FileReadModException("Unable to check free space on '/vendor' partition");
+        }
 
+        // copy file to vendors folder and change permission
         copyCommand =
             String.format(
                 context.getString(R.string.commandCopy),
@@ -428,20 +450,63 @@ public class Utils {
       temp.delete();
       return returnValue;
     } catch (IOException e) {
-      throw new Utils().new FileReadModException("IOException: " + e.getMessage());
+      throw new Utils().new FileReadModException("IOException: " + e.toString());
     } catch (SuCommandException e) {
-      throw new Utils().new FileReadModException("SuCommandException: " + e.getMessage());
+      throw new Utils().new FileReadModException("SuCommandException: " + e.toString());
     }
   }
 
-  public static String sudoForResult(Context context, String command) throws SuCommandException {
+  public static String sudoForResultString(Context context, String command)
+      throws SuCommandException {
+    List<String> output = sudoForResult(context, command);
+
+    String outputStr = "";
+    for (String line : output) {
+      if ("".equals(outputStr)) {
+        outputStr = line;
+      } else {
+        outputStr += "\n" + line;
+      }
+    }
+    return outputStr;
+  }
+
+  public static List<String> sudoForResult(Context context, String command)
+      throws SuCommandException {
+
+    List<String> output = new ArrayList<String>();
+    List<String> errorOutput = new ArrayList<String>();
+
+    class ReadLog implements Runnable {
+      private BufferedReader br;
+      private boolean collectError;
+
+      ReadLog(BufferedReader br, boolean collectError) {
+        this.br = br;
+        this.collectError = collectError;
+      }
+
+      @Override
+      public void run() {
+        String line;
+        try {
+          while ((line = br.readLine()) != null) {
+            output.add(line);
+            if (collectError) {
+              errorOutput.add(line);
+            }
+          }
+        } catch (IOException ex) {
+          //
+        }
+      }
+    }
 
     if (command == null || "".equals(command)) {
       throw new SuCommandException("Command is empty");
     }
 
     String[] commandArr = {context.getString(R.string.su), command};
-    String output = "";
     try {
       Process exec = Runtime.getRuntime().exec(context.getString(R.string.su));
       DataOutputStream dataOutputStream = new DataOutputStream(exec.getOutputStream());
@@ -450,39 +515,40 @@ public class Utils {
       dataOutputStream.writeBytes("exit\n");
       dataOutputStream.flush();
 
-      String line;
       BufferedReader in = new BufferedReader(new InputStreamReader(exec.getInputStream()));
       Thread.sleep(10);
 
-      while ((line = in.readLine()) != null) {
-        if ("".equals(command)) {
-          output = line;
-        } else {
-          output += "\n" + line;
-        }
-      }
+      Thread t1 = new Thread(new ReadLog(in, false));
+      t1.start();
 
       BufferedReader er = new BufferedReader(new InputStreamReader(exec.getErrorStream()));
       Thread.sleep(10);
-      while ((line = er.readLine()) != null) {
-        if ("".equals(command)) {
-          output = line;
-        } else {
-          output += "\n" + line;
-        }
+
+      Thread t2 = new Thread(new ReadLog(er, true));
+      t2.start();
+
+      t1.join();
+      t2.join();
+
+      exec.waitFor();
+
+      if (errorOutput.size() > 0) {
+        throw new SuCommandException(
+            "Error output of command '" + command + "': " + errorOutput.toString());
       }
 
-      /* Clean-up */
-      exec.waitFor();
-    } catch (IOException ex) {
-      throw new SuCommandException("IOException: " + ex.getMessage());
+    } catch (IOException e) {
+      throw new SuCommandException(
+          "IOException during execution of command '" + command + "': " + e.toString());
     } catch (InterruptedException e) {
-      throw new SuCommandException("InterruptedException: " + e.getMessage());
+      throw new SuCommandException(
+          "InterruptedException during execution of command '" + command + "': " + e.toString());
     }
 
     return output;
   }
 
+  /*
   public static void enableAutostart(Context context, boolean enable) throws SetAutostartException {
     try {
       boolean added = false;
@@ -513,12 +579,20 @@ public class Utils {
       throw new SetAutostartException("SuCommandException: " + e.getMessage());
     }
   }
+  */
 
   public static void runEqualizer(Context context) {
-    try {
-      sudoForResult(context, context.getString(R.string.commandRunEqualizer));
-    } catch (SuCommandException e) {
-            Log.e(TAG, "error starting equalizer: " + e.getMessage());
+    if ("825X_Pro".equals(android.os.Build.DEVICE)) {
+      try {
+        sudoForResult(context, context.getString(R.string.commandRunEqualizer));
+      } catch (SuCommandException e) {
+        Log.e(TAG, "error starting equalizer: " + e.getMessage());
+      }
+    } else if ("K706".equals(android.os.Build.DEVICE)) {
+      // run equalizer on ossuret/hizpo
+      Intent intent = context.getPackageManager().getLaunchIntentForPackage("com.qf.soundeffect");
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(intent);
     }
   }
 
@@ -528,5 +602,51 @@ public class Utils {
     } catch (PackageManager.NameNotFoundException e) {
       return false;
     }
+  }
+
+  private static String getRemountCommand(Context context, String partition) {
+    String command = "";
+    if ("825X_Pro".equals(android.os.Build.DEVICE)) {
+      command = "remount";
+    } else {
+
+      if (!partition.startsWith("/")) partition = "/" + partition;
+
+      try {
+        List<String> mounts = Utils.sudoForResult(context, "mount");
+        for (String m : mounts) {
+          if (m.contains("on / ") || m.contains("on " + partition + " ")) {
+            m = m.replace(" on ", " ");
+            String[] mArr = m.split(" ");
+
+            if (mArr.length > 1) {
+              command = "mount -o remount,rw " + mArr[0] + " " + mArr[1];
+              break;
+            }
+          }
+        }
+
+      } catch (Utils.SuCommandException ex) {
+        //
+      }
+    }
+    return command;
+  }
+
+  private static int partitionHasFreeSpace(Context context, String partition)
+      throws SuCommandException {
+
+    List<String> dfResult = sudoForResult(context, "df " + partition);
+    for (String line : dfResult) {
+      if (line.startsWith("Filesystem")) continue; // skip the first line
+      if (line.endsWith(partition) || line.endsWith("/")) {
+        if (line.contains("100%")) {
+          return 0;
+        } else {
+          return 1;
+        }
+      }
+    }
+    return -1;
   }
 }

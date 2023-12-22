@@ -9,26 +9,25 @@
     tools:context=".SwitchActivity">
 
     <TextView
+        android:id="@+id/titleTxt"
+        android:textAppearance="@style/title"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintHorizontal_bias="0"
-        android:textSize="18sp"
         android:singleLine="true"
-        android:textColor="#ffffffff"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/layoutMain"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/titleTxt"
         android:text="selected app"
-        android:textStyle="bold" />
+    />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
+        android:layout_height="@dimen/buttonSize"
+        android:layout_width="@dimen/buttonSize"
         android:visibility="gone"
         android:layout_marginEnd="16dp"
         android:background="@drawable/equalizer_selector"
@@ -41,8 +40,8 @@
     </LinearLayout>
 
     <com.thf.AppSwitcher.utils.FlashButton
-        android:layout_height="30dp"
-        android:layout_width="30dp"
+        android:layout_height="@dimen/buttonSize"
+        android:layout_width="@dimen/buttonSize"
         android:layout_marginEnd="16dp"
         android:adjustViewBounds="false"
         android:scaleType="fitXY"
@@ -54,6 +53,8 @@
         android:id="@+id/dimScreenMode" />
 
     <TextClock
+        android:id="@+id/textClock"
+        android:textAppearance="@style/clock"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginEnd="16dp"
@@ -61,14 +62,13 @@
         app:layout_constraintBottom_toTopOf="@+id/layoutMain"
         android:format12Hour="hh:mm a"
         android:format24Hour="HH:mm"
-        android:textColor="#ffffffff"
         app:layout_constraintEnd_toStartOf="@+id/settingsSel"
-        android:id="@+id/textClock" />
+    />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
+        android:layout_height="@dimen/buttonSize"
+        android:layout_width="@dimen/buttonSize"
         android:layout_marginEnd="16dp"
         android:background="@drawable/settings_selector"
         app:layout_constraintTop_toTopOf="parent"
@@ -85,7 +85,7 @@
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="@dimen/progressToTop"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="parent">
 

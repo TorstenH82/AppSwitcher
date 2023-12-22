@@ -10,8 +10,8 @@ android {
         applicationId "com.thf.AppSwitcher"
         minSdk 21
         targetSdk 30
-        versionCode 3203
-        versionName "3.2.3"
+        versionCode 3300
+        versionName "3.3.0"
     }
     
     signingConfigs {

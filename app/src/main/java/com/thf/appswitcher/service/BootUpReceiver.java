@@ -17,7 +17,8 @@ public class BootUpReceiver extends BroadcastReceiver {
     // Boolean run = false;
     String action = intent.getAction();
     if ("autochips.intent.action.QB_POWERON".equals(action)
-        || "com.ts.main.uiaccon".equals(action)) {
+        || "com.ts.main.uiaccon".equals(action)
+        || "com.qf.action.ACC_ON".equals(action)) {
       Log.i(TAG, "received " + action);
       Intent intentSrv = new Intent(context, AppSwitcherService.class);
       intentSrv.setAction(AppSwitcherService.ACTION_WAKE_UP);
@@ -38,7 +39,8 @@ public class BootUpReceiver extends BroadcastReceiver {
     }
 
     if ("autochips.intent.action.QB_POWEROFF".equals(action)
-        || "com.ts.main.uiaccoff".equals(action)) {
+        || "com.ts.main.uiaccoff".equals(action)
+        || "com.qf.action.ACC_OFF".equals(action)) {
       Log.i(TAG, "received " + action);
       Intent intentSrv = new Intent(context, AppSwitcherService.class);
       intentSrv.setAction(AppSwitcherService.ACTION_SLEEP);
@@ -52,7 +54,7 @@ public class BootUpReceiver extends BroadcastReceiver {
       context.startActivity(intentSrv);
       return;
     }
-    /*    
+    /*
     if ("broadcast_send_carinfo".equals(action)) {
       Log.i(TAG, "received " + action);
       Intent intentSrv = new Intent(context, AppSwitcherService.class);

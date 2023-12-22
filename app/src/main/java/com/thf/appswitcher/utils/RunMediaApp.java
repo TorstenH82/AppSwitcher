@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher.utils;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -60,8 +61,12 @@ public class RunMediaApp implements Runnable {
                   | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                   | Intent.FLAG_ACTIVITY_NO_ANIMATION);
           intentStartMedia.setComponent(name);
-          context.startActivity(intentStartMedia);
-
+          try {
+            context.startActivity(intentStartMedia);
+          } catch (ActivityNotFoundException ex) {
+            Log.e(TAG, "autostart of media app failed: " + ex.toString());
+            break;
+          }
           if (sharedPreferencesHelper.getBoolean("runMediaAppTwice")) {
             // go to home screen, wait a second and start media app again
             Intent startMain = new Intent(Intent.ACTION_MAIN);

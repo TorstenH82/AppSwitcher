@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style
+        name="appName"
+        parent="@android:style/TextAppearance.DeviceDefault.Medium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+    <style
+        name="title"
+        parent="@android:style/TextAppearance.DeviceDefault.Large">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+     <style
+        name="clock"
+        parent="@android:style/TextAppearance.DeviceDefault.Large">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+</resources>

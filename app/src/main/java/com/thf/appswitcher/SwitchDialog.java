@@ -142,8 +142,6 @@ public class SwitchDialog extends Dialog {
 
   public void callBackAppData(AppData app) {
     this.dismiss();
-    Intent intent;
-
     listener.onResult(app);
   }
 
@@ -408,7 +406,7 @@ public class SwitchDialog extends Dialog {
                     @Override
                     public void run() {
                       AppData app = adapter.getCurrentApp();
-                      if (app != null) callBackAppData(app);
+                      callBackAppData(app);
                       // SwitchDialog.this.dismiss();
                     }
                   });

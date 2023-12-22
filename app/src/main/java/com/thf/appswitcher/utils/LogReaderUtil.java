@@ -1,9 +1,12 @@
 package com.thf.AppSwitcher.utils;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
+import com.thf.AppSwitcher.AppSwitcherApp;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,7 +50,7 @@ public class LogReaderUtil {
 
     if (thread != null && thread.isAlive()) {
       thread.interrupt();
-      Log.i(TAG, "Stopped Log reader");
+      Log.i(TAG, "Log reader: stopped");
       thread = null;
     }
   }
@@ -62,58 +65,70 @@ public class LogReaderUtil {
           public void run() {
             try {
               ProcessBuilder pb = new ProcessBuilder("logcat", "-v", "time", "-s", logTag);
-              Process process = pb.start(); // start the process
-
-              BufferedReader bufferedReader =
-                  new BufferedReader(new InputStreamReader(process.getInputStream()));
-
+              Process process = null;
+              BufferedReader bufferedReader = null;
               String line = "";
-              boolean use = false;
               Date timestampStart = Calendar.getInstance().getTime();
 
-              while ((line = bufferedReader.readLine()) != null) {
-                if (Thread.interrupted()) {
-                  process.destroyForcibly();
-                  return;
+              while (!Thread.interrupted()) {
+
+                if (process == null || !process.isAlive()) {
+                  process = pb.start(); // start the process
+                  bufferedReader =
+                      new BufferedReader(new InputStreamReader(process.getInputStream()));
                 }
+                boolean use = false;
 
-                if (!line.contains(logTag)) continue;
-
-                if (!use) {
-                  String sTimestamp =
-                      Calendar.getInstance().get(Calendar.YEAR)
-                          + "-"
-                          + line.split(" ")[0]
-                          + " "
-                          + line.split(" ")[1];
-                  try {
-                    Date timestamp = simpleDateFormat.parse(sTimestamp);
-                    if (timestamp.after(timestampStart)) {
-                      use = true;
-                    } else {
-                      continue;
-                    }
-                  } catch (java.text.ParseException ex) {
-                    Log.e(TAG, ex.getMessage());
+                while ((line = bufferedReader.readLine()) != null) {
+                  if (Thread.interrupted()) {
+                    process.destroyForcibly();
+                    Log.i(TAG, "Log reader: destroyed while reading");
+                    return;
                   }
-                }
 
-                int action = 0;
-                if (logOnPress != null && line.contains(logOnPress)) {
-                  action = ACTION_ON_PRESS;
-                } else if (line.contains(logShortPress)) {
-                  action = ACTION_SHORT_PRESS;
-                } else if (logLongPress != null && line.contains(logLongPress)) {
-                  action = ACTION_LONG_PRESS;
-                }
+                  if (!line.contains(logTag)) continue;
 
-                if (action != 0) {
-                  Message completeMessage = handler.obtainMessage(action);
-                  completeMessage.sendToTarget();
+                  if (!use) {
+                    String sTimestamp =
+                        Calendar.getInstance().get(Calendar.YEAR)
+                            + "-"
+                            + line.split(" ")[0]
+                            + " "
+                            + line.split(" ")[1];
+                    try {
+                      Date timestamp = simpleDateFormat.parse(sTimestamp);
+                      if (timestamp.after(timestampStart)) {
+                        use = true;
+                      } else {
+                        continue;
+                      }
+                    } catch (java.text.ParseException ex) {
+                      Log.e(TAG, ex.getMessage());
+                    }
+                  }
+
+                  int action = 0;
+                  if (logOnPress != null && line.contains(logOnPress)) {
+                    action = ACTION_ON_PRESS;
+                  } else if (line.contains(logShortPress)) {
+                    action = ACTION_SHORT_PRESS;
+                  } else if (logLongPress != null && line.contains(logLongPress)) {
+                    action = ACTION_LONG_PRESS;
+                  }
+
+                  if (action != 0) {
+                    Message completeMessage = handler.obtainMessage(action);
+                    completeMessage.sendToTarget();
+                  }
                 }
               }
 
+              process.destroyForcibly();
+              Log.i(TAG, "Log reader: destroyed");
+
             } catch (IOException ex) {
+              Context context = AppSwitcherApp.getInstance().getApplicationContext();
+              Toast.makeText(context, "Log reader error: " + ex.toString(), 1).show();
               Log.e(TAG, ex.getMessage());
             }
           }
@@ -122,7 +137,7 @@ public class LogReaderUtil {
     if (thread == null || !thread.isAlive()) {
       thread = new Thread(runnable); // , Process.THREAD_PRIORITY_BACKGROUND);
       thread.start();
-      Log.i(TAG, "Started Log reader");
+      Log.i(TAG, "Log reader: started");
     }
   }
 }

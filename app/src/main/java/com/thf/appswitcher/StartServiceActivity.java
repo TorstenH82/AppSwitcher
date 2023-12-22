@@ -9,9 +9,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import com.thf.AppSwitcher.service.AppSwitcherService;
 import com.thf.AppSwitcher.utils.AppData;
+import com.thf.AppSwitcher.utils.AppDataIcon;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SimpleDialog;
 import com.thf.AppSwitcher.utils.Utils;
@@ -40,6 +42,10 @@ public class StartServiceActivity extends Activity {
       finish();
       return;
     } else if (AppSwitcherService.isRunning()) {
+      Intent intentSrv = new Intent(context, AppSwitcherService.class);
+      intentSrv.setAction(AppSwitcherService.ACTION_KEY);
+      intentSrv.putExtra("key", 9010);
+      context.startForegroundService(intentSrv);
       finish();
       return;
     }
@@ -100,9 +106,8 @@ public class StartServiceActivity extends Activity {
   }
 
   private void startAppSwitcherService() {
-    List<AppData> selectedList = sharedPreferencesHelper.loadList("selected");
-
-    if (selectedList.size() == 0) {
+    if (sharedPreferencesHelper.getSelectedNoIcon().size() == 0) {
+      Log.d(TAG, "no apps selected by user");
       new SimpleDialog(
               "NO_APPS",
               activity,
@@ -115,9 +120,9 @@ public class StartServiceActivity extends Activity {
       if (!AppSwitcherService.isRunning()) {
         Intent intentSrv = new Intent(context, AppSwitcherService.class);
         startForegroundService(intentSrv);
+        finish();
       }
     }
-    finish();
   }
 
   private static SimpleDialog.SimpleDialogCallbacks simpleDialogCallbacks =

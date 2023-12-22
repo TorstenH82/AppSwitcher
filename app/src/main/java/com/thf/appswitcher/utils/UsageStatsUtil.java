@@ -10,6 +10,7 @@ import android.media.metrics.Event;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -22,18 +23,29 @@ public class UsageStatsUtil {
   private SharedPreferencesHelper sharedPreferencesHelper;
   private UsageStatsCallbacks listener;
   private static String foregroundActivity;
-  private Thread thread;
+  private static Thread thread;
+  private static UsageStatsUtil usageStatsUtil;
 
-  List<AppDataIcon> selectedList = new ArrayList<>();
+  private static List<AppDataIcon> selectedList = new ArrayList<>();
 
   public UsageStatsUtil(Context context, UsageStatsCallbacks listener) {
     this.context = context;
     this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
     this.listener = listener;
+    usageStatsUtil = this;
   }
 
   public interface UsageStatsCallbacks {
     public void onForegroundApp(String foregroundPackage);
+  }
+
+  public static void restartIfRequired() {
+    if (usageStatsUtil != null) {
+      if (thread != null && thread.isAlive()) {
+        usageStatsUtil.stopProgress();
+        usageStatsUtil.startProgress();
+      }
+    }
   }
 
   public void stopProgress() {
@@ -41,7 +53,7 @@ public class UsageStatsUtil {
       thread.interrupt();
       Log.i(TAG, "Stopped UsageStats reader");
       thread = null;
-      //foregroundActivity = null;
+      // foregroundActivity = null;
     }
   }
 
@@ -138,36 +150,6 @@ public class UsageStatsUtil {
                 }
               }
 
-              /*
-                if (s != null) {
-                  String packageName = s.getPackageName();
-                  String activity = s.getClassName();
-
-                  if (!ignoreActivity(packageName, activity)) {
-                    if (foregroundActivity == null
-                        || !foregroundActivity.equals(packageName + "/" + activity)) {
-                      foregroundActivity = packageName + "/" + activity;
-                      if (listener != null) {
-                        new Handler(Looper.getMainLooper())
-                            .post(
-                                new Runnable() {
-                                  @Override
-                                  public void run() {
-                                    listener.onForegroundApp(foregroundActivity);
-                                  }
-                                });
-                      }
-                    }
-                  }
-                }
-
-
-                try {
-                  Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                  return;
-                }
-              */
               if (Thread.interrupted()) {
                 return;
               }

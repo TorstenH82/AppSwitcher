@@ -1,5 +1,6 @@
 package com.thf.AppSwitcher.utils;
 
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import static android.content.Context.MODE_PRIVATE;
 import android.content.SharedPreferences;
@@ -9,6 +10,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.thf.AppSwitcher.utils.AppDataIcon;
+import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -192,6 +195,9 @@ public class SharedPreferencesHelper {
 
     list.add(app);
     saveList(list, listName);
+    // getSelected(true);
+
+    // UsageStatsUtil.restartIfRequired();
   }
 
   public void removeFromList(AppData appData, String listKey) {
@@ -216,7 +222,9 @@ public class SharedPreferencesHelper {
   public static AppDataIcon getAppDataFromListByKey(
       final List<AppDataIcon> list, final String key) {
     if (list.stream().filter(o -> (o.getKey().equals(key))).findFirst().isPresent()) {
+            Log.d(TAG, "found key: " + key);
       return list.stream().filter(o -> o.getKey().equals(key)).collect(Collectors.toList()).get(0);
+            
     } else {
       return null;
     }

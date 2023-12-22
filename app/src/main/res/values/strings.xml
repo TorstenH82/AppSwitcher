@@ -16,7 +16,9 @@
     <string name="pref_runMediaAppDelay">0</string>
     <string name="pref_showClock">true</string>
     <string name="pref_showEqualizer">false</string>
+    <!--
     <string name="pref_disableNaviStart">false</string>
+    -->
     <string name="pref_itemsBrightness">60</string>
     <string name="pref_scanWifi">false</string>
     <string name="pref_enableAutomateSrv">false</string>

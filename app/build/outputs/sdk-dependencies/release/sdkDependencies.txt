@@ -1252,11 +1252,21 @@ repositories {
 }
 repositories {
   maven_repo {
+    url: "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://dl.google.com/dl/android/maven2/"
+  }
+}
+repositories {
+  maven_repo {
     url: "https://repo.maven.apache.org/maven2/"
   }
 }
 repositories {
   maven_repo {
-    url: "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    url: "https://plugins.gradle.org/m2"
   }
 }

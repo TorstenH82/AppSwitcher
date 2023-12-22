@@ -24,7 +24,7 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
   private Context context;
   private float brightness;
   private boolean grayscaleIcons = false;
-  
+
   public interface Listener {
     void onItemClick(View item, AppDataIcon app);
 
@@ -42,8 +42,6 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
     this.listener = listener;
     this.context = context;
     this.grayscaleIcons = grayscaleIcons;
-
-    
   }
 
   public void setBrightness(float brightness) {
@@ -173,9 +171,13 @@ public class SwitchAppsAdapter extends RecyclerView.Adapter<SwitchAppsAdapter.My
   }
 
   public AppData getCurrentApp() {
+    if (appDataList0 == null || appDataList0.size() == 0) {
+      return null;
+    }
+
     try {
       return appDataList0.get(selectedPosition);
-    } catch (ArrayIndexOutOfBoundsException ex) {
+    } catch (IndexOutOfBoundsException ex) {
       Log.e(TAG, "current application cannot be provided based on index " + selectedPosition);
       return null;
     }

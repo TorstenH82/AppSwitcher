@@ -47,6 +47,7 @@ public class SimpleDialog {
         new AlertDialog.Builder(new ContextThemeWrapper(this.context, R.style.AlertDialogCustom))
             .setTitle(this.title)
             .setMessage(this.message)
+            .setCancelable(false)
 
             // Specifying a listener allows you to take an action before dismissing the dialog.
             // The dialog is automatically dismissed when a dialog button is clicked.

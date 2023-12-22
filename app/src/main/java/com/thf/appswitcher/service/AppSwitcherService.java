@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -34,6 +35,7 @@ import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
 import com.thf.AppSwitcher.utils.RunMediaApp;
 import com.thf.AppSwitcher.utils.AutoLinkBroadcast;
+import java.io.IOException;
 
 public class AppSwitcherService extends Service
     implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -71,6 +73,7 @@ public class AppSwitcherService extends Service
   private Handler handler = new Handler(Looper.getMainLooper());
 
   private static BroadcastReceiver bootUpReceiver = null;
+  private Long lastLongPressTime = 0L;
 
   public Handler logHandler =
       new Handler(Looper.getMainLooper()) {
@@ -91,6 +94,13 @@ public class AppSwitcherService extends Service
               // do not open switch activity because this can be the start of a long press
               break;
             case LogReaderUtil.ACTION_LONG_PRESS:
+              boolean cancel = false;
+              if (lastLongPressTime != 0L) {
+                if ((System.currentTimeMillis() - lastLongPressTime) < 1000) cancel = true;
+              }
+              lastLongPressTime = System.currentTimeMillis();
+              if (cancel) return;
+
               // send bc to close if activity is running
               if (mApplication.getSwitchActivityRunning()) {
                 Log.i(TAG, "send broadcast to close to dialog");
@@ -106,6 +116,7 @@ public class AppSwitcherService extends Service
               }
               break;
             case LogReaderUtil.ACTION_SHORT_PRESS:
+              lastLongPressTime = 0L;
               if (!mApplication.getSwitchActivityRunning()) {
                 String foregroundApp;
                 // get the current foreground app
@@ -136,7 +147,9 @@ public class AppSwitcherService extends Service
               break;
           }
 
-          if (buttonSound && LogReaderUtil.ACTION_ON_PRESS != action) mediaPlayer.start();
+          if (buttonSound && LogReaderUtil.ACTION_ON_PRESS != action) {
+            mediaPlayer.start();
+          }
 
           if (runMediaApp && runMediaAppThread != null && runMediaAppThread.isAlive()) {
             runMediaAppThread.interrupt();
@@ -247,6 +260,16 @@ public class AppSwitcherService extends Service
 
     buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
     mediaPlayer = MediaPlayer.create(context, R.raw.buttonpress);
+    mediaPlayer.setAudioAttributes(
+        new AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build());
+    /* try {
+      mediaPlayer.prepare();
+    } catch (IOException ex) {
+    }
+    */
   }
 
   private void registerBootUpRecv() {
@@ -259,6 +282,8 @@ public class AppSwitcherService extends Service
       filter.addAction("com.ts.main.uiaccoff");
       filter.addAction("com.ts.main.DEAL_KEY");
       filter.addAction("broadcast_send_carinfo");
+      filter.addAction("com.qf.action.ACC_ON"); // Ossuret
+      filter.addAction("com.qf.action.ACC_OFF");
       filter.setPriority(1000);
       getApplicationContext().registerReceiver(bootUpReceiver, filter);
       Log.i(TAG, "Registered broadcast receiver");
@@ -348,6 +373,13 @@ public class AppSwitcherService extends Service
     usageStatsUtil.startProgress(); // start before run of media app
     registerBootUpRecv();
 
+    mediaPlayer = MediaPlayer.create(context, R.raw.buttonpress);
+    mediaPlayer.setAudioAttributes(
+        new AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build());
+
     runMediaApp = sharedPreferencesHelper.getBoolean("runMediaApp");
     if (runMediaApp) {
       runMediaAppThread = new Thread(new RunMediaApp(context, usageStatsUtil));
@@ -375,7 +407,12 @@ public class AppSwitcherService extends Service
     setDimming(dimMode);
     setAutoLinkDayNight(dimMode);
 
-    if (enableLogListener) logReaderUtil.startProgress();
+    enableLogListener = sharedPreferencesHelper.getBoolean("enableLogListener");
+    if (enableLogListener) {
+      logReaderUtil.stopProgress();
+      Toast.makeText(this, "Enable log listener", Toast.LENGTH_SHORT).show();
+      logReaderUtil.startProgress();
+    }
     // usageStatsUtil.startProgress();
     // If we get killed, after returning from here, restart
     return START_STICKY;

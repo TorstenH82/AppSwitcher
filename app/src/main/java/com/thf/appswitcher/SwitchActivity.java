@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class SwitchActivity extends Activity {
   private static final String TAG = "AppSwitcherService";
   private AppSwitcherApp mApplication;
@@ -37,7 +36,7 @@ public class SwitchActivity extends Activity {
   private static SwitchDialog switchDialog;
 
   public Handler handler = new Handler(Looper.getMainLooper());
-  private boolean disableNaviMainActivity = false;
+  // private boolean disableNaviMainActivity = false;
   private boolean showClock = true;
   private boolean showEqualizer = false;
   private float brightness;
@@ -57,7 +56,7 @@ public class SwitchActivity extends Activity {
 
     dialogDelay = sharedPreferencesHelper.getInteger("dialogDelay");
     Log.i(TAG, "Dialog delay: " + Integer.toString(dialogDelay));
-    disableNaviMainActivity = sharedPreferencesHelper.getBoolean("disableNaviStart");
+    // disableNaviMainActivity = sharedPreferencesHelper.getBoolean("disableNaviStart");
     showClock = sharedPreferencesHelper.getBoolean("showClock");
     showEqualizer = sharedPreferencesHelper.getBoolean("showEqualizer");
     brightness = ((float) sharedPreferencesHelper.getInteger("itemsBrightness")) / 100;
@@ -139,7 +138,8 @@ public class SwitchActivity extends Activity {
       switchDialog.show();
     }
 
-    if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, true, utilCallbacks);
+    // if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, true,
+    // utilCallbacks);
   }
 
   @Override
@@ -165,7 +165,8 @@ public class SwitchActivity extends Activity {
     Log.d(TAG, "destroy SwitchActivity");
     // LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     // if (switchDialog != null) switchDialog.action(SwitchDialog.Action.CLOSE);
-    if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false, utilCallbacks);
+    // if (disableNaviMainActivity) Utils.enableDisableNaviMainActivity(context, false,
+    // utilCallbacks);
   }
 
   private BroadcastReceiver messageReceiver =
@@ -248,14 +249,14 @@ public class SwitchActivity extends Activity {
               launcherIsInForeground = true;
             }
 
-            Log.i(TAG, "handle " + foregroundApp);
-
             Iterator<AppData> i = recentsAppList.iterator();
             int sort = -1;
             boolean prioPosSet = false;
 
             while (i.hasNext()) {
               AppData r = i.next(); // must be called before you can call i.remove()
+
+              Log.d(TAG, "recent " + r.getKey());
 
               // skip current app and apps not selected by user anymore
               if (TextUtils.equals(r.getKey(), foregroundApp)
@@ -334,7 +335,12 @@ public class SwitchActivity extends Activity {
               });
 
           if (addLauncher) {
-            newAppList.add(1, mApplication.getLauncher());
+            // launcher always on 2nd position. Only on 1st if there is no other entry    
+            if (newAppList.size() > 0) {
+              newAppList.add(1, mApplication.getLauncher());
+            } else {
+              newAppList.add(mApplication.getLauncher());
+            }
           }
 
           // add the icons here

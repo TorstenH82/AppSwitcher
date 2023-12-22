@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="appIconSize">100dp</dimen>
+    <dimen name="elementWidth">150dp</dimen>
+    <dimen name="buttonSize">54dp</dimen>
+    <dimen name="progressToTop">78dp</dimen>
+    <!--16 + 8 + 54 = 78-->
+    
+</resources>
