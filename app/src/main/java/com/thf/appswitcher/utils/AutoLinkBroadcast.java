@@ -4,9 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.thf.AppSwitcher.AppSwitcherApp;
 import com.thf.AppSwitcher.R;
-import java.time.Year;
 
 public class AutoLinkBroadcast implements Runnable {
   private static final String TAG = "AppSwitcherService";

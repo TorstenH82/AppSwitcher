@@ -28,14 +28,12 @@ import com.thf.AppSwitcher.R;
 import com.thf.AppSwitcher.SettingsActivity;
 import com.thf.AppSwitcher.SwitchActivity;
 import com.thf.AppSwitcher.utils.LogReaderUtil;
-import com.thf.AppSwitcher.utils.LteRecover;
 import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 import com.thf.AppSwitcher.utils.SunriseSunset;
 import com.thf.AppSwitcher.utils.UsageStatsUtil;
 import com.thf.AppSwitcher.utils.Utils;
 import com.thf.AppSwitcher.utils.RunMediaApp;
 import com.thf.AppSwitcher.utils.AutoLinkBroadcast;
-import java.io.IOException;
 
 public class AppSwitcherService extends Service
     implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -62,6 +60,7 @@ public class AppSwitcherService extends Service
   private OverlayWindow overlayWindow;
   private int dimMode;
   private boolean autoDimActive = false;
+  private boolean autolinkDim = false;
   private boolean forceLandscape = false;
   public static final int DIM_MODE_ON = 1;
   public static final int DIM_MODE_OFF = 0;
@@ -180,13 +179,16 @@ public class AppSwitcherService extends Service
       dimMode = sharedPreferencesHelper.getInteger("dimMode");
       updateNotification("running...");
       setDimming(dimMode);
-      setAutoLinkDayNight(dimMode);
+      if (autolinkDim) setAutoLinkDayNight(dimMode);
     } else if (key.equals("forceLandscape")) {
       overlayWindow.setLandscape(sharedPreferencesHelper.getBoolean("forceLandscape"));
     } else if (key.equals("dimScreen")) {
       overlayWindow.setBrightness(sharedPreferencesHelper.getInteger("dimScreen"));
     } else if (key.equals("buttonSound")) {
       buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
+    } else if (key.equals("autolinkDim")) {
+      autolinkDim = sharedPreferencesHelper.getBoolean("autolinkDim");
+      if (autolinkDim) setAutoLinkDayNight(dimMode);
     }
     if (key.equals("logTag")
         || key.equals("logOnPress")
@@ -221,7 +223,7 @@ public class AppSwitcherService extends Service
             if (granted) {
               sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
               setDimming(dimMode);
-              setAutoLinkDayNight(dimMode);
+              if (autolinkDim) setAutoLinkDayNight(dimMode);
             } else {
               if (dimMode == DIM_MODE_AUTO) {
                 dimMode = DIM_MODE_OFF;
@@ -256,6 +258,7 @@ public class AppSwitcherService extends Service
     dimMode = sharedPreferencesHelper.getInteger("dimMode");
     sunriseSunset = new SunriseSunset(context, sunriseSunsetCallbacks);
 
+    autolinkDim = sharedPreferencesHelper.getBoolean("autolinkDim");
     autoLinkBroadcast = new AutoLinkBroadcast(context);
 
     buttonSound = sharedPreferencesHelper.getBoolean("buttonSound");
@@ -386,9 +389,6 @@ public class AppSwitcherService extends Service
       runMediaAppThread.start();
     }
 
-    boolean runLteRecover = sharedPreferencesHelper.getBoolean("lterecover");
-    if (runLteRecover) new Thread(new LteRecover(context)).start();
-
     boolean enableAutomate = sharedPreferencesHelper.getBoolean("enableAutomateSrv");
     if (enableAutomate) {
       Utils.enableService(
@@ -405,7 +405,9 @@ public class AppSwitcherService extends Service
 
     updateNotification("running...");
     setDimming(dimMode);
-    setAutoLinkDayNight(dimMode);
+
+    autolinkDim = sharedPreferencesHelper.getBoolean("autolinkDim");
+    if (autolinkDim) setAutoLinkDayNight(dimMode);
 
     enableLogListener = sharedPreferencesHelper.getBoolean("enableLogListener");
     if (enableLogListener) {
@@ -429,7 +431,7 @@ public class AppSwitcherService extends Service
     isRunning = false;
     sharedPreferencesHelper.unregisterOnSharedPreferenceChangeListener(this);
     stopThreads();
-    autoLinkBroadcast.setDay(false);
+    if (autolinkDim) autoLinkBroadcast.setDay(false);
     mediaPlayer = null;
     Toast.makeText(this, "AppSwitcher Service stopped", Toast.LENGTH_LONG).show();
   }
@@ -536,7 +538,7 @@ public class AppSwitcherService extends Service
           } else {
             overlayWindow.hide();
           }
-          autoLinkBroadcast.setDay(false);
+          if (autolinkDim) autoLinkBroadcast.setDay(false);
           autoDimActive = false;
           updateNotification("Auto dimming active (off)");
         }
@@ -544,7 +546,7 @@ public class AppSwitcherService extends Service
         @Override
         public void onSunset() {
           showOverlayNight();
-          autoLinkBroadcast.setNight(false);
+          if (autolinkDim) autoLinkBroadcast.setNight(false);
           autoDimActive = true;
           updateNotification("Auto dimming active (on)");
         }
@@ -569,10 +571,13 @@ public class AppSwitcherService extends Service
           } else {
             overlayWindow.reShow(); // show again if overlay was visible
           }
-          if (foreground.startsWith(getString(R.string.autoLinkPackage))) {
-            setAutoLinkDayNight(dimMode);
-          } else {
-            autoLinkBroadcast.stop();
+
+          if (autolinkDim) {
+            if (foreground.startsWith(getString(R.string.autoLinkPackage))) {
+              setAutoLinkDayNight(dimMode);
+            } else {
+              autoLinkBroadcast.stop();
+            }
           }
         }
       };

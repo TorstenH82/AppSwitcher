@@ -10,6 +10,11 @@
             android:min="20"
             android:summary="xs"
             android:title="Screen brightness at dimming" />
+          <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_autolinkDim"
+            android:key="autolinkDim"
+            android:summary="Control Autolink day/night mode"
+            android:title="Autolink day/night" />
         <androidx.preference.SwitchPreference
             android:enabled="false"
             android:key="fullscreen"

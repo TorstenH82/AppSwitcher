@@ -1262,6 +1262,11 @@ repositories {
 }
 repositories {
   maven_repo {
+    url: "https://s01.oss.sonatype.org/content/groups/public/"
+  }
+}
+repositories {
+  maven_repo {
     url: "https://repo.maven.apache.org/maven2/"
   }
 }

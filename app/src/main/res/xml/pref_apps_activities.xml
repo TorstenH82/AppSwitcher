@@ -27,11 +27,21 @@
                     android:value="activities" />
             </intent>
         </androidx.preference.Preference>
+         <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_addCancel"
+            android:key="addCancel"
+            android:summary="Allows to leave the dialog without running an app"
+            android:title="Add 'Back'" />
         <androidx.preference.SwitchPreference
             android:defaultValue="@string/pref_addLauncher"
             android:key="addLauncher"
-            android:summary="Offer launcher as 2nd item"
+            android:summary="Add launcher"
             android:title="Add launcher" />
+         <androidx.preference.SwitchPreference
+            android:defaultValue="@string/pref_genericHome"
+            android:key="genericHome"
+            android:summary="Add launcher as generic 'Home' entry"
+            android:title="Generic home" />
         <androidx.preference.SwitchPreference
             android:defaultValue="@string/pref_smartList"
             android:key="smartList"
@@ -51,6 +61,7 @@
                     android:value="sort" />
             </intent>
         </androidx.preference.Preference>
+        
     </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

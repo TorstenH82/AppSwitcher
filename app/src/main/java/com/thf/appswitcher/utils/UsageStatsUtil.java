@@ -69,7 +69,9 @@ public class UsageStatsUtil {
         || "com.thf.FlowStarter".equals(packageName)
         || "android".equals(packageName)
         || ("com.ts.MainUI".equals(packageName)
-            && "com.ts.main.navi.NaviMainActivity".equals(activity))) {
+            && "com.ts.main.navi.NaviMainActivity".equals(activity))
+        || ("com.qf.carsettings".equals(packageName)
+            && "com.qf.carsettings.activity.NavigationStartupActivity".equals(activity))) {
       return true;
     }
     return false;

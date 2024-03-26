@@ -35,17 +35,21 @@ public class StartServiceActivity extends Activity {
     this.sharedPreferencesHelper = new SharedPreferencesHelper(context);
 
     if (AppSwitcherService.isSleeping()) {
-
       Intent intentSrv = new Intent(context, AppSwitcherService.class);
       intentSrv.setAction(AppSwitcherService.ACTION_WAKE_UP);
       startForegroundService(intentSrv);
       finish();
       return;
     } else if (AppSwitcherService.isRunning()) {
-      Intent intentSrv = new Intent(context, AppSwitcherService.class);
-      intentSrv.setAction(AppSwitcherService.ACTION_KEY);
-      intentSrv.putExtra("key", 9010);
-      context.startForegroundService(intentSrv);
+
+      boolean startedByBootCompleted = getIntent().getBooleanExtra("boot", false);
+
+      if (!startedByBootCompleted) {
+        Intent intentSrv = new Intent(context, AppSwitcherService.class);
+        intentSrv.setAction(AppSwitcherService.ACTION_KEY);
+        intentSrv.putExtra("key", 9010);
+        context.startForegroundService(intentSrv);
+      }
       finish();
       return;
     }
@@ -62,25 +66,26 @@ public class StartServiceActivity extends Activity {
       return;
     }
 
-    int checkVal = context.checkCallingOrSelfPermission(Manifest.permission.READ_LOGS);
-    if (checkVal == PackageManager.PERMISSION_DENIED) {
-      new SimpleDialog(
-              "NO_READ_LOGS",
-              activity,
-              simpleDialogCallbacks,
-              "No read logs permission",
-              "AppSwitcher needs permission to read Android logs.\n\nAppSwitcher can try to authorize itself.\nTry self authorization?",
-              true)
-          .show();
-      return;
+    int checkVal;
+    if (sharedPreferencesHelper.getBoolean("enableLogListener")) {
+      checkVal = context.checkCallingOrSelfPermission(Manifest.permission.READ_LOGS);
+      if (checkVal == PackageManager.PERMISSION_DENIED) {
+        new SimpleDialog(
+                "NO_READ_LOGS",
+                activity,
+                simpleDialogCallbacks,
+                "No read logs permission",
+                "AppSwitcher needs permission to read Android logs.\n\nAppSwitcher can try to authorize itself.\nTry self authorization?",
+                true)
+            .show();
+        return;
+      }
     }
 
     AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
     checkVal =
         appOps.checkOpNoThrow(
             "android:get_usage_stats", android.os.Process.myUid(), context.getPackageName());
-
-    // Toast.makeText(context, checkVal + "", Toast.LENGTH_LONG).show();
 
     boolean usageStatAccess = false;
     if (checkVal == AppOpsManager.MODE_ALLOWED) {

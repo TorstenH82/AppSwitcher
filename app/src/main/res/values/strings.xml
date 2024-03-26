@@ -4,6 +4,8 @@
     <string name="channel_name">Default</string>
     <string name="channel_description">AppSwitcher channel</string>
     <string name="pref_addLauncher">false</string>
+    <string name="pref_genericHome">true</string>
+    <string name="pref_addCancel">true</string>
     <string name="pref_smartList">true</string>
     <string name="pref_enableLogListener">false</string>
     <string name="pref_logTag">MainUI</string>
@@ -16,23 +18,21 @@
     <string name="pref_runMediaAppDelay">0</string>
     <string name="pref_showClock">true</string>
     <string name="pref_showEqualizer">false</string>
-    <!--
-    <string name="pref_disableNaviStart">false</string>
-    -->
+    <!-- <string name="pref_disableNaviStart">false</string> -->
     <string name="pref_itemsBrightness">60</string>
     <string name="pref_scanWifi">false</string>
     <string name="pref_enableAutomateSrv">false</string>
     <string name="pref_automateFlow">content://com.llamalab.automate.provider/flows/n/statements/m</string>
     <string name="pref_dimScreen">50</string>
     <string name="pref_dimMode">0</string>
-    <string name="pref_lterecover">false</string>
-    <string name="pref_lterecoverDelay">15000</string>
-    <string name="pref_lterecoverDelayBtw">5000</string>
+    <string name="pref_autolinkDim">true</string>
 
     <string name="pref_buttonSound">true</string>
 
     <string name="pref_grayscaleIcons">true</string>
     <string name="pref_forceLandscape">false</string>
+
+    <string name="pref_accWake">true</string>
 
     <string name="yes">OK</string>
     <string name="no">Cancel</string>
@@ -66,12 +66,8 @@
     <string name="automateService">com.llamalab.automate.AutomateAccessibilityService</string>
     <string name="automateFlowStartIntent">com.llamalab.automate.intent.action.START_FLOW</string>
 
-    <string name="LTErecover">LTErecover</string>
-    <string name="LTErecoverPackage">com.thf.lterecover</string>
-    <string name="LTErecoverActivity">com.thf.lterecover.RecoverActivity</string>
-
     <string name="commandRunEqualizer">am start -n com.ts.MainUI/com.ts.set.dsp.SetDspMainActivity</string>
-    
-    <string name ="autoLinkPackage">com.suding.speedplay</string>
-    <string name ="autoLinkReceiver">com.texustek.speedplay.broadcast.VendorBroadcastReceiver</string>
+
+    <string name="autoLinkPackage">com.suding.speedplay</string>
+    <string name="autoLinkReceiver">com.texustek.speedplay.broadcast.VendorBroadcastReceiver</string>
 </resources>

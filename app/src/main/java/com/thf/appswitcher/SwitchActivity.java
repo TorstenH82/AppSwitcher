@@ -87,7 +87,8 @@ public class SwitchActivity extends Activity {
               intent = new Intent(Intent.ACTION_MAIN);
               intent.addCategory(Intent.CATEGORY_HOME);
               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            } else {
+              startActivity(intent);
+            } else if (!"cancel".equals(app.getCategory())) {
               ComponentName name = new ComponentName(app.getPackageName(), app.getActivityName());
               // intent.addCategory(Intent.CATEGORY_LAUNCHER);
               intent.setFlags(
@@ -96,8 +97,8 @@ public class SwitchActivity extends Activity {
                       | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                       | Intent.FLAG_ACTIVITY_NO_ANIMATION);
               intent.setComponent(name);
+              startActivity(intent);
             }
-            startActivity(intent);
           }
           finish();
         }
@@ -288,7 +289,7 @@ public class SwitchActivity extends Activity {
                   prioPosSet = true;
                   posSet = true;
 
-                  // navi ia in front and previous app is also a navi
+                  // navi is in front and previous app is also a navi
                   // --> offer recent navi on 2nd pos
                 } else if (sort == -1 && naviIsInForeground) {
                   app.setSort(1); // not on 1st position
@@ -335,14 +336,32 @@ public class SwitchActivity extends Activity {
               });
 
           if (addLauncher) {
-            // launcher always on 2nd position. Only on 1st if there is no other entry    
-            if (newAppList.size() > 0) {
-              newAppList.add(1, mApplication.getLauncher());
+            AppDataIcon app = new AppDataIcon();
+            if (sharedPreferencesHelper.getBoolean("genericHome")) {
+              app.setIcon(getDrawable(R.drawable.home));
+              app.setName("Home");
+              app.setCategory("launcher");
             } else {
-              newAppList.add(mApplication.getLauncher());
+              app = mApplication.getLauncher();
+            }
+
+            // launcher always on 2nd position. Only on 1st if there is no other entry
+            if (newAppList.size() > 0) {
+              // newAppList.add(1, mApplication.getLauncher());
+              newAppList.add(1, app);
+            } else {
+              // newAppList.add(mApplication.getLauncher());
+              newAppList.add(app);
             }
           }
 
+          if (sharedPreferencesHelper.getBoolean("addCancel")) {
+            AppDataIcon app = new AppDataIcon();
+            app.setIcon(getDrawable(R.drawable.cancel));
+            app.setName("Back");
+            app.setCategory("cancel");
+            newAppList.add(0, app);
+          }
           // add the icons here
           /*
           for (AppData app : newAppList) {

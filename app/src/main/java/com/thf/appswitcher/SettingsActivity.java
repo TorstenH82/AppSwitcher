@@ -174,10 +174,13 @@ public class SettingsActivity extends AppCompatActivity {
         SwitchPreference smartList = findPreference("smartList");
         findPreference("intentSort").setEnabled(!smartList.isChecked());
         findPreference("intentSort").setSelectable(!smartList.isChecked());
-
         findPreference("addLauncher")
             .setSummary(
-                "Offer '" + mApplication.getLauncher().getName() + "' always on 2nd position");
+                "Add '" + mApplication.getLauncher().getName() + "'");
+
+        SwitchPreference addLauncher = findPreference("addLauncher");
+        findPreference("genericHome").setEnabled(addLauncher.isChecked());
+        findPreference("genericHome").setSelectable(addLauncher.isChecked());
 
       } else if ("log_listener".equals(screen)) {
         setPreferencesFromResource(R.xml.pref_log_listener, rootKey);
@@ -253,16 +256,6 @@ public class SettingsActivity extends AppCompatActivity {
         runMediaAppTwice.setEnabled(runMediaApp.isChecked());
         runMediaAppTwice.setSelectable(runMediaApp.isChecked());
 
-        /*
-        if (Utils.isPackageInstalled(context, getString(R.string.LTErecoverPackage))) {
-          lterecover.setSelectable(true);
-          lterecover.setEnabled(true);
-        } else {
-          lterecover.setSummary("LTErecover is not installed");
-          lterecover.setChecked(false);
-        }
-        */
-
         boolean automateOn = ((SwitchPreference) findPreference("enableAutomateSrv")).isChecked();
         EditTextPreference automateFlow = findPreference("automateFlow");
         automateFlow.setEnabled(automateOn);
@@ -308,35 +301,7 @@ public class SettingsActivity extends AppCompatActivity {
           qbproperty.setSummary("Can't read property");
         }
         */
-        SwitchPreference lterecover = findPreference("lterecover");
-        if (!"825X_Pro".equals(android.os.Build.DEVICE)) {
-          lterecover.setEnabled(false);
-          lterecover.setSelectable(false);
-          lterecover.setSummary("This is not a 825X_Pro device");
-        }
 
-        SeekBarPreference lterecoverDelay = findPreference("lterecoverDelay");
-        lterecoverDelay.setEnabled(lterecover.isChecked());
-        lterecoverDelay.setSelectable(lterecover.isChecked());
-        lterecoverDelay.setMin(0);
-        lterecoverDelay.setUpdatesContinuously(true);
-        int delayLterecoverDelay = lterecoverDelay.getValue();
-        lterecoverDelay.setSummary(
-            String.format(
-                    "%.0f", Float.intBitsToFloat(delayLterecoverDelay) / Float.intBitsToFloat(1000))
-                + "s");
-
-        SeekBarPreference lterecoverDelayBtw = findPreference("lterecoverDelayBtw");
-        lterecoverDelayBtw.setEnabled(lterecover.isChecked());
-        lterecoverDelayBtw.setSelectable(lterecover.isChecked());
-        lterecoverDelayBtw.setMin(0);
-        lterecoverDelayBtw.setUpdatesContinuously(true);
-        int delayLterecoverDelayBtw = lterecoverDelayBtw.getValue();
-        lterecoverDelayBtw.setSummary(
-            String.format(
-                    "%.0f",
-                    Float.intBitsToFloat(delayLterecoverDelayBtw) / Float.intBitsToFloat(1000))
-                + "s");
       }
     }
 
@@ -422,6 +387,12 @@ public class SettingsActivity extends AppCompatActivity {
           findPreference("intentSort").setSelectable(!switchPreference.isChecked());
           break;
 
+        case "addLauncher":
+          switchPreference = findPreference(key);
+          findPreference("genericHome").setEnabled(switchPreference.isChecked());
+          findPreference("genericHome").setSelectable(switchPreference.isChecked());
+          break;
+
         case "dialogDelay":
           seekBarPreference = findPreference(key);
           int delay = seekBarPreference.getValue();
@@ -448,7 +419,6 @@ public class SettingsActivity extends AppCompatActivity {
           break;
 
         case "runMediaAppDelay":
-        case "lterecoverDelayBtw":
           seekBarPreference = findPreference(key);
           delay = seekBarPreference.getValue();
           seekBarPreference.setSummary(
@@ -458,41 +428,6 @@ public class SettingsActivity extends AppCompatActivity {
           seekBarPreference.setValue(progress);
           break;
 
-        case "lterecover":
-          switchPreference = findPreference(key);
-          findPreference("lterecoverDelay").setEnabled(switchPreference.isChecked());
-          findPreference("lterecoverDelay").setSelectable(switchPreference.isChecked());
-          findPreference("lterecoverDelayBtw").setEnabled(switchPreference.isChecked());
-          findPreference("lterecoverDelayBtw").setSelectable(switchPreference.isChecked());
-          break;
-
-          /*
-          case "lterecoverDelay":
-            seekBarPreference = findPreference(key);
-            delay = seekBarPreference.getValue();
-            progress = (Math.round(delay / 5)) * 5;
-            seekBarPreference.setValue(progress);
-            seekBarPreference.setSummary(progress + "");
-            break;
-                  */
-
-        case "lterecoverDelay":
-          seekBarPreference = findPreference(key);
-          delay = seekBarPreference.getValue();
-          seekBarPreference.setSummary(
-              String.format("%.0f", Float.intBitsToFloat(delay) / Float.intBitsToFloat(1000))
-                  + "s");
-          progress = (Math.round(seekBarPreference.getValue() / 5000)) * 5000;
-          seekBarPreference.setValue(progress);
-          break;
-          /*
-                  case "lterecoverDelayBtw":
-                    seekBarPreference = findPreference(key);
-                    delay = seekBarPreference.getValue();
-                    seekBarPreference.setSummary(delay + "");
-
-                    break;
-          */
         case "duraspeed":
           switchPreference = findPreference(key);
           try {

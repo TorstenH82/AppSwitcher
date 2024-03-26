@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.thf.AppSwitcher.StartServiceActivity;
 import com.thf.AppSwitcher.service.AppSwitcherService;
+import com.thf.AppSwitcher.utils.SharedPreferencesHelper;
 
 public class BootUpReceiver extends BroadcastReceiver {
   private static final String TAG = "AppSwitcherService";
@@ -20,6 +21,12 @@ public class BootUpReceiver extends BroadcastReceiver {
         || "com.ts.main.uiaccon".equals(action)
         || "com.qf.action.ACC_ON".equals(action)) {
       Log.i(TAG, "received " + action);
+
+      SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(context);
+      if (!sharedPreferencesHelper.getBoolean("accWake")) {
+        Log.i(TAG, "ACC wake is not enabled");
+        return;
+      }
       Intent intentSrv = new Intent(context, AppSwitcherService.class);
       intentSrv.setAction(AppSwitcherService.ACTION_WAKE_UP);
       context.startForegroundService(intentSrv);
@@ -54,16 +61,5 @@ public class BootUpReceiver extends BroadcastReceiver {
       context.startActivity(intentSrv);
       return;
     }
-    /*
-    if ("broadcast_send_carinfo".equals(action)) {
-      Log.i(TAG, "received " + action);
-      Intent intentSrv = new Intent(context, AppSwitcherService.class);
-      intentSrv.setAction(AppSwitcherService.ACTION_ILL);
-      int ill = intent.getExtras().getInt("ILL_LIGHT");
-      intentSrv.putExtra("ill", ill);
-      context.startForegroundService(intentSrv);
-      return;
-    }
-    */
   }
 }
